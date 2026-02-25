@@ -100,6 +100,19 @@ function bindEvents() {
       filterTechniques();
     });
   });
+
+  // Keyboard shortcut: press "/" to focus global search
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      const search = document.getElementById('global-search');
+      if (search) { search.focus(); search.select(); }
+    }
+    if (e.key === 'Escape') {
+      const active = document.activeElement;
+      if (active && active.tagName === 'INPUT') active.blur();
+    }
+  });
 }
 
 // ── RENDER: DASHBOARD ──────────────────────────────────────────────────────
@@ -179,7 +192,10 @@ function renderTechniques() {
         <div class="cat-info">
           <div class="cat-name">${cat.name}</div>
           <div class="cat-meta">
-            <span class="mitre-badge">${cat.mitre}</span>
+            <a href="https://attack.mitre.org/tactics/${cat.mitre}/" target="_blank" rel="noopener"
+               class="mitre-badge" style="text-decoration:none" title="MITRE ATT&CK ${cat.mitre}">
+              ${cat.mitre} <i class="bi bi-box-arrow-up-right" style="font-size:9px"></i>
+            </a>
             &nbsp;${cat.description}
           </div>
         </div>
@@ -468,8 +484,13 @@ function updateTotalProgress() {
   const dashProgress = document.getElementById('dash-checklist-progress');
   if (dashProgress) dashProgress.textContent = `${checkedCount} / ${totalItems} 項目完成 (${pct}%)`;
 
-  const dashProgressBar = document.getElementById('dash-progress-fill');
-  if (dashProgressBar) dashProgressBar.style.width = `${pct}%`;
+  const defenseProgress = document.getElementById('dash-checklist-progress-defense');
+  if (defenseProgress) defenseProgress.textContent = `${checkedCount} / ${totalItems} 項目完成 (${pct}%)`;
+
+  // Update both progress bars (dashboard tab + defense tab)
+  document.querySelectorAll('#dash-progress-fill, #defense-progress-fill').forEach(el => {
+    el.style.width = `${pct}%`;
+  });
 
   const statChecklist = document.getElementById('stat-checklist');
   if (statChecklist) statChecklist.textContent = `${pct}%`;
@@ -479,6 +500,7 @@ function updateTotalProgress() {
 function filterTechniques() {
   const search = state.globalSearch;
   const catFilter = state.techniquesFilter;
+  let totalVisible = 0;
 
   document.querySelectorAll('.category-section').forEach(section => {
     const catId = section.dataset.categoryId;
@@ -491,22 +513,37 @@ function filterTechniques() {
 
     if (!search) {
       section.style.display = '';
+      section.querySelectorAll('.technique-card').forEach(c => { c.style.display = ''; });
+      totalVisible += section.querySelectorAll('.technique-card').length;
       return;
     }
 
     // Search within techniques
     let anyVisible = false;
     section.querySelectorAll('.technique-card').forEach(card => {
-      const techName = card.dataset.technique || '';
       const text = card.textContent.toLowerCase();
       const visible = text.includes(search);
       card.style.display = visible ? '' : 'none';
-      if (visible) anyVisible = true;
+      if (visible) { anyVisible = true; totalVisible++; }
     });
 
     section.style.display = anyVisible ? '' : 'none';
     if (anyVisible && search) section.classList.add('expanded');
   });
+
+  const countEl = document.getElementById('technique-count');
+  if (countEl) {
+    countEl.textContent = search || catFilter !== 'all' ? `${totalVisible} 項結果` : '';
+  }
+}
+
+// ── EXPAND / COLLAPSE ALL ──────────────────────────────────────────────────
+function expandAllCategories() {
+  document.querySelectorAll('.category-section').forEach(s => s.classList.add('expanded'));
+}
+
+function collapseAllCategories() {
+  document.querySelectorAll('.category-section').forEach(s => s.classList.remove('expanded'));
 }
 
 // ── UTILITY ────────────────────────────────────────────────────────────────

@@ -475,7 +475,7 @@ body {
 .category-section.expanded .cat-toggle { transform: rotate(180deg); }
 
 .category-techniques { display: none; }
-.category-section.expanded .category-techniques { display: block; }
+.category-section.expanded .category-techniques { display: grid; }
 
 /* ── BADGES & TAGS ── */
 .badge {

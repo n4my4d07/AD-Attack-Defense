@@ -163,7 +163,7 @@
     <div class="filter-bar">
       <div class="table-search">
         <i class="bi bi-search" style="color:var(--text-muted)"></i>
-        <input id="technique-search" type="text" placeholder="搜尋技術名稱、工具、CVE…">
+        <input id="technique-search" type="text" placeholder="搜尋技術名稱、工具、CVE… (按 / 快速開啟)">
       </div>
       <button class="filter-btn active" data-cat-filter="all">全部</button>
       <button class="filter-btn" data-cat-filter="discovery" style="--active-color:var(--color-discovery)">
@@ -184,6 +184,15 @@
       <button class="filter-btn" data-cat-filter="persistence">
         <i class="bi bi-lock" style="color:var(--color-persistence)"></i> Persistence
       </button>
+      <div style="margin-left:auto; display:flex; gap:6px; align-items:center">
+        <span id="technique-count" class="text-secondary text-small"></span>
+        <button class="filter-btn" onclick="expandAllCategories()">
+          <i class="bi bi-arrows-angle-expand"></i> 展開全部
+        </button>
+        <button class="filter-btn" onclick="collapseAllCategories()">
+          <i class="bi bi-arrows-angle-contract"></i> 收合全部
+        </button>
+      </div>
     </div>
 
     <div id="techniques-container"></div>
@@ -329,7 +338,7 @@
           </button>
         </div>
         <div class="progress-bar-wrap" style="height:8px; margin-top:12px; margin-bottom:0">
-          <div id="dash-progress-fill" class="progress-bar-fill" style="width:0%"></div>
+          <div id="defense-progress-fill" class="progress-bar-fill" style="width:0%"></div>
         </div>
       </div>
     </div>

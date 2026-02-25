@@ -680,7 +680,6 @@ const TOOLS = [
   { name: 'Impacket', type: 'offensive', url: 'https://github.com/SecureAuthCorp/impacket', description: 'Python 網路協定類別庫，支援 SMB、Kerberos、LDAP 等協定互動', tags: ['Python', 'SMB', 'Kerberos', 'LDAP'] },
   { name: 'CrackMapExec', type: 'offensive', url: 'https://github.com/byt3bl33d3r/CrackMapExec', description: '網路滲透測試瑞士刀，支援 SMB、WinRM、LDAP 等協定大規模作業', tags: ['SMB', 'WinRM', '橫向移動', '自動化'] },
   { name: 'Certify', type: 'offensive', url: 'https://github.com/GhostPack/Certify', description: 'C# AD CS 列舉與濫用工具，用於尋找和利用憑證服務錯誤設定', tags: ['AD CS', 'C#', '憑證', '權限提升'] },
-  { name: 'Rubeus', type: 'offensive', url: 'https://github.com/GhostPack/Rubeus', description: 'C# Kerberos 互動與濫用工具集', tags: ['Kerberos', 'C#', 'Pass-the-Ticket'] },
   { name: 'PowerUpSQL', type: 'offensive', url: 'https://github.com/NetSPI/PowerUpSQL', description: '攻擊 SQL Server 的 PowerShell 工具集，支援提權與資料挖掘', tags: ['SQL Server', 'PowerShell', '提權'] },
   { name: 'aclpwn.py', type: 'offensive', url: 'https://github.com/fox-it/aclpwn.py', description: '結合 BloodHound 自動化利用 AD ACL 錯誤設定', tags: ['ACL', 'BloodHound', '自動化', '提權'] },
   { name: 'ADACLScanner', type: 'offensive', url: 'https://github.com/canix1/ADACLScanner', description: '產生 AD DACL/SACL 報告的工具，支援 GUI 或命令列', tags: ['ACL', '稽核', '報告'] },
