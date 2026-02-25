@@ -719,64 +719,319 @@ const DEFENSE_CHECKLIST = [
     category: '管理員憑證保護',
     priority: 'critical',
     items: [
-      { text: '部署 LAPS 管理本機管理員密碼', detail: '避免使用相同本機管理員密碼導致橫向移動' },
-      { text: '啟用 RDP Restricted Admin Mode', detail: '防止憑證暴露在遠端系統' },
-      { text: '確保所有管理員帳戶設定「敏感且不可委派」', detail: '防止 Kerberos 委派攻擊' },
-      { text: '將管理員帳戶加入 Protected Users 群組', detail: '需要 Windows Server 2012 R2+ 功能等級' },
-      { text: '停用所有非活躍管理員帳戶', detail: '定期審查並移除不需要的特權帳戶' }
+      {
+        text: '部署 LAPS 管理本機管理員密碼',
+        detail: '避免使用相同本機管理員密碼導致橫向移動',
+        steps: [
+          { type: 'cmd', text: '# 安裝 LAPS Schema 擴充（在 DC 以 Schema Admin 執行）\nImport-Module AdmPwd.PS\nUpdate-AdmPwdADSchema' },
+          { type: 'cmd', text: '# 授予電腦帳戶自行回報密碼的權限\nSet-AdmPwdComputerSelfPermission -OrgUnit "OU=Workstations,DC=corp,DC=local"' },
+          { type: 'cmd', text: '# 授予特定群組讀取 LAPS 密碼的權限\nSet-AdmPwdReadPasswordPermission -OrgUnit "OU=Workstations,DC=corp,DC=local" -AllowedPrincipals "CORP\\HelpDesk"' },
+          { type: 'info', text: 'GPO 設定路徑：Computer Configuration → Administrative Templates → LAPS → Enable local admin password management → Enabled；Password Settings 設定長度 ≥ 15、複雜度開啟' },
+          { type: 'cmd', text: '# 驗證部署結果\nGet-ADComputer -Filter * -Properties ms-Mcs-AdmPwdExpirationTime | Where-Object { $_."ms-Mcs-AdmPwdExpirationTime" -ne $null }' }
+        ]
+      },
+      {
+        text: '啟用 RDP Restricted Admin Mode',
+        detail: '防止憑證暴露在遠端系統',
+        steps: [
+          { type: 'cmd', text: '# 在目標系統啟用 Restricted Admin Mode\nreg add "HKLM\\System\\CurrentControlSet\\Control\\Lsa" /v DisableRestrictedAdmin /t REG_DWORD /d 0 /f' },
+          { type: 'info', text: '使用 Restricted Admin 連線：mstsc /v:目標主機 /RestrictedAdmin' },
+          { type: 'info', text: 'GPO 強制啟用：Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options → "Require use of Restricted Admin Mode for Remote Desktop connections"' },
+          { type: 'warn', text: '注意：Restricted Admin Mode 本身可能遭受 Pass-the-Hash 攻擊，應搭配 Protected Users 群組使用' }
+        ]
+      },
+      {
+        text: '確保所有管理員帳戶設定「敏感且不可委派」',
+        detail: '防止 Kerberos 委派攻擊',
+        steps: [
+          { type: 'cmd', text: '# 批次設定 Domain Admins 成員為不可委派\nGet-ADGroupMember "Domain Admins" -Recursive | Where-Object { $_.objectClass -eq "user" } | Set-ADUser -AccountNotDelegated $true' },
+          { type: 'cmd', text: '# 驗證設定結果\nGet-ADUser -Filter { AccountNotDelegated -ne $true } -SearchBase "OU=Admins,DC=corp,DC=local" | Select Name, AccountNotDelegated' },
+          { type: 'info', text: 'GUI 設定：Active Directory Users and Computers → 帳戶屬性 → Account 頁籤 → 勾選 "Account is sensitive and cannot be delegated"' }
+        ]
+      },
+      {
+        text: '將管理員帳戶加入 Protected Users 群組',
+        detail: '需要 Windows Server 2012 R2+ 功能等級',
+        steps: [
+          { type: 'cmd', text: '# 將管理員帳戶加入 Protected Users\nAdd-ADGroupMember -Identity "Protected Users" -Members "AdminUser1","AdminUser2"' },
+          { type: 'info', text: 'Protected Users 效果：禁止 NTLM/RC4/DES 認證、TGT 存活時間縮短至 4 小時、無法使用 CredSSP / WDigest / Digest 認證' },
+          { type: 'warn', text: '注意：加入後若服務帳戶依賴 NTLM 可能造成認證失敗，先在測試環境驗證' },
+          { type: 'cmd', text: '# 確認網域功能等級 ≥ Windows Server 2012 R2\n(Get-ADDomain).DomainMode' }
+        ]
+      },
+      {
+        text: '停用所有非活躍管理員帳戶',
+        detail: '定期審查並移除不需要的特權帳戶',
+        steps: [
+          { type: 'cmd', text: '# 列出 90 天未使用的特權帳戶\nSearch-ADAccount -AccountInactive -TimeSpan (New-TimeSpan -Days 90) -UsersOnly | Where-Object { (Get-ADUser $_ -Properties MemberOf).MemberOf -match "Admin" }' },
+          { type: 'cmd', text: '# 停用指定帳戶\nDisable-ADAccount -Identity "stale_admin"\nMove-ADObject -Identity "CN=stale_admin,OU=Admins,DC=corp,DC=local" -TargetPath "OU=Disabled,DC=corp,DC=local"' },
+          { type: 'info', text: '建議建立自動化排程任務，每月產生閒置特權帳戶報告並通知審查' }
+        ]
+      }
     ]
   },
   {
     category: 'Kerberos 與 AD 安全',
     priority: 'high',
     items: [
-      { text: '每年至少一次重設 KRBTGT 帳戶密碼', detail: '防止 Golden Ticket 長期有效，需重設兩次（延遲 10 小時）' },
-      { text: '限制 AD 管理員成員（DA、EA、Schema Admins）', detail: '僅使用自訂委派群組，避免過度授權' },
-      { text: '實施三層（Tier）管理模式', detail: 'Tier 0: DC/AD, Tier 1: Server, Tier 2: Workstation' },
-      { text: '稽核 Kerberos 委派設定', detail: '識別並移除不必要的無限制委派' },
-      { text: '使用 Managed Service Accounts (gMSA) 取代服務帳戶', detail: '防止 Kerberoasting，密碼由系統自動管理' }
+      {
+        text: '每年至少一次重設 KRBTGT 帳戶密碼',
+        detail: '防止 Golden Ticket 長期有效，需重設兩次（延遲 10 小時）',
+        steps: [
+          { type: 'info', text: '下載 Microsoft 官方腳本：New-KrbtgtKeys.ps1 (https://github.com/microsoft/New-KrbtgtKeys.ps1)' },
+          { type: 'cmd', text: '# 第一次重設（在 PDC Emulator 上執行）\n.\\New-KrbtgtKeys.ps1 -OperationMode 1' },
+          { type: 'warn', text: '等待 ≥ 10 小時（最大 Kerberos TGT 存活時間），確保所有 DC 完成複寫並讓現有 TGT 過期' },
+          { type: 'cmd', text: '# 驗證 DC 複寫正常後執行第二次重設\nrepadmin /replsummary\n.\\New-KrbtgtKeys.ps1 -OperationMode 1' },
+          { type: 'cmd', text: '# 驗證 KRBTGT 密碼已更新（確認 PasswordLastSet 時間）\nGet-ADUser krbtgt -Properties PasswordLastSet | Select PasswordLastSet' }
+        ]
+      },
+      {
+        text: '限制 AD 管理員成員（DA、EA、Schema Admins）',
+        detail: '僅使用自訂委派群組，避免過度授權',
+        steps: [
+          { type: 'cmd', text: '# 檢查各高權限群組成員數\n@("Domain Admins","Enterprise Admins","Schema Admins") | ForEach-Object { "$_ : $((Get-ADGroupMember $_ -Recursive | Measure-Object).Count) 個成員" }' },
+          { type: 'info', text: 'Domain Admins 建議成員數 ≤ 5；Enterprise Admins 平時應為空，需要時才臨時加入；Schema Admins 平時應為空' },
+          { type: 'cmd', text: '# 移除不必要的成員\nRemove-ADGroupMember -Identity "Domain Admins" -Members "UserToRemove" -Confirm:$false' },
+          { type: 'info', text: '建議建立自訂委派群組取代直接使用 DA，例如：Server-Admins（僅 Tier 1 登入）、Workstation-Admins（僅 Tier 2 登入）' }
+        ]
+      },
+      {
+        text: '實施三層（Tier）管理模式',
+        detail: 'Tier 0: DC/AD, Tier 1: Server, Tier 2: Workstation',
+        steps: [
+          { type: 'info', text: 'Tier 0（最高敏感）：Domain Controllers、AD、PKI、ADFS。僅透過 Privileged Access Workstation (PAW) 管理，管理帳戶不可登入 Tier 1/2 系統' },
+          { type: 'info', text: 'Tier 1（高敏感）：成員伺服器、應用伺服器。使用獨立 Tier 1 管理員帳戶，不可登入 Tier 0' },
+          { type: 'info', text: 'Tier 2（一般）：Workstations、使用者裝置。使用獨立 Tier 2 管理員帳戶' },
+          { type: 'cmd', text: '# GPO 限制 Tier 0 帳戶只能登入 DC（套用至 Domain Controllers OU）\n# Security Settings → Local Policies → User Rights Assignment:\n# "Allow log on locally" → 僅 Tier 0 管理員群組\n# "Deny log on locally" → Tier 1 / Tier 2 帳戶' },
+          { type: 'cmd', text: '# 建立 Tier 0 帳戶登入限制（Authentication Policy）\nNew-ADAuthenticationPolicy -Name "Tier0-Policy" -UserAllowedToAuthenticateTo "O:SYG:SYD:(XA;OICI;CR;;;WD;(@USER.ad://ext/AuthenticationSilo == \\"Tier0Silo\\"))"' }
+        ]
+      },
+      {
+        text: '稽核 Kerberos 委派設定',
+        detail: '識別並移除不必要的無限制委派',
+        steps: [
+          { type: 'cmd', text: '# 查詢所有使用者帳戶的無限制委派\nGet-ADUser -Filter { TrustedForDelegation -eq $true } -Properties TrustedForDelegation,ServicePrincipalName | Select Name,SamAccountName,ServicePrincipalName' },
+          { type: 'cmd', text: '# 查詢所有電腦帳戶的無限制委派（DC 除外）\nGet-ADComputer -Filter { TrustedForDelegation -eq $true } -Properties TrustedForDelegation | Where-Object { $_.DistinguishedName -notmatch "OU=Domain Controllers" } | Select Name' },
+          { type: 'cmd', text: '# 查詢受限制委派（Constrained Delegation）清單\nGet-ADObject -Filter { msDS-AllowedToDelegateTo -ne "$null" } -Properties msDS-AllowedToDelegateTo | Select Name,"msDS-AllowedToDelegateTo"' },
+          { type: 'cmd', text: '# 移除不必要的無限制委派\nSet-ADUser -Identity "svc_account" -TrustedForDelegation $false' },
+          { type: 'info', text: '建議使用 BloodHound 視覺化分析委派攻擊路徑，找出可從非特權帳戶到達 DC 的委派鏈' }
+        ]
+      },
+      {
+        text: '使用 Managed Service Accounts (gMSA) 取代服務帳戶',
+        detail: '防止 Kerberoasting，密碼由系統自動管理',
+        steps: [
+          { type: 'cmd', text: '# 建立 Key Distribution Service Root Key（每個網域只需一次）\nAdd-KdsRootKey -EffectiveImmediately  # 生產環境建議改用 -EffectiveTime (Get-Date).AddHours(-10)' },
+          { type: 'cmd', text: '# 建立 gMSA\nNew-ADServiceAccount -Name "svc-webapp" `\n  -DNSHostName "webapp.corp.local" `\n  -PrincipalsAllowedToRetrieveManagedPassword "WebServers"  # 可用電腦帳戶或群組' },
+          { type: 'cmd', text: '# 在目標伺服器安裝並測試 gMSA\nInstall-ADServiceAccount -Identity "svc-webapp"\nTest-ADServiceAccount -Identity "svc-webapp"' },
+          { type: 'info', text: '服務設定：services.msc → 服務屬性 → Log On → This account 填入 "CORP\\svc-webapp$"（注意尾端 $），密碼欄留空' },
+          { type: 'cmd', text: '# 確認舊服務帳戶的 SPN，重新指向 gMSA\nGet-ADUser "old_svc" -Properties ServicePrincipalName | Select ServicePrincipalName' }
+        ]
+      }
     ]
   },
   {
     category: '網路與系統安全',
     priority: 'high',
     items: [
-      { text: '封鎖 DC 的網際網路存取', detail: 'DC 只應存取內部系統' },
-      { text: '停用 SMBv1', detail: '防止 EternalBlue (CVE-2017-0143) 等攻擊' },
-      { text: '停用 LLMNR 和 NetBIOS-NS', detail: '防止 Responder 毒化攻擊' },
-      { text: '移除不再需要的 Domain Trust', detail: '並為保留的信任啟用 SID Filtering' },
-      { text: '設定所有認證為 NTLMv2 only（拒絕 LM/NTLM）', detail: '防止降級攻擊' }
+      {
+        text: '封鎖 DC 的網際網路存取',
+        detail: 'DC 只應存取內部系統',
+        steps: [
+          { type: 'cmd', text: '# Windows Firewall GPO（套用至 Domain Controllers OU）\n# Computer Configuration → Windows Settings → Security Settings → Windows Firewall\n# Outbound Rules → New Rule → Block TCP 80, 443 for All Programs' },
+          { type: 'info', text: '建議在網路層（防火牆/路由器）封鎖 DC IP 段（通常 /24）的所有 Outbound 連線，僅允許：DNS(53)、LDAP(389/636)、Kerberos(88)、AD Replication(135,49152-65535) 到指定目標' },
+          { type: 'cmd', text: '# 測試 DC 是否無法存取外部\nInvoke-Command -ComputerName DC01 { Test-NetConnection -ComputerName "8.8.8.8" -Port 80 }' }
+        ]
+      },
+      {
+        text: '停用 SMBv1',
+        detail: '防止 EternalBlue (CVE-2017-0143) 等攻擊',
+        steps: [
+          { type: 'cmd', text: '# 檢查目前 SMBv1 狀態\nGet-SmbServerConfiguration | Select EnableSMB1Protocol\nGet-WindowsOptionalFeature -Online -FeatureName SMB1Protocol' },
+          { type: 'cmd', text: '# 停用 SMBv1（伺服器端）\nSet-SmbServerConfiguration -EnableSMB1Protocol $false -Force\n\n# 停用 SMBv1（客戶端）\nSet-SmbClientConfiguration -EnableSMB1Protocol $false -Force' },
+          { type: 'cmd', text: '# 完全移除 SMBv1 功能\nDisable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart' },
+          { type: 'info', text: 'GPO 強制停用：Computer Configuration → Administrative Templates → Network → Lanman Server → Enable insecure guest logons → Disabled' }
+        ]
+      },
+      {
+        text: '停用 LLMNR 和 NetBIOS-NS',
+        detail: '防止 Responder 毒化攻擊',
+        steps: [
+          { type: 'info', text: 'GPO 停用 LLMNR：Computer Configuration → Administrative Templates → Network → DNS Client → "Turn off multicast name resolution" → Enabled' },
+          { type: 'cmd', text: '# PowerShell 批次停用 NetBIOS over TCP/IP（所有 NIC）\nGet-WmiObject Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled } | ForEach-Object { $_.SetTcpipNetbios(2) }' },
+          { type: 'info', text: 'DHCP 停用 NetBIOS：在 DHCP 伺服器設定 Scope Options → 043 Vendor Specific Info，或各 NIC 屬性 → TCP/IP 進階設定 → WINS → Disable NetBIOS over TCP/IP' },
+          { type: 'cmd', text: '# 驗證：用 Responder 或 tcpdump 監聽是否還有 LLMNR/NBT-NS 廣播\n# (需在測試環境執行) Get-NetFirewallRule | Where-Object { $_.DisplayName -match "LLMNR" }' }
+        ]
+      },
+      {
+        text: '移除不再需要的 Domain Trust',
+        detail: '並為保留的信任啟用 SID Filtering',
+        steps: [
+          { type: 'cmd', text: '# 列出所有網域信任關係\nGet-ADTrust -Filter * | Select Name,Direction,TrustType,SIDFilteringQuarantined,SIDFilteringForestAware | Format-Table -AutoSize' },
+          { type: 'cmd', text: '# 移除不再需要的信任\nRemove-ADTrust -Identity "CN=old-partner.com,CN=System,DC=corp,DC=local" -Confirm:$false' },
+          { type: 'cmd', text: '# 為保留的外部信任啟用 SID Filtering\nnetdom trust corp.local /domain:partner.com /quarantine:yes\n\n# 驗證\nGet-ADTrust -Identity "partner.com" | Select SIDFilteringQuarantined' },
+          { type: 'warn', text: '注意：SID Filtering 可能影響跨網域群組成員的存取，啟用前需充分測試' }
+        ]
+      },
+      {
+        text: '設定所有認證為 NTLMv2 only（拒絕 LM/NTLM）',
+        detail: '防止降級攻擊',
+        steps: [
+          { type: 'info', text: 'GPO 路徑：Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options' },
+          { type: 'info', text: '"Network security: LAN Manager authentication level" → 選擇 "Send NTLMv2 response only. Refuse LM & NTLM"（值為 5）' },
+          { type: 'cmd', text: '# 登錄直接設定（值 5 = NTLMv2 only, Refuse LM & NTLM）\nreg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa" /v LmCompatibilityLevel /t REG_DWORD /d 5 /f' },
+          { type: 'cmd', text: '# 同時停用 LM Hash 儲存\nreg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa" /v NoLMHash /t REG_DWORD /d 1 /f' },
+          { type: 'warn', text: '注意：先確認環境中無 Windows XP / Server 2003 等舊系統仍需要 NTLM/LM 認證，否則會中斷服務' }
+        ]
+      }
     ]
   },
   {
     category: '日誌與監控',
     priority: 'high',
     items: [
-      { text: '啟用增強型稽核策略', detail: '啟用成功/失敗的認證、帳戶管理、目錄服務存取等' },
-      { text: '啟用 PowerShell 模組與 ScriptBlock 日誌', detail: '並集中轉發至 SIEM' },
-      { text: '部署並設定 Sysmon', detail: '使用 sysmon-modular 等成熟設定範本' },
-      { text: '建立 SIEM 偵測規則（Sigma）', detail: '針對 DCSync、Kerberoasting、Pass-the-Hash 等攻擊建立警示' },
-      { text: '啟用命令列程序記錄', detail: 'KB3004375，記錄所有程序命令列參數' }
+      {
+        text: '啟用增強型稽核策略',
+        detail: '啟用成功/失敗的認證、帳戶管理、目錄服務存取等',
+        steps: [
+          { type: 'cmd', text: '# 檢查目前稽核設定\nauditpol /get /category:*' },
+          { type: 'info', text: 'GPO 路徑：Computer Configuration → Windows Settings → Security Settings → Advanced Audit Policy Configuration → Audit Policies' },
+          { type: 'info', text: '建議啟用（Success & Failure）：Account Logon / Account Management / DS Access (Directory Service Changes) / Logon/Logoff / Object Access / Policy Change / Privilege Use / System' },
+          { type: 'cmd', text: '# 批次啟用關鍵稽核策略\nauditpol /set /subcategory:"Logon" /success:enable /failure:enable\nauditpol /set /subcategory:"Account Lockout" /success:enable /failure:enable\nauditpol /set /subcategory:"Kerberos Service Ticket Operations" /success:enable /failure:enable\nauditpol /set /subcategory:"Directory Service Changes" /success:enable /failure:enable' }
+        ]
+      },
+      {
+        text: '啟用 PowerShell 模組與 ScriptBlock 日誌',
+        detail: '並集中轉發至 SIEM',
+        steps: [
+          { type: 'info', text: 'GPO 路徑：Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell' },
+          { type: 'info', text: '啟用以下三項：(1) Turn on Module Logging → Enabled，Module Names 填 * (2) Turn on PowerShell Script Block Logging → Enabled (3) Turn on Script Execution → Enabled' },
+          { type: 'cmd', text: '# 登錄方式啟用 ScriptBlock Logging\nreg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging" /v EnableScriptBlockLogging /t REG_DWORD /d 1 /f\nreg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ModuleLogging" /v EnableModuleLogging /t REG_DWORD /d 1 /f' },
+          { type: 'info', text: 'PowerShell 日誌儲存於：Event Log → Applications and Services Logs → Microsoft → Windows → PowerShell → Operational (Event ID 4103/4104)' }
+        ]
+      },
+      {
+        text: '部署並設定 Sysmon',
+        detail: '使用 sysmon-modular 等成熟設定範本',
+        steps: [
+          { type: 'info', text: '下載 Sysmon：https://docs.microsoft.com/sysinternals/downloads/sysmon；建議使用 SwiftOnSecurity sysmon-config 或 sysmon-modular 作為設定基礎' },
+          { type: 'cmd', text: '# 初次安裝（使用自訂設定檔）\nsysmon64.exe -accepteula -i sysmonconfig.xml' },
+          { type: 'cmd', text: '# 更新設定檔（不中斷服務）\nsysmon64.exe -c sysmonconfig.xml' },
+          { type: 'cmd', text: '# 驗證 Sysmon 運行狀態\nGet-Service Sysmon64\n# 確認日誌位置：Event Viewer → Applications and Services Logs → Microsoft → Windows → Sysmon → Operational' },
+          { type: 'info', text: 'Sysmon 關鍵事件：Event ID 1 (Process Create), 3 (Network Connect), 7 (Image Load), 8 (CreateRemoteThread), 10 (ProcessAccess), 11 (FileCreate), 25 (ProcessTampering)' }
+        ]
+      },
+      {
+        text: '建立 SIEM 偵測規則（Sigma）',
+        detail: '針對 DCSync、Kerberoasting、Pass-the-Hash 等攻擊建立警示',
+        steps: [
+          { type: 'cmd', text: '# 安裝 Sigma 工具\npip install sigmatools\n# 或使用新版 sigma-cli\npip install sigma-cli' },
+          { type: 'cmd', text: '# 下載 Sigma 規則庫\ngit clone https://github.com/SigmaHQ/sigma' },
+          { type: 'cmd', text: '# 轉換為 Splunk 格式（以 DCSync 為例）\nsigma convert -t splunk -p splunk_windows rules/windows/builtin/security/win_security_dcsync.yml\n\n# 轉換為 Elastic/KQL 格式\nsigma convert -t lucene rules/windows/builtin/security/win_security_kerberoasting.yml' },
+          { type: 'info', text: '優先部署規則：DCSync (4662), Kerberoasting (4769 RC4), AS-REP Roasting (4768), Password Spraying (4625 大量失敗), Golden/Silver Ticket (4672 不尋常的特殊權限)' }
+        ]
+      },
+      {
+        text: '啟用命令列程序記錄',
+        detail: 'KB3004375，記錄所有程序命令列參數',
+        steps: [
+          { type: 'info', text: 'GPO 路徑：Computer Configuration → Administrative Templates → System → Audit Process Creation → "Include command line in process creation events" → Enabled' },
+          { type: 'cmd', text: '# 登錄方式啟用\nreg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit" /v ProcessCreationIncludeCmdLine_Enabled /t REG_DWORD /d 1 /f' },
+          { type: 'info', text: '配合 Event ID 4688 (Process Creation) 使用；需同時啟用「稽核程序建立」(Audit Process Creation)' },
+          { type: 'warn', text: '注意：命令列可能包含敏感資訊（密碼），確保日誌儲存環境已加密且存取受控' }
+        ]
+      }
     ]
   },
   {
     category: 'AD CS 憑證服務',
     priority: 'high',
     items: [
-      { text: '使用 Certify 或 Locksmith 稽核 AD CS 設定', detail: '尋找 ESC1-ESC8 等錯誤設定' },
-      { text: '停用 NTLM 認證至 IIS/AD CS', detail: '防止 PetitPotam NTLM 中繼攻擊' },
-      { text: '移除不必要的憑證範本', detail: '特別是允許 SAN 指定或 EKU 允許智慧卡登入的範本' },
-      { text: '啟用 AD CS HTTP 端點的 EPA（Extended Protection for Authentication）', detail: '防止 NTLM 中繼' }
+      {
+        text: '使用 Certify 或 Locksmith 稽核 AD CS 設定',
+        detail: '尋找 ESC1-ESC8 等錯誤設定',
+        steps: [
+          { type: 'cmd', text: '# 使用 Certify 掃描脆弱憑證範本（需網域使用者權限）\nCertify.exe find /vulnerable\nCertify.exe find /enrolleeSuppliesSubject  # ESC1 特定掃描' },
+          { type: 'cmd', text: '# 使用 Locksmith 自動稽核並提供修復建議\nImport-Module .\\Locksmith.psd1\nInvoke-Locksmith -Mode 0  # 模式 0 = 僅報告問題，不修復' },
+          { type: 'info', text: '常見錯誤設定：ESC1 (範本允許 enrollee 自訂 SAN), ESC2 (Any Purpose EKU), ESC3 (Enrollment Agent), ESC4 (範本 ACL 可寫), ESC6 (EDITF_ATTRIBUTESUBJECTALTNAME2 旗標), ESC8 (HTTP NTLM 中繼)' },
+          { type: 'cmd', text: '# 使用 PSPKIAudit 稽核 CA 設定\nInstall-Module -Name PSPKI\nImport-Module PSPKI\nGet-CertificationAuthority | Get-CATemplate' }
+        ]
+      },
+      {
+        text: '停用 NTLM 認證至 IIS/AD CS',
+        detail: '防止 PetitPotam NTLM 中繼攻擊',
+        steps: [
+          { type: 'info', text: 'IIS Manager 設定：開啟 IIS → 選取 CertSrv 虛擬目錄 → Authentication → Windows Authentication → Providers → 移除 NTLM，只保留 Negotiate (Kerberos)' },
+          { type: 'cmd', text: '# 透過 appcmd 設定（IIS 8+）\n%windir%\\system32\\inetsrv\\appcmd.exe set config "Default Web Site/CertSrv" /section:windowsAuthentication /-providers.[value=\'NTLM\']' },
+          { type: 'info', text: '啟用 Extended Protection for Authentication (EPA)：IIS → Windows Authentication → Advanced Settings → Extended Protection → Required' },
+          { type: 'info', text: '若環境使用 Web Enrollment，建議將 AD CS Web 介面設定為要求 HTTPS 並停用 HTTP' }
+        ]
+      },
+      {
+        text: '移除不必要的憑證範本',
+        detail: '特別是允許 SAN 指定或 EKU 允許智慧卡登入的範本',
+        steps: [
+          { type: 'cmd', text: '# 列出 CA 上發布的所有範本\ncertutil -catemplates\n# 或使用 PowerShell\nGet-CATemplate | Select Name,DisplayName | Sort Name' },
+          { type: 'info', text: 'CA 管理主控台：certsrv.msc → Certificate Templates → 右鍵刪除不必要的範本；重點移除：WebServer（若不用）、User（預設允許 SAN）、DomainController（若不用 smartcard）' },
+          { type: 'cmd', text: '# 停用特定危險範本的發布\nGet-CATemplate | Where-Object { $_.Name -eq "WebServer" } | Remove-CATemplate -Force' },
+          { type: 'warn', text: '注意：移除範本前確認無任何系統依賴它；可先設定範本為「停用」而非直接刪除' }
+        ]
+      },
+      {
+        text: '啟用 AD CS HTTP 端點的 EPA（Extended Protection for Authentication）',
+        detail: '防止 NTLM 中繼',
+        steps: [
+          { type: 'info', text: 'IIS Manager → Default Web Site → CertSrv → Windows Authentication → Advanced Settings → Extended Protection → Required（最強，需測試相容性）或 Accept（過渡期使用）' },
+          { type: 'cmd', text: '# 驗證 EPA 設定\nGet-WebConfigurationProperty -Filter "//security/authentication/windowsAuthentication" -PSPath "IIS:\\Sites\\Default Web Site\\CertSrv" -Name extendedProtection' },
+          { type: 'info', text: '同時確保 CA Web Enrollment 和 Certificate Enrollment Web Service (CES) 端點也已設定 EPA' },
+          { type: 'info', text: '套用 KB5005413 修補（CVE-2021-36942 PetitPotam），並考慮以 Windows Defender Credential Guard 保護 DC' }
+        ]
+      }
     ]
   },
   {
     category: '重要安全更新',
     priority: 'critical',
     items: [
-      { text: '套用 Zerologon 補丁 (CVE-2020-1472)', detail: 'KB4571694 及後續更新，並完全執行強制模式' },
-      { text: '套用 PetitPotam 緩解措施 (CVE-2021-36942)', detail: 'KB5005413，並停用 EFSRPC 介面（如不需要）' },
-      { text: '套用 sAMAccountName 漏洞補丁 (CVE-2021-42278/42287)', detail: 'KB5008102、KB5008380' },
-      { text: '確認 MS14-068 補丁已安裝', detail: 'KB3011780，防止 Kerberos PAC 偽造' }
+      {
+        text: '套用 Zerologon 補丁 (CVE-2020-1472)',
+        detail: 'KB4571694 及後續更新，並完全執行強制模式',
+        steps: [
+          { type: 'info', text: '安裝 KB4571694（2020-08 更新）後，Netlogon 進入「部署模式」（允許不合規客戶端連線但記錄警告）' },
+          { type: 'info', text: '2021-02 後的更新已進入「強制模式」，所有不合規的 Netlogon 連線將被拒絕' },
+          { type: 'cmd', text: '# 檢查 DC 是否安裝補丁\nGet-HotFix -Id KB4571694\n# 確認強制模式已生效\nreg query "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters" /v FullSecureChannelProtection' },
+          { type: 'cmd', text: '# 查看是否有不合規客戶端日誌（Event ID 5829/5827）\nGet-WinEvent -LogName "System" | Where-Object { $_.Id -in 5829,5827 } | Select TimeCreated,Message | Format-List' },
+          { type: 'warn', text: '若有 Event ID 5829 日誌，表示仍有使用舊 Netlogon 的裝置，需先更新這些裝置再啟用強制模式' }
+        ]
+      },
+      {
+        text: '套用 PetitPotam 緩解措施 (CVE-2021-36942)',
+        detail: 'KB5005413，並停用 EFSRPC 介面（如不需要）',
+        steps: [
+          { type: 'cmd', text: '# 確認 KB5005413 已安裝\nGet-HotFix -Id KB5005413' },
+          { type: 'info', text: '若 EFS 在環境中未使用，可透過防火牆封鎖 DC 上的 MS-EFSRPC 介面（TCP Port 445 的 EFSRPC）；或使用 Windows RPC 篩選' },
+          { type: 'cmd', text: '# 使用 netsh 封鎖 EFSRPC（需 Windows Server 2019+）\nnetsh rpc filter add rule layer=um actiontype=block\nnetsh rpc filter add condition field=if_uuid matchtype=equal data=c681d488-d850-11d0-8c52-00c04fd90f7e\nnetsh rpc filter add filter' },
+          { type: 'info', text: '同時停用 IIS/AD CS 的 NTLM 認證（搭配 EPA），防止 NTLM 中繼到 AD CS 的攻擊鏈' }
+        ]
+      },
+      {
+        text: '套用 sAMAccountName 漏洞補丁 (CVE-2021-42278/42287)',
+        detail: 'KB5008102、KB5008380',
+        steps: [
+          { type: 'cmd', text: '# 確認補丁已安裝\nGet-HotFix -Id KB5008102  # CVE-2021-42278\nGet-HotFix -Id KB5008380  # CVE-2021-42287' },
+          { type: 'cmd', text: '# 確認 MachineAccountQuota 已降低（防止一般使用者建立電腦帳戶）\nGet-ADDomain | Select -Expand DistinguishedName | Get-ADObject -Properties ms-DS-MachineAccountQuota\n# 建議改為 0\nSet-ADDomain -Identity corp.local -Replace @{"ms-DS-MachineAccountQuota"=0}' },
+          { type: 'cmd', text: '# 啟用「强制 DC 驗證電腦帳戶名稱」（需 2021-11 後的更新）\n# 以下補丁安裝後進入部署模式，2022-04 後強制啟用\nreg query "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Kdc" /v SamAccountNameSuffix' }
+        ]
+      },
+      {
+        text: '確認 MS14-068 補丁已安裝',
+        detail: 'KB3011780，防止 Kerberos PAC 偽造',
+        steps: [
+          { type: 'cmd', text: '# 確認 KB3011780 已安裝\nGet-HotFix -Id KB3011780\n\n# 若系統已更新至 2014-11 之後的累積更新，此修補已包含在內\n(Get-HotFix | Sort InstalledOn -Descending | Select -First 1).InstalledOn' },
+          { type: 'info', text: 'MS14-068 修補 Kerberos KDC 未驗證 PAC Checksum 的漏洞；任何 Windows Server 2012 R2 + 2014-11 之後的更新均已包含此修補' },
+          { type: 'cmd', text: '# 確認 DC 的 OS 版本與補丁狀態\nGet-ADDomainController -Filter * | Select Name,OperatingSystem,OperatingSystemVersion | Format-Table' }
+        ]
+      }
     ]
   }
 ];
