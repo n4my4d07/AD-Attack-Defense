@@ -116,7 +116,7 @@ const I18N = {
     view_all: 'すべて表示', start_audit: '監査開始',
     severity_critical: '深刻 (Critical)', severity_high: '高 (High)', severity_medium: '中 (Medium)',
     advisory: 'アドバイザリ', no_cve: 'CVEが見つかりません', no_detection: '検知ルールが見つかりません', no_tools: 'ツールが見つかりません',
-    dash_quick_cve_label: '高危CVE（深刻度順）',
+    dash_quick_cve_label: '高リスクCVE（深刻度順）',
     dash_defense_checklist_label: '防御チェックリスト進捗',
     click_to_copy: 'クリックでコピー',
     copied_toast: (id) => `Event IDをコピー: ${id}`,
@@ -239,6 +239,14 @@ function applyI18n() {
 
   // Data source footer
   setTextById('data-source-label', t('data_source'));
+
+  // html lang attribute
+  document.documentElement.lang = state.lang === 'zh' ? 'zh-TW' : state.lang === 'ja' ? 'ja' : 'en';
+
+  // Kill chain node counts (update without full re-render)
+  document.querySelectorAll('.kc-count').forEach((el, i) => {
+    if (CATEGORIES[i]) el.textContent = t('techniques_count', CATEGORIES[i].techniques.length);
+  });
 
   // Re-render dynamic content
   renderCVEs();
@@ -505,7 +513,7 @@ function renderTechniques() {
           </div>
         </div>
         <span class="tool-tag" style="color:${cat.color}; border-color:${cat.color}40; background:${cat.color}15">
-          ${cat.techniques.length} techniques
+          ${t('techniques_count', cat.techniques.length)}
         </span>
         <i class="bi bi-chevron-down cat-toggle" style="margin-left:8px"></i>
       </div>
