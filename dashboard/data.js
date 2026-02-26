@@ -8,11 +8,11 @@ const CATEGORIES = [
     icon: 'bi-search',
     color: '#58a6ff',
     mitre: 'TA0007',
-    description: '對 Active Directory 環境進行偵察，列舉服務、帳戶與設定資訊',
+    description: { zh: '對 Active Directory 環境進行偵察，列舉服務、帳戶與設定資訊', en: 'Reconnaissance of the Active Directory environment, enumerating services, accounts, and configuration information', ja: 'Active Directory 環境の偵察、サービス・アカウント・設定情報の列挙' },
     techniques: [
       {
         name: 'SPN Scanning',
-        description: '掃描 Service Principal Names，在不使用網路埠掃描的情況下發現服務',
+        description: { zh: '掃描 Service Principal Names，在不使用網路埠掃描的情況下發現服務', en: 'Scan Service Principal Names to discover services without network port scanning', ja: 'Service Principal Names をスキャンし、ネットワークポートスキャンなしにサービスを発見する' },
         tools: ['PowerView', 'PowerUpSQL'],
         resources: [
           { title: 'SPN Scanning – Service Discovery without Network Port Scanning', url: 'https://adsecurity.org/?p=1508' },
@@ -22,7 +22,7 @@ const CATEGORIES = [
       },
       {
         name: 'Data Mining',
-        description: '在網域 SQL 伺服器與郵件系統中搜尋敏感資料',
+        description: { zh: '在網域 SQL 伺服器與郵件系統中搜尋敏感資料', en: 'Search for sensitive data in domain SQL servers and mail systems', ja: 'ドメイン内の SQL サーバーやメールシステムで機密データを検索する' },
         tools: ['PowerUpSQL', 'MailSniper'],
         resources: [
           { title: 'A Data Hunting Overview', url: 'https://thevivi.net/2018/05/23/a-data-hunting-overview/' },
@@ -32,7 +32,7 @@ const CATEGORIES = [
       },
       {
         name: 'User Hunting',
-        description: '在 AD 環境中尋找高價值帳戶與管理員',
+        description: { zh: '在 AD 環境中尋找高價值帳戶與管理員', en: 'Hunt for high-value accounts and administrators in the AD environment', ja: 'AD 環境内で高価値アカウントや管理者を探索する' },
         tools: ['BloodHound', 'PowerView', 'ADRecon'],
         resources: [
           { title: 'Hidden Administrative Accounts: BloodHound to the Rescue', url: 'https://www.crowdstrike.com/blog/hidden-administrative-accounts-bloodhound-to-the-rescue/' },
@@ -43,7 +43,7 @@ const CATEGORIES = [
       },
       {
         name: 'LAPS Enumeration',
-        description: '列舉 Local Administrator Password Solution 設定',
+        description: { zh: '列舉 Local Administrator Password Solution 設定', en: 'Enumerate Local Administrator Password Solution (LAPS) configuration', ja: 'Local Administrator Password Solution (LAPS) の設定を列挙する' },
         tools: ['LAPSToolkit', 'PowerView'],
         resources: [
           { title: 'Microsoft LAPS Security & Active Directory LAPS Configuration Recon', url: 'https://adsecurity.org/?p=3164' },
@@ -52,7 +52,7 @@ const CATEGORIES = [
       },
       {
         name: 'AppLocker Enumeration',
-        description: '列舉 AppLocker 設定，找出繞過路徑',
+        description: { zh: '列舉 AppLocker 設定，找出繞過路徑', en: 'Enumerate AppLocker configuration to identify bypass paths', ja: 'AppLocker の設定を列挙し、バイパス経路を特定する' },
         tools: [],
         resources: [
           { title: 'Enumerating AppLocker Config', url: 'https://rastamouse.me/blog/applocker/' }
@@ -60,7 +60,7 @@ const CATEGORIES = [
       },
       {
         name: 'ADFS Reconnaissance',
-        description: '對 Active Directory Federation Services 進行攻擊與偵察',
+        description: { zh: '對 Active Directory Federation Services 進行攻擊與偵察', en: 'Attack and reconnaissance against Active Directory Federation Services', ja: 'Active Directory Federation Services に対する攻撃と偵察' },
         tools: ['PowerShell'],
         resources: [
           { title: 'Attacking ADFS Endpoints with PowerShell', url: 'https://www.youtube.com/watch?v=oTyLdAUjw30' },
@@ -75,11 +75,11 @@ const CATEGORIES = [
     icon: 'bi-arrow-up-circle',
     color: '#ff7b72',
     mitre: 'TA0004',
-    description: '從一般使用者提升至域管理員或更高權限',
+    description: { zh: '從一般使用者提升至域管理員或更高權限', en: 'Escalate from standard user to Domain Admin or higher privileges', ja: '一般ユーザーからドメイン管理者以上の権限への昇格' },
     techniques: [
       {
         name: 'sAMAccountName Spoofing',
-        description: 'CVE-2021-42287/42278：利用電腦帳戶冒充 DC，取得域管理員 TGT',
+        description: { zh: 'CVE-2021-42287/42278：利用電腦帳戶冒充 DC，取得域管理員 TGT', en: 'CVE-2021-42287/42278: Use a computer account to impersonate a DC and obtain a Domain Admin TGT', ja: 'CVE-2021-42287/42278: コンピューターアカウントを使って DC を偽装し、ドメイン管理者の TGT を取得する' },
         tools: ['sam-the-admin', 'noPac'],
         cves: ['CVE-2021-42287', 'CVE-2021-42278'],
         resources: [
@@ -89,7 +89,7 @@ const CATEGORIES = [
       },
       {
         name: 'AD CS Abuse (Certified Pre-Owned)',
-        description: '濫用 AD 憑證服務中的錯誤設定，進行權限提升',
+        description: { zh: '濫用 AD 憑證服務中的錯誤設定，進行權限提升', en: 'Abuse misconfigurations in AD Certificate Services for privilege escalation', ja: 'AD 証明書サービスの設定ミスを悪用して権限を昇格する' },
         tools: ['Certify', 'PSPKIAudit', 'Locksmith'],
         resources: [
           { title: 'Certified Pre-Owned', url: 'https://posts.specterops.io/certified-pre-owned-d95910965cd2' },
@@ -98,7 +98,7 @@ const CATEGORIES = [
       },
       {
         name: 'PetitPotam',
-        description: '強制 DC 向攻擊者進行 NTLM 認證，再中繼到 AD CS 取得域管理員',
+        description: { zh: '強制 DC 向攻擊者進行 NTLM 認證，再中繼到 AD CS 取得域管理員', en: 'Force DC to perform NTLM authentication to the attacker, then relay to AD CS to obtain Domain Admin', ja: 'DC に攻撃者への NTLM 認証を強制し、AD CS にリレーしてドメイン管理者権限を取得する' },
         tools: ['PetitPotam', 'Impacket'],
         cves: ['CVE-2021-36942'],
         resources: [
@@ -108,7 +108,7 @@ const CATEGORIES = [
       },
       {
         name: 'Zerologon',
-        description: 'CVE-2020-1472：利用 Netlogon 加密漏洞，無需憑證即可成為域管理員',
+        description: { zh: 'CVE-2020-1472：利用 Netlogon 加密漏洞，無需憑證即可成為域管理員', en: 'CVE-2020-1472: Exploit a Netlogon encryption flaw to become Domain Admin without credentials', ja: 'CVE-2020-1472: Netlogon の暗号化の欠陥を悪用し、資格情報なしでドメイン管理者になる' },
         tools: ['Impacket'],
         cves: ['CVE-2020-1472'],
         resources: [
@@ -118,7 +118,7 @@ const CATEGORIES = [
       },
       {
         name: 'Kerberos Delegation',
-        description: '利用無限制/受限制/資源型 Kerberos 委派進行提權',
+        description: { zh: '利用無限制/受限制/資源型 Kerberos 委派進行提權', en: 'Abuse unconstrained/constrained/resource-based Kerberos delegation for privilege escalation', ja: '無制限/制約付き/リソースベースの Kerberos 委任を悪用して権限を昇格する' },
         tools: ['Rubeus', 'Impacket', 'BloodHound'],
         cves: ['CVE-2020-17049'],
         resources: [
@@ -129,7 +129,7 @@ const CATEGORIES = [
       },
       {
         name: 'Insecure ACL Permissions',
-        description: '利用 AD ACL 的不安全設定進行橫向/垂直移動',
+        description: { zh: '利用 AD ACL 的不安全設定進行橫向/垂直移動', en: 'Exploit insecure AD ACL configurations for lateral and vertical privilege movement', ja: 'AD ACL の安全でない設定を悪用して横方向・垂直方向に権限を移動する' },
         tools: ['PowerView', 'BloodHound', 'aclpwn.py', 'RACE'],
         resources: [
           { title: 'Escalating privileges with ACLs in Active Directory', url: 'https://blog.fox-it.com/2018/04/26/escalating-privileges-with-acls-in-active-directory/' },
@@ -139,7 +139,7 @@ const CATEGORIES = [
       },
       {
         name: 'GPO Abuse',
-        description: '利用不安全的 Group Policy Object 設定進行提權',
+        description: { zh: '利用不安全的 Group Policy Object 設定進行提權', en: 'Exploit insecure Group Policy Object configurations for privilege escalation', ja: '安全でないグループポリシーオブジェクトの設定を悪用して権限を昇格する' },
         tools: ['PowerView', 'SharpGPOAbuse', 'Grouper'],
         resources: [
           { title: 'Abusing GPO Permissions', url: 'https://www.harmj0y.net/blog/redteaming/abusing-gpo-permissions/' },
@@ -148,7 +148,7 @@ const CATEGORIES = [
       },
       {
         name: 'Domain Trust Attacks',
-        description: '利用跨域/跨林信任關係進行橫向移動',
+        description: { zh: '利用跨域/跨林信任關係進行橫向移動', en: 'Abuse cross-domain/cross-forest trust relationships for lateral movement', ja: 'ドメイン間・フォレスト間の信頼関係を悪用して横方向に移動する' },
         tools: ['Rubeus', 'Mimikatz', 'PowerView'],
         resources: [
           { title: 'A Guide to Attacking Domain Trusts', url: 'https://blog.harmj0y.net/redteaming/a-guide-to-attacking-domain-trusts/' },
@@ -157,7 +157,7 @@ const CATEGORIES = [
       },
       {
         name: 'DNSAdmins Privilege Abuse',
-        description: '利用 DNSAdmins 群組成員身份載入惡意 DLL，提升至系統層級',
+        description: { zh: '利用 DNSAdmins 群組成員身份載入惡意 DLL，提升至系統層級', en: 'Load a malicious DLL via DNSAdmins group membership to escalate to SYSTEM', ja: 'DNSAdmins グループのメンバーシップを利用して悪意のある DLL を読み込み、SYSTEM 権限に昇格する' },
         tools: ['PowerView'],
         resources: [
           { title: 'Abusing DNSAdmins privilege for escalation in Active Directory', url: 'http://www.labofapenetrationtester.com/2017/05/abusing-dnsadmins-privilege-for-escalation-in-active-directory.html' },
@@ -166,7 +166,7 @@ const CATEGORIES = [
       },
       {
         name: 'NTLM Relay & LLMNR/NBNS Poisoning',
-        description: '利用 NTLM 中繼攻擊或 LLMNR/NBNS 毒化取得憑證',
+        description: { zh: '利用 NTLM 中繼攻擊或 LLMNR/NBNS 毒化取得憑證', en: 'Capture credentials via NTLM relay attacks or LLMNR/NBNS poisoning', ja: 'NTLM リレー攻撃または LLMNR/NBNS ポイズニングによって認証情報を取得する' },
         tools: ['Responder', 'Impacket', 'mitm6'],
         cves: ['CVE-2019-1040'],
         resources: [
@@ -183,11 +183,11 @@ const CATEGORIES = [
     icon: 'bi-shield-x',
     color: '#e3b341',
     mitre: 'TA0005',
-    description: '規避安全工具偵測，維持在網路中的存在',
+    description: { zh: '規避安全工具偵測，維持在網路中的存在', en: 'Evade security tool detection and maintain persistence within the network', ja: 'セキュリティツールの検知を回避し、ネットワーク内に潜伏し続ける' },
     techniques: [
       {
         name: 'AMSI Bypass',
-        description: '繞過 Anti-Malware Scan Interface，執行惡意 PowerShell 程式碼',
+        description: { zh: '繞過 Anti-Malware Scan Interface，執行惡意 PowerShell 程式碼', en: 'Bypass the Anti-Malware Scan Interface to execute malicious PowerShell code', ja: 'Anti-Malware Scan Interface をバイパスして悪意のある PowerShell コードを実行する' },
         tools: ['Invisi-Shell'],
         resources: [
           { title: 'How to bypass AMSI and execute ANY malicious Powershell code', url: 'https://0x00-0x00.github.io/research/2018/10/28/How-to-bypass-AMSI-and-Execute-ANY-malicious-powershell-code.html' },
@@ -197,7 +197,7 @@ const CATEGORIES = [
       },
       {
         name: 'EDR Evasion',
-        description: '繞過端點偵測與回應工具',
+        description: { zh: '繞過端點偵測與回應工具', en: 'Bypass Endpoint Detection and Response (EDR) tools', ja: 'エンドポイント検知・対応（EDR）ツールをバイパスする' },
         tools: ['Sharp-Suite'],
         resources: [
           { title: 'Red Team Tactics: Combining Direct System Calls and sRDI to bypass AV/EDR', url: 'https://outflank.nl/blog/2019/06/19/red-team-tactics-combining-direct-system-calls-and-srdi-to-bypass-av-edr/' },
@@ -206,7 +206,7 @@ const CATEGORIES = [
       },
       {
         name: 'PowerShell ScriptBlock Logging Bypass',
-        description: '繞過 PowerShell ScriptBlock 日誌記錄',
+        description: { zh: '繞過 PowerShell ScriptBlock 日誌記錄', en: 'Bypass PowerShell ScriptBlock logging', ja: 'PowerShell ScriptBlock ログをバイパスする' },
         tools: [],
         resources: [
           { title: 'PowerShell ScriptBlock Logging Bypass', url: 'https://cobbr.io/ScriptBlock-Logging-Bypass.html' }
@@ -214,7 +214,7 @@ const CATEGORIES = [
       },
       {
         name: 'In-Memory Evasion',
-        description: '在記憶體中執行惡意程式碼，避免落地',
+        description: { zh: '在記憶體中執行惡意程式碼，避免落地', en: 'Execute malicious code entirely in memory to avoid disk artifacts', ja: 'メモリ内で悪意のあるコードを実行し、ディスクへの書き込みを避ける' },
         tools: [],
         resources: [
           { title: 'Bring Your Own Land (BYOL) – A Novel Red Teaming Technique', url: 'https://www.fireeye.com/blog/threat-research/2018/06/bring-your-own-land-novel-red-teaming-technique.html' }
@@ -222,7 +222,7 @@ const CATEGORIES = [
       },
       {
         name: 'AppLocker & LOLBins Bypass',
-        description: '利用系統內建二進位檔繞過 AppLocker 限制',
+        description: { zh: '利用系統內建二進位檔繞過 AppLocker 限制', en: 'Use system-native binaries (LOLBins) to bypass AppLocker restrictions', ja: 'システム組み込みバイナリ（LOLBins）を使って AppLocker の制限をバイパスする' },
         tools: [],
         resources: [
           { title: 'Living Off The Land Binaries And Scripts (LOLBins)', url: 'https://lolbas-project.github.io/' }
@@ -230,7 +230,7 @@ const CATEGORIES = [
       },
       {
         name: 'Sysmon Evasion',
-        description: '規避 Sysmon 監控',
+        description: { zh: '規避 Sysmon 監控', en: 'Evade Sysmon monitoring', ja: 'Sysmon の監視を回避する' },
         tools: ['sysmon-config-bypass-finder'],
         resources: [
           { title: 'Subverting Sysmon: Application of a Formalized Security Product Evasion Methodology', url: 'https://github.com/mattifestation/BHUSA2018_Sysmon' },
@@ -245,11 +245,11 @@ const CATEGORIES = [
     icon: 'bi-arrows-expand',
     color: '#bc8cff',
     mitre: 'TA0008',
-    description: '在網路中橫向移動，擴大存取範圍',
+    description: { zh: '在網路中橫向移動，擴大存取範圍', en: 'Move laterally within the network to expand access', ja: 'ネットワーク内を横断的に移動し、アクセス範囲を拡大する' },
     techniques: [
       {
         name: 'Pass The Hash',
-        description: '使用 NTLM 雜湊值進行認證，無需明文密碼',
+        description: { zh: '使用 NTLM 雜湊值進行認證，無需明文密碼', en: 'Authenticate using NTLM hashes without requiring plaintext passwords', ja: '平文パスワードなしで NTLM ハッシュを使用して認証する' },
         tools: ['Mimikatz', 'CrackMapExec', 'Impacket'],
         resources: [
           { title: 'Performing Pass-the-hash Attacks With Mimikatz', url: 'https://blog.stealthbits.com/passing-the-hash-with-mimikatz' },
@@ -258,7 +258,7 @@ const CATEGORIES = [
       },
       {
         name: 'SQL Server DB Links',
-        description: '利用 SQL Server 資料庫連結進行橫向移動',
+        description: { zh: '利用 SQL Server 資料庫連結進行橫向移動', en: 'Leverage SQL Server database links for lateral movement', ja: 'SQL Server のデータベースリンクを利用して横方向に移動する' },
         tools: ['PowerUpSQL'],
         resources: [
           { title: 'SQL Server – Link… Link… Link… and Shell', url: 'https://blog.netspi.com/how-to-hack-database-links-in-sql-server/' },
@@ -267,7 +267,7 @@ const CATEGORIES = [
       },
       {
         name: 'SCCM Abuse',
-        description: '利用 System Center Configuration Manager 進行橫向移動',
+        description: { zh: '利用 System Center Configuration Manager 進行橫向移動', en: 'Leverage System Center Configuration Manager for lateral movement', ja: 'System Center Configuration Manager を利用して横方向に移動する' },
         tools: ['PowerSCCM'],
         resources: [
           { title: 'Targeted Workstation Compromise With Sccm', url: 'https://enigma0x3.net/2015/10/27/targeted-workstation-compromise-with-sccm/' }
@@ -275,7 +275,7 @@ const CATEGORIES = [
       },
       {
         name: 'WSUS Exploitation',
-        description: '利用 Windows Server Update Services 進行 MITM 攻擊',
+        description: { zh: '利用 Windows Server Update Services 進行 MITM 攻擊', en: 'Leverage Windows Server Update Services for MITM attacks', ja: 'Windows Server Update Services を利用して MITM 攻撃を行う' },
         tools: ['WSUSpendu'],
         resources: [
           { title: 'Remote Weaponization of WSUS MITM', url: 'https://www.sixdub.net/?p=623' },
@@ -284,7 +284,7 @@ const CATEGORIES = [
       },
       {
         name: 'Password Spraying',
-        description: '對大量帳戶嘗試少數常見密碼',
+        description: { zh: '對大量帳戶嘗試少數常見密碼', en: 'Attempt a small number of common passwords against a large number of accounts', ja: '多数のアカウントに対して少数の一般的なパスワードを試行する' },
         tools: ['DomainPasswordSpray', 'SprayingToolkit', 'MailSniper'],
         resources: [
           { title: 'Password Spraying Windows Active Directory Accounts', url: 'https://www.youtube.com/watch?v=xB26QhnL64c' },
@@ -299,11 +299,11 @@ const CATEGORIES = [
     icon: 'bi-key',
     color: '#79c0ff',
     mitre: 'TA0006',
-    description: '從系統記憶體或資料庫中竊取憑證',
+    description: { zh: '從系統記憶體或資料庫中竊取憑證', en: 'Extract credentials from system memory or databases', ja: 'システムメモリやデータベースから認証情報を窃取する' },
     techniques: [
       {
         name: 'Kerberoasting',
-        description: '請求服務 TGS Ticket 並離線破解服務帳戶密碼',
+        description: { zh: '請求服務 TGS Ticket 並離線破解服務帳戶密碼', en: 'Request service TGS tickets and crack service account passwords offline', ja: 'サービス TGS チケットをリクエストし、サービスアカウントのパスワードをオフラインで解析する' },
         tools: ['Rubeus', 'Impacket', 'PowerView'],
         resources: [
           { title: 'Kerberoasting Without Mimikatz', url: 'https://www.harmj0y.net/blog/powershell/kerberoasting-without-mimikatz/' },
@@ -313,7 +313,7 @@ const CATEGORIES = [
       },
       {
         name: 'AS-REP Roasting',
-        description: '針對不需要預身份驗證的帳戶，請求 AS-REP 並離線破解',
+        description: { zh: '針對不需要預身份驗證的帳戶，請求 AS-REP 並離線破解', en: 'Request AS-REP responses for accounts that do not require pre-authentication and crack them offline', ja: '事前認証が不要なアカウントの AS-REP をリクエストし、オフラインで解析する' },
         tools: ['Rubeus', 'Impacket'],
         resources: [
           { title: 'Roasting AS-REPs', url: 'http://www.harmj0y.net/blog/activedirectory/roasting-as-reps/' }
@@ -321,7 +321,7 @@ const CATEGORIES = [
       },
       {
         name: 'DCSync',
-        description: '模擬 DC 複寫，從 DC 拉取密碼雜湊值',
+        description: { zh: '模擬 DC 複寫，從 DC 拉取密碼雜湊值', en: 'Simulate DC replication to pull password hashes from a Domain Controller', ja: 'DC の複製を模倣して、ドメインコントローラーからパスワードハッシュを取得する' },
         tools: ['Mimikatz', 'Impacket'],
         resources: [
           { title: 'Mimikatz DCSync Usage, Exploitation, and Detection', url: 'https://adsecurity.org/?p=1729' },
@@ -330,7 +330,7 @@ const CATEGORIES = [
       },
       {
         name: 'NTDS.DIT Extraction',
-        description: '直接從 DC 提取 AD 資料庫',
+        description: { zh: '直接從 DC 提取 AD 資料庫', en: 'Directly extract the Active Directory database from a Domain Controller', ja: 'ドメインコントローラーから Active Directory データベースを直接抽出する' },
         tools: ['Impacket', 'ntdsutil'],
         resources: [
           { title: 'How Attackers Pull the Active Directory Database (NTDS.dit)', url: 'https://adsecurity.org/?p=451' },
@@ -339,7 +339,7 @@ const CATEGORIES = [
       },
       {
         name: 'LLMNR/NBT-NS Poisoning',
-        description: '毒化 LLMNR/NBT-NS 回應，擷取 NTLM 雜湊值',
+        description: { zh: '毒化 LLMNR/NBT-NS 回應，擷取 NTLM 雜湊值', en: 'Poison LLMNR/NBT-NS responses to capture NTLM hashes', ja: 'LLMNR/NBT-NS の応答を毒化して NTLM ハッシュを取得する' },
         tools: ['Responder'],
         resources: [
           { title: 'LLMNR/NBT-NS Poisoning Using Responder', url: 'https://www.4armed.com/blog/llmnr-nbtns-poisoning-using-responder/' }
@@ -353,11 +353,11 @@ const CATEGORIES = [
     icon: 'bi-lock',
     color: '#f0883e',
     mitre: 'TA0003',
-    description: '在 AD 環境中建立長期存取後門',
+    description: { zh: '在 AD 環境中建立長期存取後門', en: 'Establish long-term backdoor access in the AD environment', ja: 'AD 環境に長期的なバックドアアクセスを確立する' },
     techniques: [
       {
         name: 'Golden Ticket',
-        description: '偽造 Kerberos TGT，使用 KRBTGT 帳戶雜湊值建立持久存取',
+        description: { zh: '偽造 Kerberos TGT，使用 KRBTGT 帳戶雜湊值建立持久存取', en: 'Forge Kerberos TGTs using the KRBTGT account hash to establish persistent access', ja: 'KRBTGT アカウントのハッシュを使用して Kerberos TGT を偽造し、持続的なアクセスを確立する' },
         tools: ['Mimikatz', 'Rubeus', 'Impacket'],
         resources: [
           { title: 'Golden Ticket', url: 'https://pentestlab.blog/2018/04/09/golden-ticket/' },
@@ -366,7 +366,7 @@ const CATEGORIES = [
       },
       {
         name: 'Silver Ticket',
-        description: '偽造 Kerberos TGS，針對特定服務建立後門存取',
+        description: { zh: '偽造 Kerberos TGS，針對特定服務建立後門存取', en: 'Forge Kerberos TGS tickets to gain backdoor access to specific services', ja: 'Kerberos TGS チケットを偽造して特定のサービスへのバックドアアクセスを確立する' },
         tools: ['Mimikatz', 'Impacket'],
         resources: [
           { title: 'How Attackers Use Kerberos Silver Tickets to Exploit Systems', url: 'https://adsecurity.org/?p=2011' }
@@ -374,7 +374,7 @@ const CATEGORIES = [
       },
       {
         name: 'Diamond Ticket',
-        description: '修改合法 TGT 而非偽造，較難偵測的 Golden Ticket 變體',
+        description: { zh: '修改合法 TGT 而非偽造，較難偵測的 Golden Ticket 變體', en: 'Modify a legitimate TGT rather than forging one — a harder-to-detect variant of the Golden Ticket', ja: '偽造ではなく正規の TGT を改ざんする、Golden Ticket の検知回避変種' },
         tools: ['Rubeus'],
         resources: [
           { title: 'A Diamond (Ticket) in the Ruff', url: 'https://www.semperis.com/blog/a-diamond-ticket-in-the-ruff/' }
@@ -382,7 +382,7 @@ const CATEGORIES = [
       },
       {
         name: 'Skeleton Key',
-        description: '在 DC 上植入 Skeleton Key，允許以任意密碼登入任何帳戶',
+        description: { zh: '在 DC 上植入 Skeleton Key，允許以任意密碼登入任何帳戶', en: 'Implant a Skeleton Key on a DC to allow any account to be accessed with an arbitrary password', ja: 'DC に Skeleton Key を植え付け、任意のパスワードで任意のアカウントにログインできるようにする' },
         tools: ['Mimikatz'],
         resources: [
           { title: 'Skeleton Key', url: 'https://pentestlab.blog/2018/04/10/skeleton-key/' },
@@ -391,7 +391,7 @@ const CATEGORIES = [
       },
       {
         name: 'AdminSDHolder Backdoor',
-        description: '修改 AdminSDHolder ACL，建立隱藏的持久管理員存取',
+        description: { zh: '修改 AdminSDHolder ACL，建立隱藏的持久管理員存取', en: 'Modify AdminSDHolder ACL to create hidden persistent administrator access', ja: 'AdminSDHolder ACL を変更して、隠れた持続的な管理者アクセスを確立する' },
         tools: ['PowerView', 'RACE'],
         resources: [
           { title: 'Leverage AdminSDHolder & SDProp to (Re)Gain Domain Admin Rights', url: 'https://adsecurity.org/?p=1906' },
@@ -400,7 +400,7 @@ const CATEGORIES = [
       },
       {
         name: 'SID History Abuse',
-        description: '在帳戶 SID History 屬性中植入高權限 SID',
+        description: { zh: '在帳戶 SID History 屬性中植入高權限 SID', en: "Inject a high-privilege SID into an account's SID History attribute", ja: 'アカウントの SID History 属性に高権限の SID を注入する' },
         tools: ['Mimikatz'],
         resources: [
           { title: 'Sneaky Active Directory Persistence #14: SID History', url: 'https://adsecurity.org/?p=1772' }
@@ -408,7 +408,7 @@ const CATEGORIES = [
       },
       {
         name: 'DSRM Persistence',
-        description: '利用 Directory Services Restore Mode 帳戶建立後門',
+        description: { zh: '利用 Directory Services Restore Mode 帳戶建立後門', en: 'Establish a backdoor using the Directory Services Restore Mode account', ja: 'Directory Services Restore Mode アカウントを利用してバックドアを確立する' },
         tools: [],
         resources: [
           { title: 'Sneaky Active Directory Persistence #11: DSRM', url: 'https://adsecurity.org/?p=1714' },
@@ -425,7 +425,7 @@ const CVES = [
     name: 'sAMAccountName Spoofing',
     severity: 'high',
     year: 2021,
-    description: '允許標準網域使用者透過電腦帳戶冒充 DC，以 S4U2Self 取得域管理員 ST',
+    description: { zh: '允許標準網域使用者透過電腦帳戶冒充 DC，以 S4U2Self 取得域管理員 ST', en: 'Allows standard domain users to impersonate a DC via a computer account and obtain a Domain Admin service ticket via S4U2Self', ja: '標準ドメインユーザーがコンピューターアカウントを介して DC を偽装し、S4U2Self でドメイン管理者のサービスチケットを取得できる' },
     category: 'Privilege Escalation',
     url: 'https://exploit.ph/cve-2021-42287-cve-2021-42278-weaponisation.html',
     tools: ['sam-the-admin', 'noPac']
@@ -435,7 +435,7 @@ const CVES = [
     name: 'Computer Account Name Spoofing',
     severity: 'high',
     year: 2021,
-    description: '允許電腦帳戶名稱不以 $ 結尾，配合 CVE-2021-42287 提升至域管理員',
+    description: { zh: '允許電腦帳戶名稱不以 $ 結尾，配合 CVE-2021-42287 提升至域管理員', en: 'Allows computer account names to omit the trailing $, enabling privilege escalation to Domain Admin when combined with CVE-2021-42287', ja: 'コンピューターアカウント名の末尾の $ を省略でき、CVE-2021-42287 と組み合わせてドメイン管理者権限に昇格できる' },
     category: 'Privilege Escalation',
     url: 'https://exploit.ph/cve-2021-42287-cve-2021-42278-weaponisation.html',
     tools: ['sam-the-admin', 'noPac']
@@ -445,7 +445,7 @@ const CVES = [
     name: 'PetitPotam',
     severity: 'critical',
     year: 2021,
-    description: '利用 MS-EFSRPC 強制 DC 向攻擊者進行 NTLM 認證，可中繼至 AD CS',
+    description: { zh: '利用 MS-EFSRPC 強制 DC 向攻擊者進行 NTLM 認證，可中繼至 AD CS', en: 'Uses MS-EFSRPC to coerce a DC into performing NTLM authentication to the attacker, which can then be relayed to AD CS', ja: 'MS-EFSRPC を使用して DC に攻撃者への NTLM 認証を強制し、AD CS にリレーすることができる' },
     category: 'Privilege Escalation',
     url: 'https://github.com/topotam/PetitPotam',
     tools: ['PetitPotam']
@@ -455,7 +455,7 @@ const CVES = [
     name: 'Zerologon',
     severity: 'critical',
     year: 2020,
-    description: 'Netlogon 加密弱點，允許未認證攻擊者建立安全通道連線，重設 DC 電腦帳戶密碼',
+    description: { zh: 'Netlogon 加密弱點，允許未認證攻擊者建立安全通道連線，重設 DC 電腦帳戶密碼', en: 'Netlogon encryption weakness allowing an unauthenticated attacker to establish a secure channel and reset the DC computer account password', ja: 'Netlogon の暗号化の脆弱性により、未認証の攻撃者がセキュアチャネルを確立し、DC のコンピューターアカウントパスワードをリセットできる' },
     category: 'Privilege Escalation',
     url: 'https://www.secura.com/blog/zero-logon',
     tools: ['Impacket']
@@ -465,7 +465,7 @@ const CVES = [
     name: 'Kerberos Bronze Bit',
     severity: 'high',
     year: 2020,
-    description: '允許攻擊者繞過 Kerberos 委派保護，偽造可轉發 TGS 票據',
+    description: { zh: '允許攻擊者繞過 Kerberos 委派保護，偽造可轉發 TGS 票據', en: 'Allows an attacker to bypass Kerberos delegation protections and forge forwardable TGS tickets', ja: '攻撃者が Kerberos 委任の保護をバイパスして転送可能な TGS チケットを偽造できる' },
     category: 'Privilege Escalation',
     url: 'https://blog.netspi.com/cve-2020-17049-kerberos-bronze-bit-overview/',
     tools: ['Rubeus']
@@ -475,7 +475,7 @@ const CVES = [
     name: 'NTLM MIC Bypass',
     severity: 'high',
     year: 2019,
-    description: 'NTLM MIC（Message Integrity Check）保護被繞過，允許 NTLM 中繼攻擊',
+    description: { zh: 'NTLM MIC（Message Integrity Check）保護被繞過，允許 NTLM 中繼攻擊', en: 'NTLM Message Integrity Check (MIC) protection is bypassed, enabling NTLM relay attacks', ja: 'NTLM メッセージ整合性チェック（MIC）の保護がバイパスされ、NTLM リレー攻撃が可能になる' },
     category: 'Lateral Movement',
     url: 'https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2019-1040',
     tools: ['Impacket']
@@ -485,7 +485,7 @@ const CVES = [
     name: 'AD Trust Elevation',
     severity: 'high',
     year: 2019,
-    description: '信任森林的 TGT 委派預設設定允許跨森林票據偽造',
+    description: { zh: '信任森林的 TGT 委派預設設定允許跨森林票據偽造', en: 'Default TGT delegation settings in trusted forests allow cross-forest ticket forgery', ja: '信頼フォレストの TGT 委任のデフォルト設定により、フォレスト間のチケット偽造が可能' },
     category: 'Privilege Escalation',
     url: 'https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2019-0683',
     tools: []
@@ -495,7 +495,7 @@ const CVES = [
     name: 'BlueKeep (RDP RCE)',
     severity: 'critical',
     year: 2019,
-    description: 'Remote Desktop Services 遠端程式碼執行漏洞，無需認證即可攻擊',
+    description: { zh: 'Remote Desktop Services 遠端程式碼執行漏洞，無需認證即可攻擊', en: 'Remote Desktop Services remote code execution vulnerability exploitable without authentication', ja: '認証なしに悪用可能な Remote Desktop Services のリモートコード実行の脆弱性' },
     category: 'Initial Access',
     url: 'https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2019-0708',
     tools: []
@@ -505,7 +505,7 @@ const CVES = [
     name: 'Exchange EoP',
     severity: 'high',
     year: 2018,
-    description: 'Exchange Server 權限提升漏洞，可中繼到 DC 並取得域管理員',
+    description: { zh: 'Exchange Server 權限提升漏洞，可中繼到 DC 並取得域管理員', en: 'Exchange Server privilege escalation vulnerability that can be relayed to a DC to obtain Domain Admin', ja: 'Exchange Server の権限昇格の脆弱性で、DC にリレーしてドメイン管理者権限を取得できる' },
     category: 'Privilege Escalation',
     url: 'https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2018-8518',
     tools: ['NtlmRelayToEWS']
@@ -515,7 +515,7 @@ const CVES = [
     name: 'EternalBlue (SMB)',
     severity: 'critical',
     year: 2017,
-    description: 'SMBv1 遠端程式碼執行漏洞，由 WannaCry 和 NotPetya 廣泛利用',
+    description: { zh: 'SMBv1 遠端程式碼執行漏洞，由 WannaCry 和 NotPetya 廣泛利用', en: 'SMBv1 remote code execution vulnerability widely exploited by WannaCry and NotPetya', ja: 'WannaCry と NotPetya に広く悪用された SMBv1 リモートコード実行の脆弱性' },
     category: 'Lateral Movement',
     url: 'https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2017-0143',
     tools: []
@@ -525,7 +525,7 @@ const CVES = [
     name: 'BADLOCK (SAM/LSAD)',
     severity: 'high',
     year: 2016,
-    description: 'SAM 和 LSAD 協定實作允許 MITM 攻擊者降級 RPC 通道',
+    description: { zh: 'SAM 和 LSAD 協定實作允許 MITM 攻擊者降級 RPC 通道', en: 'SAM and LSAD protocol implementations allow a MITM attacker to downgrade the RPC channel', ja: 'SAM および LSAD プロトコルの実装により、MITM 攻撃者が RPC チャネルをダウングレードできる' },
     category: 'Credential Dumping',
     url: 'https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2016-0128',
     tools: []
@@ -535,7 +535,7 @@ const CVES = [
     name: 'MS14-068 (Kerberos)',
     severity: 'critical',
     year: 2014,
-    description: 'Kerberos KDC 驗證弱點，允許一般使用者取得域管理員 Kerberos 票據',
+    description: { zh: 'Kerberos KDC 驗證弱點，允許一般使用者取得域管理員 Kerberos 票據', en: 'Kerberos KDC validation flaw that allows a standard user to obtain Domain Admin Kerberos tickets', ja: 'Kerberos KDC の検証の脆弱性により、一般ユーザーがドメイン管理者の Kerberos チケットを取得できる' },
     category: 'Privilege Escalation',
     url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068',
     tools: []
@@ -545,7 +545,7 @@ const CVES = [
     name: 'GPP Password (MS14-025)',
     severity: 'high',
     year: 2014,
-    description: 'Group Policy Preferences 使用可逆加密儲存密碼，任何網域使用者均可讀取',
+    description: { zh: 'Group Policy Preferences 使用可逆加密儲存密碼，任何網域使用者均可讀取', en: 'Group Policy Preferences stores passwords with reversible encryption, readable by any domain user', ja: 'グループポリシーの設定が可逆暗号化でパスワードを保存しており、任意のドメインユーザーが読み取れる' },
     category: 'Credential Dumping',
     url: 'https://support.microsoft.com/en-us/help/2962486/ms14-025-vulnerability-in-group-policy-preferences-could-allow-elevati',
     tools: ['PowerView']
@@ -558,55 +558,70 @@ const DETECTION_EVENTS = [
     category: 'discovery',
     eventIds: ['4798', '4799'],
     descriptions: [
-      '4798: 使用者的本機群組成員資格已被列舉',
-      '4799: 已啟用安全性的本機群組成員資格已被列舉'
+      { zh: '4798: 使用者的本機群組成員資格已被列舉', en: "4798: A user's local group membership was enumerated", ja: '4798: ユーザーのローカルグループメンバーシップが列挙された' },
+      { zh: '4799: 已啟用安全性的本機群組成員資格已被列舉', en: '4799: A security-enabled local group membership was enumerated', ja: '4799: セキュリティが有効なローカルグループのメンバーシップが列挙された' }
     ]
   },
   {
     attack: 'AdminSDHolder Modification',
     category: 'persistence',
     eventIds: ['4780'],
-    descriptions: ['4780: ACL 已在管理員群組成員帳戶上設定']
+    descriptions: [
+      { zh: '4780: ACL 已在管理員群組成員帳戶上設定', en: '4780: ACL was set on accounts that are members of administrators groups', ja: '4780: 管理者グループメンバーのアカウントに ACL が設定された' }
+    ]
   },
   {
     attack: 'Golden Ticket',
     category: 'persistence',
     eventIds: ['4624', '4672'],
-    descriptions: ['4624: 帳戶登入成功', '4672: 管理員登入（特殊權限）']
+    descriptions: [
+      { zh: '4624: 帳戶登入成功', en: '4624: An account was successfully logged on', ja: '4624: アカウントのログオンに成功した' },
+      { zh: '4672: 管理員登入（特殊權限）', en: '4672: Special privileges assigned to new logon', ja: '4672: 新しいログオンに特権が割り当てられた' }
+    ]
   },
   {
     attack: 'Silver Ticket',
     category: 'persistence',
     eventIds: ['4624', '4634', '4672'],
-    descriptions: ['4624: 帳戶登入成功', '4634: 帳戶登出', '4672: 管理員登入']
+    descriptions: [
+      { zh: '4624: 帳戶登入成功', en: '4624: An account was successfully logged on', ja: '4624: アカウントのログオンに成功した' },
+      { zh: '4634: 帳戶登出', en: '4634: An account was logged off', ja: '4634: アカウントがログオフした' },
+      { zh: '4672: 管理員登入', en: '4672: Special privileges assigned to new logon', ja: '4672: 新しいログオンに特権が割り当てられた' }
+    ]
   },
   {
     attack: 'Kerberoasting',
     category: 'credential-dumping',
     eventIds: ['4769'],
-    descriptions: ['4769: Kerberos 服務票據已請求（加密類型 0x17 = RC4）']
+    descriptions: [
+      { zh: '4769: Kerberos 服務票據已請求（加密類型 0x17 = RC4）', en: '4769: A Kerberos service ticket was requested (encryption type 0x17 = RC4)', ja: '4769: Kerberos サービスチケットがリクエストされた（暗号化タイプ 0x17 = RC4）' }
+    ]
   },
   {
     attack: 'AS-REP Roasting',
     category: 'credential-dumping',
     eventIds: ['4768'],
-    descriptions: ['4768: Kerberos TGT 已請求（預先驗證失敗）']
+    descriptions: [
+      { zh: '4768: Kerberos TGT 已請求（預先驗證失敗）', en: '4768: A Kerberos TGT was requested (pre-authentication failed)', ja: '4768: Kerberos TGT がリクエストされた（事前認証失敗）' }
+    ]
   },
   {
     attack: 'DCSync',
     category: 'credential-dumping',
     eventIds: ['4662'],
-    descriptions: ['4662: 已對物件執行作業（DS-Replication-Get-Changes）']
+    descriptions: [
+      { zh: '4662: 已對物件執行作業（DS-Replication-Get-Changes）', en: '4662: An operation was performed on an object (DS-Replication-Get-Changes)', ja: '4662: オブジェクトに対して操作が実行された（DS-Replication-Get-Changes）' }
+    ]
   },
   {
     attack: 'DCShadow',
     category: 'privilege-escalation',
     eventIds: ['4742', '5137', '5141', '4929'],
     descriptions: [
-      '4742: 電腦帳戶已變更',
-      '5137: 目錄服務物件已建立',
-      '5141: 目錄服務物件已刪除',
-      '4929: Active Directory 複本來源命名內容已移除'
+      { zh: '4742: 電腦帳戶已變更', en: '4742: A computer account was changed', ja: '4742: コンピューターアカウントが変更された' },
+      { zh: '5137: 目錄服務物件已建立', en: '5137: A directory service object was created', ja: '5137: ディレクトリサービスオブジェクトが作成された' },
+      { zh: '5141: 目錄服務物件已刪除', en: '5141: A directory service object was deleted', ja: '5141: ディレクトリサービスオブジェクトが削除された' },
+      { zh: '4929: Active Directory 複本來源命名內容已移除', en: '4929: An Active Directory replica source naming context was removed', ja: '4929: Active Directory レプリカのソース名前付けコンテキストが削除された' }
     ]
   },
   {
@@ -614,10 +629,10 @@ const DETECTION_EVENTS = [
     category: 'persistence',
     eventIds: ['4673', '4611', '4688', '4689'],
     descriptions: [
-      '4673: 已呼叫特殊權限服務',
-      '4611: 信任的登入程序已向 LSA 登錄',
-      '4688: 新程序已建立',
-      '4689: 程序已結束'
+      { zh: '4673: 已呼叫特殊權限服務', en: '4673: A privileged service was called', ja: '4673: 特権サービスが呼び出された' },
+      { zh: '4611: 信任的登入程序已向 LSA 登錄', en: '4611: A trusted logon process has been registered with the Local Security Authority', ja: '4611: 信頼されたログオンプロセスがローカルセキュリティ機関に登録された' },
+      { zh: '4688: 新程序已建立', en: '4688: A new process has been created', ja: '4688: 新しいプロセスが作成された' },
+      { zh: '4689: 程序已結束', en: '4689: A process has exited', ja: '4689: プロセスが終了した' }
     ]
   },
   {
@@ -625,10 +640,10 @@ const DETECTION_EVENTS = [
     category: 'lateral-movement',
     eventIds: ['4688', '4689', '4624', '4625'],
     descriptions: [
-      '4688: 新程序已建立',
-      '4689: 程序已結束',
-      '4624: 帳戶登入成功',
-      '4625: 帳戶登入失敗'
+      { zh: '4688: 新程序已建立', en: '4688: A new process has been created', ja: '4688: 新しいプロセスが作成された' },
+      { zh: '4689: 程序已結束', en: '4689: A process has exited', ja: '4689: プロセスが終了した' },
+      { zh: '4624: 帳戶登入成功', en: '4624: An account was successfully logged on', ja: '4624: アカウントのログオンに成功した' },
+      { zh: '4625: 帳戶登入失敗', en: '4625: An account failed to log on', ja: '4625: アカウントのログオンに失敗した' }
     ]
   },
   {
@@ -636,9 +651,9 @@ const DETECTION_EVENTS = [
     category: 'lateral-movement',
     eventIds: ['4625', '4771', '4648'],
     descriptions: [
-      '4625: 帳戶登入失敗（大量失敗警示）',
-      '4771: Kerberos 預先驗證失敗',
-      '4648: 使用明確憑證嘗試登入'
+      { zh: '4625: 帳戶登入失敗（大量失敗警示）', en: '4625: An account failed to log on (high-volume failure alert)', ja: '4625: アカウントのログオンに失敗した（大量失敗の警告）' },
+      { zh: '4771: Kerberos 預先驗證失敗', en: '4771: Kerberos pre-authentication failed', ja: '4771: Kerberos 事前認証に失敗した' },
+      { zh: '4648: 使用明確憑證嘗試登入', en: '4648: A logon was attempted using explicit credentials', ja: '4648: 明示的な資格情報を使用してログオンが試みられた' }
     ]
   },
   {
@@ -646,9 +661,9 @@ const DETECTION_EVENTS = [
     category: 'privilege-escalation',
     eventIds: ['770', '541', '150'],
     descriptions: [
-      '770: DNS 伺服器外掛程式 DLL 已載入',
-      '541: 伺服器層級外掛程式 DLL 設定已變更',
-      '150: DNS 伺服器無法載入或初始化外掛程式 DLL'
+      { zh: '770: DNS 伺服器外掛程式 DLL 已載入', en: '770: DNS Server plug-in DLL has been loaded', ja: '770: DNS サーバープラグイン DLL が読み込まれた' },
+      { zh: '541: 伺服器層級外掛程式 DLL 設定已變更', en: '541: Server-level plug-in DLL configuration has been changed', ja: '541: サーバーレベルのプラグイン DLL の設定が変更された' },
+      { zh: '150: DNS 伺服器無法載入或初始化外掛程式 DLL', en: '150: DNS Server could not load or initialize the plug-in DLL', ja: '150: DNS サーバーがプラグイン DLL を読み込み・初期化できなかった' }
     ]
   },
   {
@@ -656,367 +671,371 @@ const DETECTION_EVENTS = [
     category: 'defense-evasion',
     eventIds: ['4103', '4104', '400', '403', '600'],
     descriptions: [
-      '4103: PowerShell 模組日誌',
-      '4104: PowerShell ScriptBlock 日誌',
-      '400: PowerShell 引擎生命週期',
-      '403: PowerShell 引擎生命週期（已停止）',
-      '600: PowerShell 提供者生命週期'
+      { zh: '4103: PowerShell 模組日誌', en: '4103: PowerShell module logging', ja: '4103: PowerShell モジュールログ' },
+      { zh: '4104: PowerShell ScriptBlock 日誌', en: '4104: PowerShell ScriptBlock logging', ja: '4104: PowerShell ScriptBlock ログ' },
+      { zh: '400: PowerShell 引擎生命週期', en: '400: PowerShell engine lifecycle', ja: '400: PowerShell エンジンのライフサイクル' },
+      { zh: '403: PowerShell 引擎生命週期（已停止）', en: '403: PowerShell engine lifecycle (stopped)', ja: '403: PowerShell エンジンのライフサイクル（停止）' },
+      { zh: '600: PowerShell 提供者生命週期', en: '600: PowerShell provider lifecycle', ja: '600: PowerShell プロバイダーのライフサイクル' }
     ]
   },
   {
     attack: 'MS14-068 (PYKEK)',
     category: 'privilege-escalation',
     eventIds: ['4672', '4624', '4768'],
-    descriptions: ['4672: 管理員登入', '4624: 帳戶登入', '4768: Kerberos TGT 請求']
+    descriptions: [
+      { zh: '4672: 管理員登入', en: '4672: Special privileges assigned to new logon', ja: '4672: 新しいログオンに特権が割り当てられた' },
+      { zh: '4624: 帳戶登入', en: '4624: An account was successfully logged on', ja: '4624: アカウントのログオンに成功した' },
+      { zh: '4768: Kerberos TGT 請求', en: '4768: A Kerberos TGT was requested', ja: '4768: Kerberos TGT がリクエストされた' }
+    ]
   }
 ];
 
 const TOOLS = [
   // Offensive Tools
-  { name: 'BloodHound', type: 'offensive', url: 'https://github.com/BloodHoundAD/BloodHound', description: 'AD 攻擊路徑視覺化分析工具，使用圖論找出最短域管理員路徑', tags: ['AD', '圖論', '偵察', '路徑分析'] },
-  { name: 'PowerView', type: 'offensive', url: 'https://github.com/PowerShellMafia/PowerSploit', description: 'PowerShell AD 情境感知框架，提供豐富的 AD 列舉函式', tags: ['PowerShell', 'AD', '偵察', '列舉'] },
-  { name: 'Mimikatz', type: 'offensive', url: 'https://github.com/gentilkiwi/mimikatz', description: '從 Windows 記憶體提取明文密碼、NTLM 雜湊值及 Kerberos 票據', tags: ['憑證', 'Kerberos', 'NTLM', '記憶體'] },
-  { name: 'Rubeus', type: 'offensive', url: 'https://github.com/GhostPack/Rubeus', description: 'C# Kerberos 互動與濫用工具集，支援 Kerberoast、AS-REP Roast、Pass-the-Ticket', tags: ['Kerberos', 'C#', '票據', '偵察'] },
-  { name: 'Impacket', type: 'offensive', url: 'https://github.com/SecureAuthCorp/impacket', description: 'Python 網路協定類別庫，支援 SMB、Kerberos、LDAP 等協定互動', tags: ['Python', 'SMB', 'Kerberos', 'LDAP'] },
-  { name: 'CrackMapExec', type: 'offensive', url: 'https://github.com/byt3bl33d3r/CrackMapExec', description: '網路滲透測試瑞士刀，支援 SMB、WinRM、LDAP 等協定大規模作業', tags: ['SMB', 'WinRM', '橫向移動', '自動化'] },
-  { name: 'Certify', type: 'offensive', url: 'https://github.com/GhostPack/Certify', description: 'C# AD CS 列舉與濫用工具，用於尋找和利用憑證服務錯誤設定', tags: ['AD CS', 'C#', '憑證', '權限提升'] },
-  { name: 'PowerUpSQL', type: 'offensive', url: 'https://github.com/NetSPI/PowerUpSQL', description: '攻擊 SQL Server 的 PowerShell 工具集，支援提權與資料挖掘', tags: ['SQL Server', 'PowerShell', '提權'] },
-  { name: 'aclpwn.py', type: 'offensive', url: 'https://github.com/fox-it/aclpwn.py', description: '結合 BloodHound 自動化利用 AD ACL 錯誤設定', tags: ['ACL', 'BloodHound', '自動化', '提權'] },
-  { name: 'ADACLScanner', type: 'offensive', url: 'https://github.com/canix1/ADACLScanner', description: '產生 AD DACL/SACL 報告的工具，支援 GUI 或命令列', tags: ['ACL', '稽核', '報告'] },
-  { name: 'sam-the-admin', type: 'offensive', url: 'https://github.com/WazeHell/sam-the-admin', description: '利用 CVE-2021-42278 與 CVE-2021-42287 從標準使用者提升至域管理員', tags: ['CVE-2021-42278', 'CVE-2021-42287', '提權'] },
-  { name: 'DomainPasswordSpray', type: 'offensive', url: 'https://github.com/mdavis332/DomainPasswordSpray', description: 'PowerShell 密碼噴灑工具，自動列舉使用者並控制鎖定風險', tags: ['密碼噴灑', 'PowerShell', 'AD'] },
-  { name: 'MailSniper', type: 'offensive', url: 'https://github.com/dafthack/MailSniper', description: '在 Exchange 環境中搜尋敏感資訊的滲透測試工具', tags: ['Exchange', 'O365', '資料挖掘'] },
-  { name: 'LAPSToolkit', type: 'offensive', url: 'https://github.com/leoloobeek/LAPSToolkit', description: 'LAPS 環境稽核與攻擊工具', tags: ['LAPS', 'PowerShell', '提權'] },
-  { name: 'Grouper', type: 'offensive', url: 'https://github.com/l0ss/Grouper', description: 'PowerShell 工具，尋找 AD 群組原則中的脆弱設定', tags: ['GPO', 'PowerShell', '稽核'] },
-  { name: 'SafetyKatz', type: 'offensive', url: 'https://github.com/GhostPack/SafetyKatz', description: 'Mimikatz 的改良版，使用 .NET PE 載入器執行，降低 AV 偵測率', tags: ['Mimikatz', 'C#', '規避', '憑證'] },
-  { name: 'SharpDump', type: 'offensive', url: 'https://github.com/GhostPack/SharpDump', description: 'PowerSploit Out-Minidump 的 C# 版本，產生 LSASS 記憶體轉儲', tags: ['LSASS', 'C#', '憑證', '記憶體轉儲'] },
-  { name: 'Powermad', type: 'offensive', url: 'https://github.com/Kevin-Robertson/Powermad', description: 'MachineAccountQuota 和 DNS 利用工具，用於 RBCD 攻擊', tags: ['MachineAccountQuota', 'DNS', 'RBCD', 'PowerShell'] },
-  { name: 'ldapdomaindump', type: 'offensive', url: 'https://github.com/dirkjanm/ldapdomaindump', description: '透過 LDAP 轉儲 AD 資訊，輸出 JSON/HTML/CSV 格式', tags: ['LDAP', 'AD', '偵察', 'Python'] },
+  { name: 'BloodHound', type: 'offensive', url: 'https://github.com/BloodHoundAD/BloodHound', description: { zh: 'AD 攻擊路徑視覺化分析工具，使用圖論找出最短域管理員路徑', en: 'AD attack path visualization tool that uses graph theory to find the shortest path to Domain Admin', ja: 'グラフ理論を使って Domain Admin への最短経路を見つける AD 攻撃経路の可視化分析ツール' }, tags: ['AD', '圖論', '偵察', '路徑分析'] },
+  { name: 'PowerView', type: 'offensive', url: 'https://github.com/PowerShellMafia/PowerSploit', description: { zh: 'PowerShell AD 情境感知框架，提供豐富的 AD 列舉函式', en: 'PowerShell AD situational awareness framework with rich AD enumeration functions', ja: '豊富な AD 列挙機能を提供する PowerShell AD 状況認識フレームワーク' }, tags: ['PowerShell', 'AD', '偵察', '列舉'] },
+  { name: 'Mimikatz', type: 'offensive', url: 'https://github.com/gentilkiwi/mimikatz', description: { zh: '從 Windows 記憶體提取明文密碼、NTLM 雜湊值及 Kerberos 票據', en: 'Extract plaintext passwords, NTLM hashes, and Kerberos tickets from Windows memory', ja: 'Windows メモリから平文パスワード、NTLM ハッシュ、Kerberos チケットを抽出する' }, tags: ['憑證', 'Kerberos', 'NTLM', '記憶體'] },
+  { name: 'Rubeus', type: 'offensive', url: 'https://github.com/GhostPack/Rubeus', description: { zh: 'C# Kerberos 互動與濫用工具集，支援 Kerberoast、AS-REP Roast、Pass-the-Ticket', en: 'C# Kerberos interaction and abuse toolkit supporting Kerberoast, AS-REP Roast, and Pass-the-Ticket', ja: 'Kerberoast、AS-REP Roast、Pass-the-Ticket をサポートする C# Kerberos 操作・悪用ツールキット' }, tags: ['Kerberos', 'C#', '票據', '偵察'] },
+  { name: 'Impacket', type: 'offensive', url: 'https://github.com/SecureAuthCorp/impacket', description: { zh: 'Python 網路協定類別庫，支援 SMB、Kerberos、LDAP 等協定互動', en: 'Python network protocol library supporting SMB, Kerberos, LDAP, and other protocol interactions', ja: 'SMB、Kerberos、LDAP などのプロトコル操作をサポートする Python ネットワークプロトコルライブラリ' }, tags: ['Python', 'SMB', 'Kerberos', 'LDAP'] },
+  { name: 'CrackMapExec', type: 'offensive', url: 'https://github.com/byt3bl33d3r/CrackMapExec', description: { zh: '網路滲透測試瑞士刀，支援 SMB、WinRM、LDAP 等協定大規模作業', en: 'Swiss Army knife for network penetration testing with SMB, WinRM, and LDAP mass operation support', ja: 'SMB、WinRM、LDAP などのプロトコルの大規模操作をサポートするネットワーク侵入テストの万能ツール' }, tags: ['SMB', 'WinRM', '橫向移動', '自動化'] },
+  { name: 'Certify', type: 'offensive', url: 'https://github.com/GhostPack/Certify', description: { zh: 'C# AD CS 列舉與濫用工具，用於尋找和利用憑證服務錯誤設定', en: 'C# AD CS enumeration and abuse tool for finding and exploiting Certificate Services misconfigurations', ja: '証明書サービスの設定ミスを発見・悪用するための C# AD CS 列挙・悪用ツール' }, tags: ['AD CS', 'C#', '憑證', '權限提升'] },
+  { name: 'PowerUpSQL', type: 'offensive', url: 'https://github.com/NetSPI/PowerUpSQL', description: { zh: '攻擊 SQL Server 的 PowerShell 工具集，支援提權與資料挖掘', en: 'PowerShell toolkit for attacking SQL Server, supporting privilege escalation and data mining', ja: '権限昇格とデータマイニングをサポートする SQL Server 攻撃用 PowerShell ツールキット' }, tags: ['SQL Server', 'PowerShell', '提權'] },
+  { name: 'aclpwn.py', type: 'offensive', url: 'https://github.com/fox-it/aclpwn.py', description: { zh: '結合 BloodHound 自動化利用 AD ACL 錯誤設定', en: 'Automated AD ACL misconfiguration exploitation using BloodHound data', ja: 'BloodHound データを使用して AD ACL の設定ミスを自動的に悪用する' }, tags: ['ACL', 'BloodHound', '自動化', '提權'] },
+  { name: 'ADACLScanner', type: 'offensive', url: 'https://github.com/canix1/ADACLScanner', description: { zh: '產生 AD DACL/SACL 報告的工具，支援 GUI 或命令列', en: 'Tool to generate AD DACL/SACL reports, supporting both GUI and command-line modes', ja: 'GUI またはコマンドラインで AD DACL/SACL レポートを生成するツール' }, tags: ['ACL', '稽核', '報告'] },
+  { name: 'sam-the-admin', type: 'offensive', url: 'https://github.com/WazeHell/sam-the-admin', description: { zh: '利用 CVE-2021-42278 與 CVE-2021-42287 從標準使用者提升至域管理員', en: 'Exploit CVE-2021-42278 and CVE-2021-42287 to escalate from a standard user to Domain Admin', ja: 'CVE-2021-42278 と CVE-2021-42287 を悪用して標準ユーザーからドメイン管理者に昇格する' }, tags: ['CVE-2021-42278', 'CVE-2021-42287', '提權'] },
+  { name: 'DomainPasswordSpray', type: 'offensive', url: 'https://github.com/mdavis332/DomainPasswordSpray', description: { zh: 'PowerShell 密碼噴灑工具，自動列舉使用者並控制鎖定風險', en: 'PowerShell password spraying tool that auto-enumerates users and controls lockout risk', ja: 'ユーザーを自動列挙してロックアウトリスクを制御する PowerShell パスワードスプレーツール' }, tags: ['密碼噴灑', 'PowerShell', 'AD'] },
+  { name: 'MailSniper', type: 'offensive', url: 'https://github.com/dafthack/MailSniper', description: { zh: '在 Exchange 環境中搜尋敏感資訊的滲透測試工具', en: 'Penetration testing tool for searching sensitive information in Exchange environments', ja: 'Exchange 環境で機密情報を検索するための侵入テストツール' }, tags: ['Exchange', 'O365', '資料挖掘'] },
+  { name: 'LAPSToolkit', type: 'offensive', url: 'https://github.com/leoloobeek/LAPSToolkit', description: { zh: 'LAPS 環境稽核與攻擊工具', en: 'LAPS environment auditing and attack tool', ja: 'LAPS 環境の監査・攻撃ツール' }, tags: ['LAPS', 'PowerShell', '提權'] },
+  { name: 'Grouper', type: 'offensive', url: 'https://github.com/l0ss/Grouper', description: { zh: 'PowerShell 工具，尋找 AD 群組原則中的脆弱設定', en: 'PowerShell tool for finding vulnerable settings in AD Group Policies', ja: 'AD グループポリシー内の脆弱な設定を見つける PowerShell ツール' }, tags: ['GPO', 'PowerShell', '稽核'] },
+  { name: 'SafetyKatz', type: 'offensive', url: 'https://github.com/GhostPack/SafetyKatz', description: { zh: 'Mimikatz 的改良版，使用 .NET PE 載入器執行，降低 AV 偵測率', en: 'Improved version of Mimikatz executed via .NET PE loader to reduce AV detection rate', ja: '.NET PE ローダーで実行して AV 検知率を下げた Mimikatz の改良版' }, tags: ['Mimikatz', 'C#', '規避', '憑證'] },
+  { name: 'SharpDump', type: 'offensive', url: 'https://github.com/GhostPack/SharpDump', description: { zh: 'PowerSploit Out-Minidump 的 C# 版本，產生 LSASS 記憶體轉儲', en: "C# version of PowerSploit's Out-Minidump for generating LSASS memory dumps", ja: 'LSASS メモリダンプを生成する PowerSploit Out-Minidump の C# バージョン' }, tags: ['LSASS', 'C#', '憑證', '記憶體轉儲'] },
+  { name: 'Powermad', type: 'offensive', url: 'https://github.com/Kevin-Robertson/Powermad', description: { zh: 'MachineAccountQuota 和 DNS 利用工具，用於 RBCD 攻擊', en: 'MachineAccountQuota and DNS exploitation tool used for RBCD attacks', ja: 'RBCD 攻撃に使用する MachineAccountQuota および DNS 悪用ツール' }, tags: ['MachineAccountQuota', 'DNS', 'RBCD', 'PowerShell'] },
+  { name: 'ldapdomaindump', type: 'offensive', url: 'https://github.com/dirkjanm/ldapdomaindump', description: { zh: '透過 LDAP 轉儲 AD 資訊，輸出 JSON/HTML/CSV 格式', en: 'Dump AD information via LDAP with JSON/HTML/CSV output', ja: 'LDAP 経由で AD 情報をダンプし、JSON/HTML/CSV 形式で出力する' }, tags: ['LDAP', 'AD', '偵察', 'Python'] },
   // Defensive Tools
-  { name: 'PingCastle', type: 'defensive', url: 'https://www.pingcastle.com/', description: '快速評估 AD 安全層級的工具，基於風險評估與成熟度框架產生評分報告', tags: ['稽核', '評估', '報告', '合規'] },
-  { name: 'ADRecon', type: 'defensive', url: 'https://github.com/sense-of-security/ADRecon', description: '收集 AD 環境全面資訊並產生 Excel 報告，提供整體安全狀況視圖', tags: ['稽核', 'Excel', '報告', '偵察'] },
-  { name: 'Locksmith', type: 'defensive', url: 'https://github.com/TrimarcJake/Locksmith', description: '尋找並修復 AD CS 常見錯誤設定的小型工具', tags: ['AD CS', '修復', '稽核', '合規'] },
-  { name: 'FalconHound', type: 'defensive', url: 'https://github.com/FalconForceTeam/FalconHound', description: '藍隊多功能工具，結合 BloodHound 自動化分析，整合 SIEM', tags: ['BloodHound', '藍隊', 'SIEM', '自動化'] },
-  { name: 'PlumHound', type: 'defensive', url: 'https://github.com/PlumHound/PlumHound', description: '藍隊/紫隊的 BloodHound 工具，自動化產生安全報告', tags: ['BloodHound', '藍隊', '紫隊', '報告'] },
-  { name: 'Sigma', type: 'defensive', url: 'https://github.com/Neo23x0/sigma/', description: 'SIEM 系統通用簽章格式，可轉換為 Splunk/ELK 等平台規則', tags: ['SIEM', '偵測規則', '標準化', '日誌'] },
-  { name: 'Sysmon', type: 'defensive', url: 'https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon', description: 'Windows 系統監控服務，記錄詳細的程序、網路、檔案系統活動', tags: ['監控', '日誌', '事件', 'Microsoft'] },
-  { name: 'WatchAD', type: 'defensive', url: 'https://github.com/0Kee-Team/WatchAD', description: 'AD 安全入侵偵測系統，即時監控 AD 攻擊行為', tags: ['IDS', '即時偵測', 'AD', '安全'] },
-  { name: 'LogonTracer', type: 'defensive', url: 'https://github.com/JPCERTCC/LogonTracer', description: 'JPCERT 開發，視覺化分析 Windows 登入事件日誌，調查惡意登入', tags: ['登入分析', '視覺化', 'DFIR', '日誌'] },
-  { name: 'DCSYNCMonitor', type: 'defensive', url: 'https://github.com/shellster/DCSYNCMonitor', description: '監控 DCSync 和 DCShadow 攻擊，產生自訂 Windows 事件', tags: ['DCSync', 'DCShadow', '監控', '事件'] },
-  { name: 'Deploy-Deception', type: 'defensive', url: 'https://github.com/samratashok/Deploy-Deception', description: 'PowerShell 模組，在 AD 中部署誘餌物件（蜜罐）', tags: ['誘餌', 'HoneyToken', '偵測', 'PowerShell'] },
-  { name: 'RiskySPN', type: 'defensive', url: 'https://github.com/cyberark/RiskySPN', description: '偵測和列舉與 SPN 關聯的高風險帳戶，評估 Kerberoast 風險', tags: ['SPN', 'Kerberoasting', '稽核', 'PowerShell'] },
-  { name: 'ADTimeline', type: 'defensive', url: 'https://github.com/ANSSI-FR/ADTimeline', description: '基於 AD 複寫元資料產生時間軸，用於事件回應調查', tags: ['DFIR', '時間軸', 'AD', 'ANSSI'] },
-  { name: 'SilkETW', type: 'defensive', url: 'https://github.com/fireeye/SilkETW', description: 'ETW（Event Tracing for Windows）的 C# 封裝，簡化 ETW 研究與監控', tags: ['ETW', 'C#', '監控', 'FireEye'] },
+  { name: 'PingCastle', type: 'defensive', url: 'https://www.pingcastle.com/', description: { zh: '快速評估 AD 安全層級的工具，基於風險評估與成熟度框架產生評分報告', en: 'Tool for rapid AD security level assessment, generating scored reports based on risk assessment and maturity frameworks', ja: 'リスク評価と成熟度フレームワークに基づいてスコアレポートを生成する AD セキュリティレベルの迅速評価ツール' }, tags: ['稽核', '評估', '報告', '合規'] },
+  { name: 'ADRecon', type: 'defensive', url: 'https://github.com/sense-of-security/ADRecon', description: { zh: '收集 AD 環境全面資訊並產生 Excel 報告，提供整體安全狀況視圖', en: 'Collect comprehensive AD environment information and generate Excel reports providing an overall security posture view', ja: 'AD 環境の包括的な情報を収集して Excel レポートを生成し、全体的なセキュリティ状況を提供する' }, tags: ['稽核', 'Excel', '報告', '偵察'] },
+  { name: 'Locksmith', type: 'defensive', url: 'https://github.com/TrimarcJake/Locksmith', description: { zh: '尋找並修復 AD CS 常見錯誤設定的小型工具', en: 'Small tool to find and fix common AD CS misconfigurations', ja: 'AD CS の一般的な設定ミスを発見・修正する小型ツール' }, tags: ['AD CS', '修復', '稽核', '合規'] },
+  { name: 'FalconHound', type: 'defensive', url: 'https://github.com/FalconForceTeam/FalconHound', description: { zh: '藍隊多功能工具，結合 BloodHound 自動化分析，整合 SIEM', en: 'Multi-purpose blue team tool that integrates BloodHound automated analysis with SIEM', ja: 'BloodHound 自動分析と SIEM を統合した、ブルーチーム向け多目的ツール' }, tags: ['BloodHound', '藍隊', 'SIEM', '自動化'] },
+  { name: 'PlumHound', type: 'defensive', url: 'https://github.com/PlumHound/PlumHound', description: { zh: '藍隊/紫隊的 BloodHound 工具，自動化產生安全報告', en: 'BloodHound-powered tool for blue/purple teams that automates security report generation', ja: 'セキュリティレポート生成を自動化する、ブルー・パープルチーム向け BloodHound ツール' }, tags: ['BloodHound', '藍隊', '紫隊', '報告'] },
+  { name: 'Sigma', type: 'defensive', url: 'https://github.com/Neo23x0/sigma/', description: { zh: 'SIEM 系統通用簽章格式，可轉換為 Splunk/ELK 等平台規則', en: 'Generic signature format for SIEM systems, convertible to rules for platforms like Splunk and ELK', ja: 'Splunk や ELK などのプラットフォームのルールに変換できる SIEM システム向けの汎用シグネチャ形式' }, tags: ['SIEM', '偵測規則', '標準化', '日誌'] },
+  { name: 'Sysmon', type: 'defensive', url: 'https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon', description: { zh: 'Windows 系統監控服務，記錄詳細的程序、網路、檔案系統活動', en: 'Windows system monitoring service that records detailed process, network, and file system activity', ja: 'プロセス・ネットワーク・ファイルシステムの詳細な活動を記録する Windows システム監視サービス' }, tags: ['監控', '日誌', '事件', 'Microsoft'] },
+  { name: 'WatchAD', type: 'defensive', url: 'https://github.com/0Kee-Team/WatchAD', description: { zh: 'AD 安全入侵偵測系統，即時監控 AD 攻擊行為', en: 'AD security intrusion detection system for real-time monitoring of AD attack behaviors', ja: 'AD 攻撃行動をリアルタイムに監視する AD セキュリティ侵入検知システム' }, tags: ['IDS', '即時偵測', 'AD', '安全'] },
+  { name: 'LogonTracer', type: 'defensive', url: 'https://github.com/JPCERTCC/LogonTracer', description: { zh: 'JPCERT 開發，視覺化分析 Windows 登入事件日誌，調查惡意登入', en: 'Developed by JPCERT; visually analyzes Windows logon event logs to investigate malicious logins', ja: 'JPCERT が開発した、Windows ログオンイベントログを視覚的に分析して悪意のあるログインを調査するツール' }, tags: ['登入分析', '視覺化', 'DFIR', '日誌'] },
+  { name: 'DCSYNCMonitor', type: 'defensive', url: 'https://github.com/shellster/DCSYNCMonitor', description: { zh: '監控 DCSync 和 DCShadow 攻擊，產生自訂 Windows 事件', en: 'Monitor for DCSync and DCShadow attacks by generating custom Windows events', ja: 'カスタム Windows イベントを生成して DCSync および DCShadow 攻撃を監視する' }, tags: ['DCSync', 'DCShadow', '監控', '事件'] },
+  { name: 'Deploy-Deception', type: 'defensive', url: 'https://github.com/samratashok/Deploy-Deception', description: { zh: 'PowerShell 模組，在 AD 中部署誘餌物件（蜜罐）', en: 'PowerShell module for deploying decoy objects (honeypots) in Active Directory', ja: 'Active Directory に囮オブジェクト（ハニーポット）を展開する PowerShell モジュール' }, tags: ['誘餌', 'HoneyToken', '偵測', 'PowerShell'] },
+  { name: 'RiskySPN', type: 'defensive', url: 'https://github.com/cyberark/RiskySPN', description: { zh: '偵測和列舉與 SPN 關聯的高風險帳戶，評估 Kerberoast 風險', en: 'Detect and enumerate high-risk accounts associated with SPNs to assess Kerberoast risk', ja: 'SPN に関連する高リスクアカウントを検知・列挙して Kerberoast リスクを評価する' }, tags: ['SPN', 'Kerberoasting', '稽核', 'PowerShell'] },
+  { name: 'ADTimeline', type: 'defensive', url: 'https://github.com/ANSSI-FR/ADTimeline', description: { zh: '基於 AD 複寫元資料產生時間軸，用於事件回應調查', en: 'Generate a timeline based on AD replication metadata for incident response investigations', ja: 'インシデント対応調査のために AD レプリケーションメタデータに基づいてタイムラインを生成する' }, tags: ['DFIR', '時間軸', 'AD', 'ANSSI'] },
+  { name: 'SilkETW', type: 'defensive', url: 'https://github.com/fireeye/SilkETW', description: { zh: 'ETW（Event Tracing for Windows）的 C# 封裝，簡化 ETW 研究與監控', en: 'C# wrapper around ETW (Event Tracing for Windows) to simplify ETW research and monitoring', ja: 'ETW (Event Tracing for Windows) の研究と監視を簡素化する C# ラッパー' }, tags: ['ETW', 'C#', '監控', 'FireEye'] },
   // Azure Tools
-  { name: 'ROADtools', type: 'azure', url: 'https://github.com/dirkjanm/ROADtools', description: 'Azure AD 互動框架，支援列舉、資料收集與攻擊', tags: ['Azure AD', 'Python', '列舉', '互動'] },
-  { name: 'AADInternals', type: 'azure', url: 'https://github.com/Gerenios/AADInternals', description: 'Azure AD 與 Office 365 管理 PowerShell 模組，支援攻防兩用', tags: ['Azure AD', 'O365', 'PowerShell', '管理'] },
-  { name: 'Stormspotter', type: 'azure', url: 'https://github.com/Azure/Stormspotter', description: '產生 Azure 訂閱資源攻擊圖，視覺化 Azure 安全狀況', tags: ['Azure', '攻擊圖', '視覺化', 'Microsoft'] },
-  { name: 'MicroBurst', type: 'azure', url: 'https://github.com/NetSPI/MicroBurst', description: 'Azure 服務發現、弱點稽核與後滲透 PowerShell 工具集', tags: ['Azure', 'PowerShell', '稽核', '後滲透'] }
+  { name: 'ROADtools', type: 'azure', url: 'https://github.com/dirkjanm/ROADtools', description: { zh: 'Azure AD 互動框架，支援列舉、資料收集與攻擊', en: 'Azure AD interaction framework supporting enumeration, data collection, and attacks', ja: '列挙・データ収集・攻撃をサポートする Azure AD 操作フレームワーク' }, tags: ['Azure AD', 'Python', '列舉', '互動'] },
+  { name: 'AADInternals', type: 'azure', url: 'https://github.com/Gerenios/AADInternals', description: { zh: 'Azure AD 與 Office 365 管理 PowerShell 模組，支援攻防兩用', en: 'Azure AD and Office 365 management PowerShell module supporting both offensive and defensive use', ja: '攻撃・防御の両用途をサポートする Azure AD および Office 365 管理 PowerShell モジュール' }, tags: ['Azure AD', 'O365', 'PowerShell', '管理'] },
+  { name: 'Stormspotter', type: 'azure', url: 'https://github.com/Azure/Stormspotter', description: { zh: '產生 Azure 訂閱資源攻擊圖，視覺化 Azure 安全狀況', en: 'Generate attack graphs for Azure subscription resources to visualize the Azure security posture', ja: 'Azure サブスクリプションリソースの攻撃グラフを生成して Azure のセキュリティ状況を可視化する' }, tags: ['Azure', '攻擊圖', '視覺化', 'Microsoft'] },
+  { name: 'MicroBurst', type: 'azure', url: 'https://github.com/NetSPI/MicroBurst', description: { zh: 'Azure 服務發現、弱點稽核與後滲透 PowerShell 工具集', en: 'PowerShell toolkit for Azure service discovery, vulnerability auditing, and post-exploitation', ja: 'Azure サービス検出、脆弱性監査、ポストエクスプロイト向け PowerShell ツールキット' }, tags: ['Azure', 'PowerShell', '稽核', '後滲透'] }
 ];
 
 const DEFENSE_CHECKLIST = [
   {
-    category: '管理員憑證保護',
+    category: { zh: '管理員憑證保護', en: 'Admin Credential Protection', ja: '管理者認証情報の保護' },
     priority: 'critical',
     items: [
       {
-        text: '部署 LAPS 管理本機管理員密碼',
-        detail: '避免使用相同本機管理員密碼導致橫向移動',
+        text: { zh: '部署 LAPS 管理本機管理員密碼', en: 'Deploy LAPS to manage local administrator passwords', ja: 'LAPS を展開してローカル管理者パスワードを管理する' },
+        detail: { zh: '避免使用相同本機管理員密碼導致橫向移動', en: 'Prevent lateral movement from shared local admin passwords', ja: '同一ローカル管理者パスワードによる横移動を防止する' },
         steps: [
           { type: 'cmd', text: '# 安裝 LAPS Schema 擴充（在 DC 以 Schema Admin 執行）\nImport-Module AdmPwd.PS\nUpdate-AdmPwdADSchema' },
           { type: 'cmd', text: '# 授予電腦帳戶自行回報密碼的權限\nSet-AdmPwdComputerSelfPermission -OrgUnit "OU=Workstations,DC=corp,DC=local"' },
           { type: 'cmd', text: '# 授予特定群組讀取 LAPS 密碼的權限\nSet-AdmPwdReadPasswordPermission -OrgUnit "OU=Workstations,DC=corp,DC=local" -AllowedPrincipals "CORP\\HelpDesk"' },
-          { type: 'info', text: 'GPO 設定路徑：Computer Configuration → Administrative Templates → LAPS → Enable local admin password management → Enabled；Password Settings 設定長度 ≥ 15、複雜度開啟' },
+          { type: 'info', text: { zh: 'GPO 設定路徑：Computer Configuration → Administrative Templates → LAPS → Enable local admin password management → Enabled；Password Settings 設定長度 ≥ 15、複雜度開啟', en: 'GPO path: Computer Configuration → Administrative Templates → LAPS → Enable local admin password management → Enabled; set Password Settings length ≥ 15 and enable complexity', ja: 'GPO パス: コンピューターの構成 → 管理用テンプレート → LAPS → ローカル管理者パスワード管理を有効にする → 有効; パスワード設定で長さ ≥ 15、複雑さを有効に設定' } },
           { type: 'cmd', text: '# 驗證部署結果\nGet-ADComputer -Filter * -Properties ms-Mcs-AdmPwdExpirationTime | Where-Object { $_."ms-Mcs-AdmPwdExpirationTime" -ne $null }' }
         ]
       },
       {
-        text: '啟用 RDP Restricted Admin Mode',
-        detail: '防止憑證暴露在遠端系統',
+        text: { zh: '啟用 RDP Restricted Admin Mode', en: 'Enable RDP Restricted Admin Mode', ja: 'RDP 制限付き管理者モードを有効にする' },
+        detail: { zh: '防止憑證暴露在遠端系統', en: 'Prevent credentials from being exposed on remote systems', ja: 'リモートシステムへの認証情報の露出を防止する' },
         steps: [
           { type: 'cmd', text: '# 在目標系統啟用 Restricted Admin Mode\nreg add "HKLM\\System\\CurrentControlSet\\Control\\Lsa" /v DisableRestrictedAdmin /t REG_DWORD /d 0 /f' },
-          { type: 'info', text: '使用 Restricted Admin 連線：mstsc /v:目標主機 /RestrictedAdmin' },
-          { type: 'info', text: 'GPO 強制啟用：Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options → "Require use of Restricted Admin Mode for Remote Desktop connections"' },
-          { type: 'warn', text: '注意：Restricted Admin Mode 本身可能遭受 Pass-the-Hash 攻擊，應搭配 Protected Users 群組使用' }
+          { type: 'info', text: { zh: '使用 Restricted Admin 連線：mstsc /v:目標主機 /RestrictedAdmin', en: 'Connect using Restricted Admin: mstsc /v:<target_host> /RestrictedAdmin', ja: '制限付き管理者で接続: mstsc /v:ターゲットホスト /RestrictedAdmin' } },
+          { type: 'info', text: { zh: 'GPO 強制啟用：Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options → "Require use of Restricted Admin Mode for Remote Desktop connections"', en: 'Force via GPO: Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options → "Require use of Restricted Admin Mode for Remote Desktop connections"', ja: 'GPO で強制: コンピューターの構成 → Windows の設定 → セキュリティ設定 → ローカルポリシー → セキュリティオプション → "リモートデスクトップ接続に制限付き管理者モードの使用を要求する"' } },
+          { type: 'warn', text: { zh: '注意：Restricted Admin Mode 本身可能遭受 Pass-the-Hash 攻擊，應搭配 Protected Users 群組使用', en: 'Warning: Restricted Admin Mode itself may be vulnerable to Pass-the-Hash attacks; use in conjunction with the Protected Users group', ja: '注意: 制限付き管理者モード自体が Pass-the-Hash 攻撃に対して脆弱な場合があります。Protected Users グループと併用してください' } }
         ]
       },
       {
-        text: '確保所有管理員帳戶設定「敏感且不可委派」',
-        detail: '防止 Kerberos 委派攻擊',
+        text: { zh: '確保所有管理員帳戶設定「敏感且不可委派」', en: 'Ensure all admin accounts are set to "Account is sensitive and cannot be delegated"', ja: '全管理者アカウントに「アカウントは重要であり、委任できない」を設定する' },
+        detail: { zh: '防止 Kerberos 委派攻擊', en: 'Prevent Kerberos delegation attacks', ja: 'Kerberos 委任攻撃を防止する' },
         steps: [
           { type: 'cmd', text: '# 批次設定 Domain Admins 成員為不可委派\nGet-ADGroupMember "Domain Admins" -Recursive | Where-Object { $_.objectClass -eq "user" } | Set-ADUser -AccountNotDelegated $true' },
           { type: 'cmd', text: '# 驗證設定結果\nGet-ADUser -Filter { AccountNotDelegated -ne $true } -SearchBase "OU=Admins,DC=corp,DC=local" | Select Name, AccountNotDelegated' },
-          { type: 'info', text: 'GUI 設定：Active Directory Users and Computers → 帳戶屬性 → Account 頁籤 → 勾選 "Account is sensitive and cannot be delegated"' }
+          { type: 'info', text: { zh: 'GUI 設定：Active Directory Users and Computers → 帳戶屬性 → Account 頁籤 → 勾選 "Account is sensitive and cannot be delegated"', en: 'GUI setting: Active Directory Users and Computers → Account properties → Account tab → Check "Account is sensitive and cannot be delegated"', ja: 'GUI 設定: Active Directory ユーザーとコンピューター → アカウントのプロパティ → アカウント タブ → "アカウントは重要なので委任できない" にチェック' } }
         ]
       },
       {
-        text: '將管理員帳戶加入 Protected Users 群組',
-        detail: '需要 Windows Server 2012 R2+ 功能等級',
+        text: { zh: '將管理員帳戶加入 Protected Users 群組', en: 'Add admin accounts to the Protected Users group', ja: '管理者アカウントを Protected Users グループに追加する' },
+        detail: { zh: '需要 Windows Server 2012 R2+ 功能等級', en: 'Requires Windows Server 2012 R2+ functional level', ja: 'Windows Server 2012 R2 以上の機能レベルが必要' },
         steps: [
           { type: 'cmd', text: '# 將管理員帳戶加入 Protected Users\nAdd-ADGroupMember -Identity "Protected Users" -Members "AdminUser1","AdminUser2"' },
-          { type: 'info', text: 'Protected Users 效果：禁止 NTLM/RC4/DES 認證、TGT 存活時間縮短至 4 小時、無法使用 CredSSP / WDigest / Digest 認證' },
-          { type: 'warn', text: '注意：加入後若服務帳戶依賴 NTLM 可能造成認證失敗，先在測試環境驗證' },
+          { type: 'info', text: { zh: 'Protected Users 效果：禁止 NTLM/RC4/DES 認證、TGT 存活時間縮短至 4 小時、無法使用 CredSSP / WDigest / Digest 認證', en: 'Protected Users effects: Disables NTLM/RC4/DES authentication, reduces TGT lifetime to 4 hours, disables CredSSP/WDigest/Digest authentication', ja: 'Protected Users の効果: NTLM/RC4/DES 認証を無効化、TGT の有効期間を 4 時間に短縮、CredSSP/WDigest/Digest 認証を無効化' } },
+          { type: 'warn', text: { zh: '注意：加入後若服務帳戶依賴 NTLM 可能造成認證失敗，先在測試環境驗證', en: 'Warning: If service accounts rely on NTLM, adding them may cause authentication failures; test in a non-production environment first', ja: '注意: サービスアカウントが NTLM に依存している場合、追加すると認証が失敗する可能性があります。事前にテスト環境で確認してください' } },
           { type: 'cmd', text: '# 確認網域功能等級 ≥ Windows Server 2012 R2\n(Get-ADDomain).DomainMode' }
         ]
       },
       {
-        text: '停用所有非活躍管理員帳戶',
-        detail: '定期審查並移除不需要的特權帳戶',
+        text: { zh: '停用所有非活躍管理員帳戶', en: 'Disable all inactive admin accounts', ja: 'すべての非アクティブな管理者アカウントを無効化する' },
+        detail: { zh: '定期審查並移除不需要的特權帳戶', en: 'Periodically review and remove unnecessary privileged accounts', ja: '定期的に不要な特権アカウントを確認・削除する' },
         steps: [
           { type: 'cmd', text: '# 列出 90 天未使用的特權帳戶\nSearch-ADAccount -AccountInactive -TimeSpan (New-TimeSpan -Days 90) -UsersOnly | Where-Object { (Get-ADUser $_ -Properties MemberOf).MemberOf -match "Admin" }' },
           { type: 'cmd', text: '# 停用指定帳戶\nDisable-ADAccount -Identity "stale_admin"\nMove-ADObject -Identity "CN=stale_admin,OU=Admins,DC=corp,DC=local" -TargetPath "OU=Disabled,DC=corp,DC=local"' },
-          { type: 'info', text: '建議建立自動化排程任務，每月產生閒置特權帳戶報告並通知審查' }
+          { type: 'info', text: { zh: '建議建立自動化排程任務，每月產生閒置特權帳戶報告並通知審查', en: 'Recommend creating an automated scheduled task to generate monthly inactive privileged account reports for review', ja: '毎月アイドル特権アカウントレポートを生成してレビューを通知する自動スケジュールタスクの作成を推奨' } }
         ]
       }
     ]
   },
   {
-    category: 'Kerberos 與 AD 安全',
+    category: { zh: 'Kerberos 與 AD 安全', en: 'Kerberos & AD Security', ja: 'Kerberos と AD のセキュリティ' },
     priority: 'high',
     items: [
       {
-        text: '每年至少一次重設 KRBTGT 帳戶密碼',
-        detail: '防止 Golden Ticket 長期有效，需重設兩次（延遲 10 小時）',
+        text: { zh: '每年至少一次重設 KRBTGT 帳戶密碼', en: 'Reset the KRBTGT account password at least once a year', ja: '少なくとも年 1 回 KRBTGT アカウントのパスワードをリセットする' },
+        detail: { zh: '防止 Golden Ticket 長期有效，需重設兩次（延遲 10 小時）', en: 'Prevent Golden Tickets from remaining valid long-term; requires two resets (10 hours apart)', ja: 'Golden Ticket が長期間有効になるのを防ぐ。2 回のリセットが必要（10 時間の間隔）' },
         steps: [
-          { type: 'info', text: '下載 Microsoft 官方腳本：New-KrbtgtKeys.ps1 (https://github.com/microsoft/New-KrbtgtKeys.ps1)' },
+          { type: 'info', text: { zh: '下載 Microsoft 官方腳本：New-KrbtgtKeys.ps1 (https://github.com/microsoft/New-KrbtgtKeys.ps1)', en: 'Download the official Microsoft script: New-KrbtgtKeys.ps1 (https://github.com/microsoft/New-KrbtgtKeys.ps1)', ja: 'Microsoft 公式スクリプトをダウンロード: New-KrbtgtKeys.ps1 (https://github.com/microsoft/New-KrbtgtKeys.ps1)' } },
           { type: 'cmd', text: '# 第一次重設（在 PDC Emulator 上執行）\n.\\New-KrbtgtKeys.ps1 -OperationMode 1' },
-          { type: 'warn', text: '等待 ≥ 10 小時（最大 Kerberos TGT 存活時間），確保所有 DC 完成複寫並讓現有 TGT 過期' },
+          { type: 'warn', text: { zh: '等待 ≥ 10 小時（最大 Kerberos TGT 存活時間），確保所有 DC 完成複寫並讓現有 TGT 過期', en: 'Wait ≥ 10 hours (maximum Kerberos TGT lifetime) to ensure all DCs have replicated and existing TGTs have expired', ja: '≥ 10 時間待機（最大 Kerberos TGT 有効期間）して、すべての DC が複製を完了し既存の TGT が期限切れになることを確認する' } },
           { type: 'cmd', text: '# 驗證 DC 複寫正常後執行第二次重設\nrepadmin /replsummary\n.\\New-KrbtgtKeys.ps1 -OperationMode 1' },
           { type: 'cmd', text: '# 驗證 KRBTGT 密碼已更新（確認 PasswordLastSet 時間）\nGet-ADUser krbtgt -Properties PasswordLastSet | Select PasswordLastSet' }
         ]
       },
       {
-        text: '限制 AD 管理員成員（DA、EA、Schema Admins）',
-        detail: '僅使用自訂委派群組，避免過度授權',
+        text: { zh: '限制 AD 管理員成員（DA、EA、Schema Admins）', en: 'Restrict AD admin group membership (DA, EA, Schema Admins)', ja: 'AD 管理者グループのメンバーシップを制限する（DA、EA、Schema Admins）' },
+        detail: { zh: '僅使用自訂委派群組，避免過度授權', en: 'Use only custom delegation groups to avoid over-privileging', ja: 'カスタム委任グループのみを使用して過剰な権限付与を避ける' },
         steps: [
           { type: 'cmd', text: '# 檢查各高權限群組成員數\n@("Domain Admins","Enterprise Admins","Schema Admins") | ForEach-Object { "$_ : $((Get-ADGroupMember $_ -Recursive | Measure-Object).Count) 個成員" }' },
-          { type: 'info', text: 'Domain Admins 建議成員數 ≤ 5；Enterprise Admins 平時應為空，需要時才臨時加入；Schema Admins 平時應為空' },
+          { type: 'info', text: { zh: 'Domain Admins 建議成員數 ≤ 5；Enterprise Admins 平時應為空，需要時才臨時加入；Schema Admins 平時應為空', en: 'Domain Admins: ≤ 5 members recommended; Enterprise Admins: should be empty by default, added temporarily when needed; Schema Admins: should be empty by default', ja: 'Domain Admins: 推奨メンバー数 ≤ 5; Enterprise Admins: 通常は空にし、必要なときだけ一時的に追加; Schema Admins: 通常は空にする' } },
           { type: 'cmd', text: '# 移除不必要的成員\nRemove-ADGroupMember -Identity "Domain Admins" -Members "UserToRemove" -Confirm:$false' },
-          { type: 'info', text: '建議建立自訂委派群組取代直接使用 DA，例如：Server-Admins（僅 Tier 1 登入）、Workstation-Admins（僅 Tier 2 登入）' }
+          { type: 'info', text: { zh: '建議建立自訂委派群組取代直接使用 DA，例如：Server-Admins（僅 Tier 1 登入）、Workstation-Admins（僅 Tier 2 登入）', en: 'Recommend creating custom delegation groups instead of using DA directly, e.g.: Server-Admins (Tier 1 login only), Workstation-Admins (Tier 2 login only)', ja: 'DA を直接使用する代わりにカスタム委任グループを作成することを推奨。例: Server-Admins（Tier 1 ログインのみ）、Workstation-Admins（Tier 2 ログインのみ）' } }
         ]
       },
       {
-        text: '實施三層（Tier）管理模式',
-        detail: 'Tier 0: DC/AD, Tier 1: Server, Tier 2: Workstation',
+        text: { zh: '實施三層（Tier）管理模式', en: 'Implement a three-tier (Tier) administration model', ja: '3 層（Tier）管理モデルを実装する' },
+        detail: { zh: 'Tier 0: DC/AD, Tier 1: 伺服器, Tier 2: 工作站', en: 'Tier 0: DC/AD, Tier 1: Server, Tier 2: Workstation', ja: 'Tier 0: DC/AD, Tier 1: サーバー, Tier 2: ワークステーション' },
         steps: [
-          { type: 'info', text: 'Tier 0（最高敏感）：Domain Controllers、AD、PKI、ADFS。僅透過 Privileged Access Workstation (PAW) 管理，管理帳戶不可登入 Tier 1/2 系統' },
-          { type: 'info', text: 'Tier 1（高敏感）：成員伺服器、應用伺服器。使用獨立 Tier 1 管理員帳戶，不可登入 Tier 0' },
-          { type: 'info', text: 'Tier 2（一般）：Workstations、使用者裝置。使用獨立 Tier 2 管理員帳戶' },
+          { type: 'info', text: { zh: 'Tier 0（最高敏感）：Domain Controllers、AD、PKI、ADFS。僅透過 Privileged Access Workstation (PAW) 管理，管理帳戶不可登入 Tier 1/2 系統', en: 'Tier 0 (most sensitive): Domain Controllers, AD, PKI, ADFS. Manage only via Privileged Access Workstation (PAW); admin accounts must not log into Tier 1/2 systems', ja: 'Tier 0（最高機密）: Domain Controllers、AD、PKI、ADFS。特権アクセスワークステーション（PAW）経由でのみ管理し、管理アカウントは Tier 1/2 システムにログインしてはならない' } },
+          { type: 'info', text: { zh: 'Tier 1（高敏感）：成員伺服器、應用伺服器。使用獨立 Tier 1 管理員帳戶，不可登入 Tier 0', en: 'Tier 1 (high sensitivity): Member servers, application servers. Use dedicated Tier 1 admin accounts; must not log into Tier 0', ja: 'Tier 1（高機密）: メンバーサーバー、アプリケーションサーバー。専用の Tier 1 管理者アカウントを使用し、Tier 0 にはログインしてはならない' } },
+          { type: 'info', text: { zh: 'Tier 2（一般）：Workstations、使用者裝置。使用獨立 Tier 2 管理員帳戶', en: 'Tier 2 (standard): Workstations, user devices. Use dedicated Tier 2 admin accounts', ja: 'Tier 2（一般）: ワークステーション、ユーザーデバイス。専用の Tier 2 管理者アカウントを使用する' } },
           { type: 'cmd', text: '# GPO 限制 Tier 0 帳戶只能登入 DC（套用至 Domain Controllers OU）\n# Security Settings → Local Policies → User Rights Assignment:\n# "Allow log on locally" → 僅 Tier 0 管理員群組\n# "Deny log on locally" → Tier 1 / Tier 2 帳戶' },
           { type: 'cmd', text: '# 建立 Tier 0 帳戶登入限制（Authentication Policy）\nNew-ADAuthenticationPolicy -Name "Tier0-Policy" -UserAllowedToAuthenticateTo "O:SYG:SYD:(XA;OICI;CR;;;WD;(@USER.ad://ext/AuthenticationSilo == \\"Tier0Silo\\"))"' }
         ]
       },
       {
-        text: '稽核 Kerberos 委派設定',
-        detail: '識別並移除不必要的無限制委派',
+        text: { zh: '稽核 Kerberos 委派設定', en: 'Audit Kerberos delegation configuration', ja: 'Kerberos 委任の設定を監査する' },
+        detail: { zh: '識別並移除不必要的無限制委派', en: 'Identify and remove unnecessary unconstrained delegation', ja: '不要な無制限委任を特定して削除する' },
         steps: [
           { type: 'cmd', text: '# 查詢所有使用者帳戶的無限制委派\nGet-ADUser -Filter { TrustedForDelegation -eq $true } -Properties TrustedForDelegation,ServicePrincipalName | Select Name,SamAccountName,ServicePrincipalName' },
           { type: 'cmd', text: '# 查詢所有電腦帳戶的無限制委派（DC 除外）\nGet-ADComputer -Filter { TrustedForDelegation -eq $true } -Properties TrustedForDelegation | Where-Object { $_.DistinguishedName -notmatch "OU=Domain Controllers" } | Select Name' },
           { type: 'cmd', text: '# 查詢受限制委派（Constrained Delegation）清單\nGet-ADObject -Filter { msDS-AllowedToDelegateTo -ne "$null" } -Properties msDS-AllowedToDelegateTo | Select Name,"msDS-AllowedToDelegateTo"' },
           { type: 'cmd', text: '# 移除不必要的無限制委派\nSet-ADUser -Identity "svc_account" -TrustedForDelegation $false' },
-          { type: 'info', text: '建議使用 BloodHound 視覺化分析委派攻擊路徑，找出可從非特權帳戶到達 DC 的委派鏈' }
+          { type: 'info', text: { zh: '建議使用 BloodHound 視覺化分析委派攻擊路徑，找出可從非特權帳戶到達 DC 的委派鏈', en: 'Recommend using BloodHound to visually analyze delegation attack paths and find delegation chains from non-privileged accounts to DCs', ja: 'BloodHound を使用して委任攻撃経路を視覚的に分析し、非特権アカウントから DC に到達できる委任チェーンを見つけることを推奨' } }
         ]
       },
       {
-        text: '使用 Managed Service Accounts (gMSA) 取代服務帳戶',
-        detail: '防止 Kerberoasting，密碼由系統自動管理',
+        text: { zh: '使用 Managed Service Accounts (gMSA) 取代服務帳戶', en: 'Use Managed Service Accounts (gMSA) instead of service accounts', ja: 'サービスアカウントの代わりに Managed Service Accounts (gMSA) を使用する' },
+        detail: { zh: '防止 Kerberoasting，密碼由系統自動管理', en: 'Prevent Kerberoasting; passwords are automatically managed by the system', ja: 'Kerberoasting を防止する。パスワードはシステムによって自動管理される' },
         steps: [
           { type: 'cmd', text: '# 建立 Key Distribution Service Root Key（每個網域只需一次）\nAdd-KdsRootKey -EffectiveImmediately  # 生產環境建議改用 -EffectiveTime (Get-Date).AddHours(-10)' },
           { type: 'cmd', text: '# 建立 gMSA\nNew-ADServiceAccount -Name "svc-webapp" `\n  -DNSHostName "webapp.corp.local" `\n  -PrincipalsAllowedToRetrieveManagedPassword "WebServers"  # 可用電腦帳戶或群組' },
           { type: 'cmd', text: '# 在目標伺服器安裝並測試 gMSA\nInstall-ADServiceAccount -Identity "svc-webapp"\nTest-ADServiceAccount -Identity "svc-webapp"' },
-          { type: 'info', text: '服務設定：services.msc → 服務屬性 → Log On → This account 填入 "CORP\\svc-webapp$"（注意尾端 $），密碼欄留空' },
+          { type: 'info', text: { zh: '服務設定：services.msc → 服務屬性 → Log On → This account 填入 "CORP\\svc-webapp$"（注意尾端 $），密碼欄留空', en: 'Service configuration: services.msc → Service properties → Log On → Set "This account" to "CORP\\svc-webapp$" (note the trailing $); leave the password field blank', ja: 'サービス設定: services.msc → サービスのプロパティ → ログオン → 「このアカウント」に "CORP\\svc-webapp$"（末尾の $ に注意）を入力し、パスワード欄は空白のままにする' } },
           { type: 'cmd', text: '# 確認舊服務帳戶的 SPN，重新指向 gMSA\nGet-ADUser "old_svc" -Properties ServicePrincipalName | Select ServicePrincipalName' }
         ]
       }
     ]
   },
   {
-    category: '網路與系統安全',
+    category: { zh: '網路與系統安全', en: 'Network & System Security', ja: 'ネットワークとシステムのセキュリティ' },
     priority: 'high',
     items: [
       {
-        text: '封鎖 DC 的網際網路存取',
-        detail: 'DC 只應存取內部系統',
+        text: { zh: '封鎖 DC 的網際網路存取', en: 'Block internet access from DCs', ja: 'DC のインターネットアクセスをブロックする' },
+        detail: { zh: 'DC 只應存取內部系統', en: 'DCs should only access internal systems', ja: 'DC は内部システムにのみアクセスするべきである' },
         steps: [
           { type: 'cmd', text: '# Windows Firewall GPO（套用至 Domain Controllers OU）\n# Computer Configuration → Windows Settings → Security Settings → Windows Firewall\n# Outbound Rules → New Rule → Block TCP 80, 443 for All Programs' },
-          { type: 'info', text: '建議在網路層（防火牆/路由器）封鎖 DC IP 段（通常 /24）的所有 Outbound 連線，僅允許：DNS(53)、LDAP(389/636)、Kerberos(88)、AD Replication(135,49152-65535) 到指定目標' },
-          { type: 'cmd', text: '# 測試 DC 是否無法存取外部\nInvoke-Command -ComputerName DC01 { Test-NetConnection -ComputerName "8.8.8.8" -Port 80 }' }
+          { type: 'info', text: { zh: '建議在網路層（防火牆/路由器）封鎖 DC IP 段（通常 /24）的所有 Outbound 連線，僅允許：DNS(53)、LDAP(389/636)、Kerberos(88)、AD Replication(135,49152-65535) 到指定目標', en: 'Recommend blocking all outbound connections from the DC IP subnet (/24) at the network layer (firewall/router), allowing only: DNS(53), LDAP(389/636), Kerberos(88), AD Replication(135,49152-65535) to specified targets', ja: 'ネットワーク層（ファイアウォール/ルーター）で DC IP サブネット（通常 /24）からのすべてのアウトバウンド接続をブロックし、指定したターゲットへの DNS(53)、LDAP(389/636)、Kerberos(88)、AD レプリケーション(135,49152-65535) のみを許可することを推奨' } },
+          { type: 'cmd', text: '# テスト DC は外部にアクセスできないか確認\nInvoke-Command -ComputerName DC01 { Test-NetConnection -ComputerName "8.8.8.8" -Port 80 }' }
         ]
       },
       {
-        text: '停用 SMBv1',
-        detail: '防止 EternalBlue (CVE-2017-0143) 等攻擊',
+        text: { zh: '停用 SMBv1', en: 'Disable SMBv1', ja: 'SMBv1 を無効化する' },
+        detail: { zh: '防止 EternalBlue (CVE-2017-0143) 等攻擊', en: 'Prevent EternalBlue (CVE-2017-0143) and similar attacks', ja: 'EternalBlue (CVE-2017-0143) などの攻撃を防止する' },
         steps: [
           { type: 'cmd', text: '# 檢查目前 SMBv1 狀態\nGet-SmbServerConfiguration | Select EnableSMB1Protocol\nGet-WindowsOptionalFeature -Online -FeatureName SMB1Protocol' },
           { type: 'cmd', text: '# 停用 SMBv1（伺服器端）\nSet-SmbServerConfiguration -EnableSMB1Protocol $false -Force\n\n# 停用 SMBv1（客戶端）\nSet-SmbClientConfiguration -EnableSMB1Protocol $false -Force' },
           { type: 'cmd', text: '# 完全移除 SMBv1 功能\nDisable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -NoRestart' },
-          { type: 'info', text: 'GPO 強制停用：Computer Configuration → Administrative Templates → Network → Lanman Server → Enable insecure guest logons → Disabled' }
+          { type: 'info', text: { zh: 'GPO 強制停用：Computer Configuration → Administrative Templates → Network → Lanman Server → Enable insecure guest logons → Disabled', en: 'Force disable via GPO: Computer Configuration → Administrative Templates → Network → Lanman Server → Enable insecure guest logons → Disabled', ja: 'GPO で強制無効化: コンピューターの構成 → 管理用テンプレート → ネットワーク → Lanman サーバー → セキュリティで保護されていないゲストログオンを有効にする → 無効' } }
         ]
       },
       {
-        text: '停用 LLMNR 和 NetBIOS-NS',
-        detail: '防止 Responder 毒化攻擊',
+        text: { zh: '停用 LLMNR 和 NetBIOS-NS', en: 'Disable LLMNR and NetBIOS-NS', ja: 'LLMNR および NetBIOS-NS を無効化する' },
+        detail: { zh: '防止 Responder 毒化攻擊', en: 'Prevent Responder poisoning attacks', ja: 'Responder ポイズニング攻撃を防止する' },
         steps: [
-          { type: 'info', text: 'GPO 停用 LLMNR：Computer Configuration → Administrative Templates → Network → DNS Client → "Turn off multicast name resolution" → Enabled' },
+          { type: 'info', text: { zh: 'GPO 停用 LLMNR：Computer Configuration → Administrative Templates → Network → DNS Client → "Turn off multicast name resolution" → Enabled', en: 'Disable LLMNR via GPO: Computer Configuration → Administrative Templates → Network → DNS Client → "Turn off multicast name resolution" → Enabled', ja: 'GPO で LLMNR を無効化: コンピューターの構成 → 管理用テンプレート → ネットワーク → DNS クライアント → "マルチキャスト名前解決をオフにする" → 有効' } },
           { type: 'cmd', text: '# PowerShell 批次停用 NetBIOS over TCP/IP（所有 NIC）\nGet-WmiObject Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled } | ForEach-Object { $_.SetTcpipNetbios(2) }' },
-          { type: 'info', text: 'DHCP 停用 NetBIOS：在 DHCP 伺服器設定 Scope Options → 043 Vendor Specific Info，或各 NIC 屬性 → TCP/IP 進階設定 → WINS → Disable NetBIOS over TCP/IP' },
+          { type: 'info', text: { zh: 'DHCP 停用 NetBIOS：在 DHCP 伺服器設定 Scope Options → 043 Vendor Specific Info，或各 NIC 屬性 → TCP/IP 進階設定 → WINS → Disable NetBIOS over TCP/IP', en: 'Disable NetBIOS via DHCP: set Scope Options → 043 Vendor Specific Info on the DHCP server, or each NIC properties → TCP/IP Advanced Settings → WINS → Disable NetBIOS over TCP/IP', ja: 'DHCP で NetBIOS を無効化: DHCP サーバーで Scope Options → 043 Vendor Specific Info を設定するか、各 NIC のプロパティ → TCP/IP 詳細設定 → WINS → TCP/IP 上の NetBIOS を無効にする' } },
           { type: 'cmd', text: '# 驗證：用 Responder 或 tcpdump 監聽是否還有 LLMNR/NBT-NS 廣播\n# (需在測試環境執行) Get-NetFirewallRule | Where-Object { $_.DisplayName -match "LLMNR" }' }
         ]
       },
       {
-        text: '移除不再需要的 Domain Trust',
-        detail: '並為保留的信任啟用 SID Filtering',
+        text: { zh: '移除不再需要的 Domain Trust', en: 'Remove unnecessary Domain Trusts', ja: '不要なドメイン信頼関係を削除する' },
+        detail: { zh: '並為保留的信任啟用 SID Filtering', en: 'And enable SID Filtering for retained trusts', ja: '保持する信頼関係には SID フィルタリングを有効にする' },
         steps: [
           { type: 'cmd', text: '# 列出所有網域信任關係\nGet-ADTrust -Filter * | Select Name,Direction,TrustType,SIDFilteringQuarantined,SIDFilteringForestAware | Format-Table -AutoSize' },
           { type: 'cmd', text: '# 移除不再需要的信任\nRemove-ADTrust -Identity "CN=old-partner.com,CN=System,DC=corp,DC=local" -Confirm:$false' },
           { type: 'cmd', text: '# 為保留的外部信任啟用 SID Filtering\nnetdom trust corp.local /domain:partner.com /quarantine:yes\n\n# 驗證\nGet-ADTrust -Identity "partner.com" | Select SIDFilteringQuarantined' },
-          { type: 'warn', text: '注意：SID Filtering 可能影響跨網域群組成員的存取，啟用前需充分測試' }
+          { type: 'warn', text: { zh: '注意：SID Filtering 可能影響跨網域群組成員的存取，啟用前需充分測試', en: 'Warning: SID Filtering may affect access for cross-domain group members; test thoroughly before enabling', ja: '注意: SID フィルタリングはドメイン間グループメンバーのアクセスに影響する可能性があります。有効化前に十分にテストしてください' } }
         ]
       },
       {
-        text: '設定所有認證為 NTLMv2 only（拒絕 LM/NTLM）',
-        detail: '防止降級攻擊',
+        text: { zh: '設定所有認證為 NTLMv2 only（拒絕 LM/NTLM）', en: 'Configure all authentication to NTLMv2 only (refuse LM/NTLM)', ja: 'すべての認証を NTLMv2 のみに設定する（LM/NTLM を拒否）' },
+        detail: { zh: '防止降級攻擊', en: 'Prevent downgrade attacks', ja: 'ダウングレード攻撃を防止する' },
         steps: [
-          { type: 'info', text: 'GPO 路徑：Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options' },
-          { type: 'info', text: '"Network security: LAN Manager authentication level" → 選擇 "Send NTLMv2 response only. Refuse LM & NTLM"（值為 5）' },
+          { type: 'info', text: { zh: 'GPO 路徑：Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options', en: 'GPO path: Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options', ja: 'GPO パス: コンピューターの構成 → Windows の設定 → セキュリティ設定 → ローカルポリシー → セキュリティオプション' } },
+          { type: 'info', text: { zh: '"Network security: LAN Manager authentication level" → 選擇 "Send NTLMv2 response only. Refuse LM & NTLM"（值為 5）', en: '"Network security: LAN Manager authentication level" → Select "Send NTLMv2 response only. Refuse LM & NTLM" (value 5)', ja: '"ネットワーク セキュリティ: LAN Manager 認証レベル" → "NTLMv2 応答のみ送信。LM と NTLM を拒否する" を選択（値 5）' } },
           { type: 'cmd', text: '# 登錄直接設定（值 5 = NTLMv2 only, Refuse LM & NTLM）\nreg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa" /v LmCompatibilityLevel /t REG_DWORD /d 5 /f' },
           { type: 'cmd', text: '# 同時停用 LM Hash 儲存\nreg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa" /v NoLMHash /t REG_DWORD /d 1 /f' },
-          { type: 'warn', text: '注意：先確認環境中無 Windows XP / Server 2003 等舊系統仍需要 NTLM/LM 認證，否則會中斷服務' }
+          { type: 'warn', text: { zh: '注意：先確認環境中無 Windows XP / Server 2003 等舊系統仍需要 NTLM/LM 認證，否則會中斷服務', en: 'Warning: First verify that no legacy systems such as Windows XP or Server 2003 still require NTLM/LM authentication, or services will be interrupted', ja: '注意: Windows XP や Server 2003 などのレガシーシステムが NTLM/LM 認証を必要としていないことを事前に確認してください。そうしないとサービスが中断されます' } }
         ]
       }
     ]
   },
   {
-    category: '日誌與監控',
+    category: { zh: '日誌與監控', en: 'Logging & Monitoring', ja: 'ログと監視' },
     priority: 'high',
     items: [
       {
-        text: '啟用增強型稽核策略',
-        detail: '啟用成功/失敗的認證、帳戶管理、目錄服務存取等',
+        text: { zh: '啟用增強型稽核策略', en: 'Enable advanced audit policy', ja: '高度な監査ポリシーを有効にする' },
+        detail: { zh: '啟用成功/失敗的認證、帳戶管理、目錄服務存取等', en: 'Enable success/failure auditing for authentication, account management, directory service access, etc.', ja: '認証・アカウント管理・ディレクトリサービスアクセスなどの成功/失敗の監査を有効にする' },
         steps: [
           { type: 'cmd', text: '# 檢查目前稽核設定\nauditpol /get /category:*' },
-          { type: 'info', text: 'GPO 路徑：Computer Configuration → Windows Settings → Security Settings → Advanced Audit Policy Configuration → Audit Policies' },
-          { type: 'info', text: '建議啟用（Success & Failure）：Account Logon / Account Management / DS Access (Directory Service Changes) / Logon/Logoff / Object Access / Policy Change / Privilege Use / System' },
+          { type: 'info', text: { zh: 'GPO 路徑：Computer Configuration → Windows Settings → Security Settings → Advanced Audit Policy Configuration → Audit Policies', en: 'GPO path: Computer Configuration → Windows Settings → Security Settings → Advanced Audit Policy Configuration → Audit Policies', ja: 'GPO パス: コンピューターの構成 → Windows の設定 → セキュリティ設定 → 高度な監査ポリシーの構成 → 監査ポリシー' } },
+          { type: 'info', text: { zh: '建議啟用（Success & Failure）：Account Logon / Account Management / DS Access (Directory Service Changes) / Logon/Logoff / Object Access / Policy Change / Privilege Use / System', en: 'Recommended to enable (Success & Failure): Account Logon / Account Management / DS Access (Directory Service Changes) / Logon/Logoff / Object Access / Policy Change / Privilege Use / System', ja: '有効化を推奨（成功と失敗）: アカウント ログオン / アカウント管理 / DS アクセス（ディレクトリ サービスの変更）/ ログオン/ログオフ / オブジェクト アクセス / ポリシーの変更 / 特権の使用 / システム' } },
           { type: 'cmd', text: '# 批次啟用關鍵稽核策略\nauditpol /set /subcategory:"Logon" /success:enable /failure:enable\nauditpol /set /subcategory:"Account Lockout" /success:enable /failure:enable\nauditpol /set /subcategory:"Kerberos Service Ticket Operations" /success:enable /failure:enable\nauditpol /set /subcategory:"Directory Service Changes" /success:enable /failure:enable' }
         ]
       },
       {
-        text: '啟用 PowerShell 模組與 ScriptBlock 日誌',
-        detail: '並集中轉發至 SIEM',
+        text: { zh: '啟用 PowerShell 模組與 ScriptBlock 日誌', en: 'Enable PowerShell Module and ScriptBlock logging', ja: 'PowerShell モジュールと ScriptBlock のログを有効にする' },
+        detail: { zh: '並集中轉發至 SIEM', en: 'And forward centrally to SIEM', ja: 'SIEM に集中転送する' },
         steps: [
-          { type: 'info', text: 'GPO 路徑：Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell' },
-          { type: 'info', text: '啟用以下三項：(1) Turn on Module Logging → Enabled，Module Names 填 * (2) Turn on PowerShell Script Block Logging → Enabled (3) Turn on Script Execution → Enabled' },
+          { type: 'info', text: { zh: 'GPO 路徑：Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell', en: 'GPO path: Computer Configuration → Administrative Templates → Windows Components → Windows PowerShell', ja: 'GPO パス: コンピューターの構成 → 管理用テンプレート → Windows コンポーネント → Windows PowerShell' } },
+          { type: 'info', text: { zh: '啟用以下三項：(1) Turn on Module Logging → Enabled，Module Names 填 * (2) Turn on PowerShell Script Block Logging → Enabled (3) Turn on Script Execution → Enabled', en: 'Enable the following three: (1) Turn on Module Logging → Enabled, Module Names set to * (2) Turn on PowerShell Script Block Logging → Enabled (3) Turn on Script Execution → Enabled', ja: '以下の 3 項目を有効にする: (1) モジュール ログを有効にする → 有効、モジュール名を * に設定 (2) PowerShell スクリプト ブロックのログを有効にする → 有効 (3) スクリプトの実行を有効にする → 有効' } },
           { type: 'cmd', text: '# 登錄方式啟用 ScriptBlock Logging\nreg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ScriptBlockLogging" /v EnableScriptBlockLogging /t REG_DWORD /d 1 /f\nreg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\ModuleLogging" /v EnableModuleLogging /t REG_DWORD /d 1 /f' },
-          { type: 'info', text: 'PowerShell 日誌儲存於：Event Log → Applications and Services Logs → Microsoft → Windows → PowerShell → Operational (Event ID 4103/4104)' }
+          { type: 'info', text: { zh: 'PowerShell 日誌儲存於：Event Log → Applications and Services Logs → Microsoft → Windows → PowerShell → Operational (Event ID 4103/4104)', en: 'PowerShell logs are stored in: Event Log → Applications and Services Logs → Microsoft → Windows → PowerShell → Operational (Event ID 4103/4104)', ja: 'PowerShell ログの保存場所: イベント ログ → アプリケーションとサービス ログ → Microsoft → Windows → PowerShell → 操作 (Event ID 4103/4104)' } }
         ]
       },
       {
-        text: '部署並設定 Sysmon',
-        detail: '使用 sysmon-modular 等成熟設定範本',
+        text: { zh: '部署並設定 Sysmon', en: 'Deploy and configure Sysmon', ja: 'Sysmon を展開して設定する' },
+        detail: { zh: '使用 sysmon-modular 等成熟設定範本', en: 'Use mature configuration templates such as sysmon-modular', ja: 'sysmon-modular などの成熟した設定テンプレートを使用する' },
         steps: [
-          { type: 'info', text: '下載 Sysmon：https://docs.microsoft.com/sysinternals/downloads/sysmon；建議使用 SwiftOnSecurity sysmon-config 或 sysmon-modular 作為設定基礎' },
+          { type: 'info', text: { zh: '下載 Sysmon：https://docs.microsoft.com/sysinternals/downloads/sysmon；建議使用 SwiftOnSecurity sysmon-config 或 sysmon-modular 作為設定基礎', en: 'Download Sysmon: https://docs.microsoft.com/sysinternals/downloads/sysmon; recommend using SwiftOnSecurity sysmon-config or sysmon-modular as a configuration baseline', ja: 'Sysmon のダウンロード: https://docs.microsoft.com/sysinternals/downloads/sysmon; SwiftOnSecurity の sysmon-config または sysmon-modular を設定のベースとして使用することを推奨' } },
           { type: 'cmd', text: '# 初次安裝（使用自訂設定檔）\nsysmon64.exe -accepteula -i sysmonconfig.xml' },
           { type: 'cmd', text: '# 更新設定檔（不中斷服務）\nsysmon64.exe -c sysmonconfig.xml' },
           { type: 'cmd', text: '# 驗證 Sysmon 運行狀態\nGet-Service Sysmon64\n# 確認日誌位置：Event Viewer → Applications and Services Logs → Microsoft → Windows → Sysmon → Operational' },
-          { type: 'info', text: 'Sysmon 關鍵事件：Event ID 1 (Process Create), 3 (Network Connect), 7 (Image Load), 8 (CreateRemoteThread), 10 (ProcessAccess), 11 (FileCreate), 25 (ProcessTampering)' }
+          { type: 'info', text: { zh: 'Sysmon 關鍵事件：Event ID 1 (Process Create), 3 (Network Connect), 7 (Image Load), 8 (CreateRemoteThread), 10 (ProcessAccess), 11 (FileCreate), 25 (ProcessTampering)', en: 'Key Sysmon events: Event ID 1 (Process Create), 3 (Network Connect), 7 (Image Load), 8 (CreateRemoteThread), 10 (ProcessAccess), 11 (FileCreate), 25 (ProcessTampering)', ja: 'Sysmon の重要イベント: Event ID 1 (プロセス作成), 3 (ネットワーク接続), 7 (イメージ読み込み), 8 (CreateRemoteThread), 10 (ProcessAccess), 11 (ファイル作成), 25 (ProcessTampering)' } }
         ]
       },
       {
-        text: '建立 SIEM 偵測規則（Sigma）',
-        detail: '針對 DCSync、Kerberoasting、Pass-the-Hash 等攻擊建立警示',
+        text: { zh: '建立 SIEM 偵測規則（Sigma）', en: 'Create SIEM detection rules using Sigma', ja: 'Sigma を使用した SIEM 検知ルールを作成する' },
+        detail: { zh: '針對 DCSync、Kerberoasting、Pass-the-Hash 等攻擊建立警示', en: 'Create alerts targeting DCSync, Kerberoasting, Pass-the-Hash, and other attacks', ja: 'DCSync、Kerberoasting、Pass-the-Hash などの攻撃に対するアラートを作成する' },
         steps: [
           { type: 'cmd', text: '# 安裝 Sigma 工具\npip install sigmatools\n# 或使用新版 sigma-cli\npip install sigma-cli' },
           { type: 'cmd', text: '# 下載 Sigma 規則庫\ngit clone https://github.com/SigmaHQ/sigma' },
           { type: 'cmd', text: '# 轉換為 Splunk 格式（以 DCSync 為例）\nsigma convert -t splunk -p splunk_windows rules/windows/builtin/security/win_security_dcsync.yml\n\n# 轉換為 Elastic/KQL 格式\nsigma convert -t lucene rules/windows/builtin/security/win_security_kerberoasting.yml' },
-          { type: 'info', text: '優先部署規則：DCSync (4662), Kerberoasting (4769 RC4), AS-REP Roasting (4768), Password Spraying (4625 大量失敗), Golden/Silver Ticket (4672 不尋常的特殊權限)' }
+          { type: 'info', text: { zh: '優先部署規則：DCSync (4662), Kerberoasting (4769 RC4), AS-REP Roasting (4768), Password Spraying (4625 大量失敗), Golden/Silver Ticket (4672 不尋常的特殊權限)', en: 'Priority rules to deploy: DCSync (4662), Kerberoasting (4769 RC4), AS-REP Roasting (4768), Password Spraying (4625 high-volume failures), Golden/Silver Ticket (4672 unusual privileges)', ja: '優先して展開するルール: DCSync (4662)、Kerberoasting (4769 RC4)、AS-REP Roasting (4768)、パスワードスプレー (4625 大量失敗)、Golden/Silver Ticket (4672 異常な特権)' } }
         ]
       },
       {
-        text: '啟用命令列程序記錄',
-        detail: 'KB3004375，記錄所有程序命令列參數',
+        text: { zh: '啟用命令列程序記錄', en: 'Enable command-line process logging', ja: 'コマンドライン プロセスのログを有効にする' },
+        detail: { zh: 'KB3004375，記錄所有程序命令列參數', en: 'KB3004375; logs all process command-line arguments', ja: 'KB3004375; すべてのプロセスコマンドライン引数を記録する' },
         steps: [
-          { type: 'info', text: 'GPO 路徑：Computer Configuration → Administrative Templates → System → Audit Process Creation → "Include command line in process creation events" → Enabled' },
+          { type: 'info', text: { zh: 'GPO 路徑：Computer Configuration → Administrative Templates → System → Audit Process Creation → "Include command line in process creation events" → Enabled', en: 'GPO path: Computer Configuration → Administrative Templates → System → Audit Process Creation → "Include command line in process creation events" → Enabled', ja: 'GPO パス: コンピューターの構成 → 管理用テンプレート → システム → プロセス作成の監査 → "プロセス作成イベントにコマンド ラインを含める" → 有効' } },
           { type: 'cmd', text: '# 登錄方式啟用\nreg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit" /v ProcessCreationIncludeCmdLine_Enabled /t REG_DWORD /d 1 /f' },
-          { type: 'info', text: '配合 Event ID 4688 (Process Creation) 使用；需同時啟用「稽核程序建立」(Audit Process Creation)' },
-          { type: 'warn', text: '注意：命令列可能包含敏感資訊（密碼），確保日誌儲存環境已加密且存取受控' }
+          { type: 'info', text: { zh: '配合 Event ID 4688 (Process Creation) 使用；需同時啟用「稽核程序建立」(Audit Process Creation)', en: 'Used alongside Event ID 4688 (Process Creation); must also enable "Audit Process Creation"', ja: 'Event ID 4688 (プロセス作成) と併用する。「プロセス作成の監査」も同時に有効にする必要がある' } },
+          { type: 'warn', text: { zh: '注意：命令列可能包含敏感資訊（密碼），確保日誌儲存環境已加密且存取受控', en: 'Warning: Command lines may contain sensitive information (passwords); ensure the log storage environment is encrypted and access-controlled', ja: '注意: コマンドラインには機密情報（パスワード）が含まれる可能性があります。ログ保存環境が暗号化されアクセス制御されていることを確認してください' } }
         ]
       }
     ]
   },
   {
-    category: 'AD CS 憑證服務',
+    category: { zh: 'AD CS 憑證服務', en: 'AD CS Certificate Services', ja: 'AD CS 証明書サービス' },
     priority: 'high',
     items: [
       {
-        text: '使用 Certify 或 Locksmith 稽核 AD CS 設定',
-        detail: '尋找 ESC1-ESC8 等錯誤設定',
+        text: { zh: '使用 Certify 或 Locksmith 稽核 AD CS 設定', en: 'Use Certify or Locksmith to audit AD CS configuration', ja: 'Certify または Locksmith を使用して AD CS の設定を監査する' },
+        detail: { zh: '尋找 ESC1-ESC8 等錯誤設定', en: 'Find ESC1–ESC8 and other misconfigurations', ja: 'ESC1〜ESC8 などの設定ミスを見つける' },
         steps: [
           { type: 'cmd', text: '# 使用 Certify 掃描脆弱憑證範本（需網域使用者權限）\nCertify.exe find /vulnerable\nCertify.exe find /enrolleeSuppliesSubject  # ESC1 特定掃描' },
           { type: 'cmd', text: '# 使用 Locksmith 自動稽核並提供修復建議\nImport-Module .\\Locksmith.psd1\nInvoke-Locksmith -Mode 0  # 模式 0 = 僅報告問題，不修復' },
-          { type: 'info', text: '常見錯誤設定：ESC1 (範本允許 enrollee 自訂 SAN), ESC2 (Any Purpose EKU), ESC3 (Enrollment Agent), ESC4 (範本 ACL 可寫), ESC6 (EDITF_ATTRIBUTESUBJECTALTNAME2 旗標), ESC8 (HTTP NTLM 中繼)' },
+          { type: 'info', text: { zh: '常見錯誤設定：ESC1 (範本允許 enrollee 自訂 SAN), ESC2 (Any Purpose EKU), ESC3 (Enrollment Agent), ESC4 (範本 ACL 可寫), ESC6 (EDITF_ATTRIBUTESUBJECTALTNAME2 旗標), ESC8 (HTTP NTLM 中繼)', en: 'Common misconfigurations: ESC1 (template allows enrollee to specify SAN), ESC2 (Any Purpose EKU), ESC3 (Enrollment Agent), ESC4 (template ACL writable), ESC6 (EDITF_ATTRIBUTESUBJECTALTNAME2 flag), ESC8 (HTTP NTLM relay)', ja: '一般的な設定ミス: ESC1 (テンプレートで登録者が SAN を指定可能), ESC2 (Any Purpose EKU), ESC3 (Enrollment Agent), ESC4 (テンプレート ACL が書き込み可能), ESC6 (EDITF_ATTRIBUTESUBJECTALTNAME2 フラグ), ESC8 (HTTP NTLM リレー)' } },
           { type: 'cmd', text: '# 使用 PSPKIAudit 稽核 CA 設定\nInstall-Module -Name PSPKI\nImport-Module PSPKI\nGet-CertificationAuthority | Get-CATemplate' }
         ]
       },
       {
-        text: '停用 NTLM 認證至 IIS/AD CS',
-        detail: '防止 PetitPotam NTLM 中繼攻擊',
+        text: { zh: '停用 NTLM 認證至 IIS/AD CS', en: 'Disable NTLM authentication to IIS/AD CS', ja: 'IIS/AD CS への NTLM 認証を無効化する' },
+        detail: { zh: '防止 PetitPotam NTLM 中繼攻擊', en: 'Prevent PetitPotam NTLM relay attacks', ja: 'PetitPotam NTLM リレー攻撃を防止する' },
         steps: [
-          { type: 'info', text: 'IIS Manager 設定：開啟 IIS → 選取 CertSrv 虛擬目錄 → Authentication → Windows Authentication → Providers → 移除 NTLM，只保留 Negotiate (Kerberos)' },
-          { type: 'cmd', text: '# 透過 appcmd 設定（IIS 8+）\n%windir%\\system32\\inetsrv\\appcmd.exe set config "Default Web Site/CertSrv" /section:windowsAuthentication /-providers.[value=\'NTLM\']' },
-          { type: 'info', text: '啟用 Extended Protection for Authentication (EPA)：IIS → Windows Authentication → Advanced Settings → Extended Protection → Required' },
-          { type: 'info', text: '若環境使用 Web Enrollment，建議將 AD CS Web 介面設定為要求 HTTPS 並停用 HTTP' }
+          { type: 'info', text: { zh: 'IIS Manager 設定：開啟 IIS → 選取 CertSrv 虛擬目錄 → Authentication → Windows Authentication → Providers → 移除 NTLM，只保留 Negotiate (Kerberos)', en: 'IIS Manager setting: Open IIS → Select CertSrv virtual directory → Authentication → Windows Authentication → Providers → Remove NTLM, keep only Negotiate (Kerberos)', ja: 'IIS Manager の設定: IIS を開く → CertSrv 仮想ディレクトリを選択 → 認証 → Windows 認証 → プロバイダー → NTLM を削除し、Negotiate (Kerberos) のみ残す' } },
+          { type: 'cmd', text: "# 透過 appcmd 設定（IIS 8+）\n%windir%\\system32\\inetsrv\\appcmd.exe set config \"Default Web Site/CertSrv\" /section:windowsAuthentication /-providers.[value='NTLM']" },
+          { type: 'info', text: { zh: '啟用 Extended Protection for Authentication (EPA)：IIS → Windows Authentication → Advanced Settings → Extended Protection → Required', en: 'Enable Extended Protection for Authentication (EPA): IIS → Windows Authentication → Advanced Settings → Extended Protection → Required', ja: '認証の拡張保護（EPA）を有効にする: IIS → Windows 認証 → 詳細設定 → 拡張保護 → 必須' } },
+          { type: 'info', text: { zh: '若環境使用 Web Enrollment，建議將 AD CS Web 介面設定為要求 HTTPS 並停用 HTTP', en: 'If the environment uses Web Enrollment, configure the AD CS web interface to require HTTPS and disable HTTP', ja: '環境で Web 登録を使用している場合、AD CS の Web インターフェイスを HTTPS 必須に設定し HTTP を無効にすることを推奨' } }
         ]
       },
       {
-        text: '移除不必要的憑證範本',
-        detail: '特別是允許 SAN 指定或 EKU 允許智慧卡登入的範本',
+        text: { zh: '移除不必要的憑證範本', en: 'Remove unnecessary certificate templates', ja: '不要な証明書テンプレートを削除する' },
+        detail: { zh: '特別是允許 SAN 指定或 EKU 允許智慧卡登入的範本', en: 'Especially templates allowing SAN specification or EKUs permitting smart card login', ja: '特に SAN の指定を許可するテンプレートや、スマートカードログインを許可する EKU のテンプレート' },
         steps: [
           { type: 'cmd', text: '# 列出 CA 上發布的所有範本\ncertutil -catemplates\n# 或使用 PowerShell\nGet-CATemplate | Select Name,DisplayName | Sort Name' },
-          { type: 'info', text: 'CA 管理主控台：certsrv.msc → Certificate Templates → 右鍵刪除不必要的範本；重點移除：WebServer（若不用）、User（預設允許 SAN）、DomainController（若不用 smartcard）' },
+          { type: 'info', text: { zh: 'CA 管理主控台：certsrv.msc → Certificate Templates → 右鍵刪除不必要的範本；重點移除：WebServer（若不用）、User（預設允許 SAN）、DomainController（若不用 smartcard）', en: 'CA management console: certsrv.msc → Certificate Templates → right-click to delete unnecessary templates; key removals: WebServer (if not used), User (allows SAN by default), DomainController (if smart card not used)', ja: 'CA 管理コンソール: certsrv.msc → 証明書テンプレート → 右クリックして不要なテンプレートを削除。主な削除対象: WebServer（未使用の場合）、User（デフォルトで SAN 許可）、DomainController（スマートカード未使用の場合）' } },
           { type: 'cmd', text: '# 停用特定危險範本的發布\nGet-CATemplate | Where-Object { $_.Name -eq "WebServer" } | Remove-CATemplate -Force' },
-          { type: 'warn', text: '注意：移除範本前確認無任何系統依賴它；可先設定範本為「停用」而非直接刪除' }
+          { type: 'warn', text: { zh: '注意：移除範本前確認無任何系統依賴它；可先設定範本為「停用」而非直接刪除', en: 'Warning: Confirm no systems depend on a template before removing it; consider setting it to "disabled" instead of deleting directly', ja: '注意: テンプレートを削除する前に、それに依存しているシステムがないことを確認してください。直接削除する代わりに「無効」に設定することを検討してください' } }
         ]
       },
       {
-        text: '啟用 AD CS HTTP 端點的 EPA（Extended Protection for Authentication）',
-        detail: '防止 NTLM 中繼',
+        text: { zh: '啟用 AD CS HTTP 端點的 EPA（Extended Protection for Authentication）', en: 'Enable EPA (Extended Protection for Authentication) on AD CS HTTP endpoints', ja: 'AD CS HTTP エンドポイントで EPA（認証の拡張保護）を有効にする' },
+        detail: { zh: '防止 NTLM 中繼', en: 'Prevent NTLM relay attacks', ja: 'NTLM リレー攻撃を防止する' },
         steps: [
-          { type: 'info', text: 'IIS Manager → Default Web Site → CertSrv → Windows Authentication → Advanced Settings → Extended Protection → Required（最強，需測試相容性）或 Accept（過渡期使用）' },
+          { type: 'info', text: { zh: 'IIS Manager → Default Web Site → CertSrv → Windows Authentication → Advanced Settings → Extended Protection → Required（最強，需測試相容性）或 Accept（過渡期使用）', en: 'IIS Manager → Default Web Site → CertSrv → Windows Authentication → Advanced Settings → Extended Protection → Required (strongest, test compatibility first) or Accept (transition period)', ja: 'IIS Manager → 既定の Web サイト → CertSrv → Windows 認証 → 詳細設定 → 拡張保護 → 必須（最強、互換性をテスト済み）または 受け入れる（移行期間中）' } },
           { type: 'cmd', text: '# 驗證 EPA 設定\nGet-WebConfigurationProperty -Filter "//security/authentication/windowsAuthentication" -PSPath "IIS:\\Sites\\Default Web Site\\CertSrv" -Name extendedProtection' },
-          { type: 'info', text: '同時確保 CA Web Enrollment 和 Certificate Enrollment Web Service (CES) 端點也已設定 EPA' },
-          { type: 'info', text: '套用 KB5005413 修補（CVE-2021-36942 PetitPotam），並考慮以 Windows Defender Credential Guard 保護 DC' }
+          { type: 'info', text: { zh: '同時確保 CA Web Enrollment 和 Certificate Enrollment Web Service (CES) 端點也已設定 EPA', en: 'Also ensure EPA is configured on the CA Web Enrollment and Certificate Enrollment Web Service (CES) endpoints', ja: 'CA Web 登録と証明書登録 Web サービス（CES）エンドポイントにも EPA が設定されていることを確認する' } },
+          { type: 'info', text: { zh: '套用 KB5005413 修補（CVE-2021-36942 PetitPotam），並考慮以 Windows Defender Credential Guard 保護 DC', en: 'Apply KB5005413 patch (CVE-2021-36942 PetitPotam), and consider protecting DCs with Windows Defender Credential Guard', ja: 'KB5005413 パッチ（CVE-2021-36942 PetitPotam）を適用し、Windows Defender Credential Guard で DC を保護することを検討する' } }
         ]
       }
     ]
   },
   {
-    category: '重要安全更新',
+    category: { zh: '重要安全更新', en: 'Critical Security Updates', ja: '重要なセキュリティ更新' },
     priority: 'critical',
     items: [
       {
-        text: '套用 Zerologon 補丁 (CVE-2020-1472)',
-        detail: 'KB4571694 及後續更新，並完全執行強制模式',
+        text: { zh: '套用 Zerologon 補丁 (CVE-2020-1472)', en: 'Apply Zerologon patch (CVE-2020-1472)', ja: 'Zerologon パッチ (CVE-2020-1472) を適用する' },
+        detail: { zh: 'KB4571694 及後續更新，並完全執行強制模式', en: 'KB4571694 and subsequent updates; enforce Enforcement Mode fully', ja: 'KB4571694 および後続の更新プログラム。強制モードを完全に有効にする' },
         steps: [
-          { type: 'info', text: '安裝 KB4571694（2020-08 更新）後，Netlogon 進入「部署模式」（允許不合規客戶端連線但記錄警告）' },
-          { type: 'info', text: '2021-02 後的更新已進入「強制模式」，所有不合規的 Netlogon 連線將被拒絕' },
+          { type: 'info', text: { zh: '安裝 KB4571694（2020-08 更新）後，Netlogon 進入「部署模式」（允許不合規客戶端連線但記錄警告）', en: 'After installing KB4571694 (August 2020 update), Netlogon enters "Deployment Mode" (allows non-compliant clients but logs warnings)', ja: 'KB4571694（2020年8月更新）をインストール後、Netlogon は「展開モード」に入り（非準拠クライアントの接続を許可しつつ警告を記録）' } },
+          { type: 'info', text: { zh: '2021-02 後的更新已進入「強制模式」，所有不合規的 Netlogon 連線將被拒絕', en: 'Updates from February 2021 onwards have entered "Enforcement Mode"; all non-compliant Netlogon connections will be denied', ja: '2021年2月以降の更新プログラムは「強制モード」に移行し、すべての非準拠 Netlogon 接続が拒否される' } },
           { type: 'cmd', text: '# 檢查 DC 是否安裝補丁\nGet-HotFix -Id KB4571694\n# 確認強制模式已生效\nreg query "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Netlogon\\Parameters" /v FullSecureChannelProtection' },
           { type: 'cmd', text: '# 查看是否有不合規客戶端日誌（Event ID 5829/5827）\nGet-WinEvent -LogName "System" | Where-Object { $_.Id -in 5829,5827 } | Select TimeCreated,Message | Format-List' },
-          { type: 'warn', text: '若有 Event ID 5829 日誌，表示仍有使用舊 Netlogon 的裝置，需先更新這些裝置再啟用強制模式' }
+          { type: 'warn', text: { zh: '若有 Event ID 5829 日誌，表示仍有使用舊 Netlogon 的裝置，需先更新這些裝置再啟用強制模式', en: 'If Event ID 5829 is logged, it indicates devices still using old Netlogon; update those devices before enabling Enforcement Mode', ja: 'Event ID 5829 が記録されている場合、古い Netlogon を使用しているデバイスがまだ存在することを示します。強制モードを有効にする前に、これらのデバイスを更新してください' } }
         ]
       },
       {
-        text: '套用 PetitPotam 緩解措施 (CVE-2021-36942)',
-        detail: 'KB5005413，並停用 EFSRPC 介面（如不需要）',
+        text: { zh: '套用 PetitPotam 緩解措施 (CVE-2021-36942)', en: 'Apply PetitPotam mitigation (CVE-2021-36942)', ja: 'PetitPotam 緩和策 (CVE-2021-36942) を適用する' },
+        detail: { zh: 'KB5005413，並停用 EFSRPC 介面（如不需要）', en: 'KB5005413; and disable the EFSRPC interface if not needed', ja: 'KB5005413; 必要でない場合は EFSRPC インターフェイスを無効にする' },
         steps: [
           { type: 'cmd', text: '# 確認 KB5005413 已安裝\nGet-HotFix -Id KB5005413' },
-          { type: 'info', text: '若 EFS 在環境中未使用，可透過防火牆封鎖 DC 上的 MS-EFSRPC 介面（TCP Port 445 的 EFSRPC）；或使用 Windows RPC 篩選' },
+          { type: 'info', text: { zh: '若 EFS 在環境中未使用，可透過防火牆封鎖 DC 上的 MS-EFSRPC 介面（TCP Port 445 的 EFSRPC）；或使用 Windows RPC 篩選', en: 'If EFS is not used in the environment, block the MS-EFSRPC interface on DCs via firewall (EFSRPC on TCP Port 445), or use Windows RPC filtering', ja: '環境で EFS が使用されていない場合、ファイアウォールで DC の MS-EFSRPC インターフェイス（TCP ポート 445 の EFSRPC）をブロックするか、Windows RPC フィルタリングを使用する' } },
           { type: 'cmd', text: '# 使用 netsh 封鎖 EFSRPC（需 Windows Server 2019+）\nnetsh rpc filter add rule layer=um actiontype=block\nnetsh rpc filter add condition field=if_uuid matchtype=equal data=c681d488-d850-11d0-8c52-00c04fd90f7e\nnetsh rpc filter add filter' },
-          { type: 'info', text: '同時停用 IIS/AD CS 的 NTLM 認證（搭配 EPA），防止 NTLM 中繼到 AD CS 的攻擊鏈' }
+          { type: 'info', text: { zh: '同時停用 IIS/AD CS 的 NTLM 認證（搭配 EPA），防止 NTLM 中繼到 AD CS 的攻擊鏈', en: 'Also disable NTLM authentication on IIS/AD CS (with EPA) to prevent NTLM relay attack chains to AD CS', ja: 'IIS/AD CS の NTLM 認証も無効にし（EPA と組み合わせ）、AD CS への NTLM リレー攻撃チェーンを防止する' } }
         ]
       },
       {
-        text: '套用 sAMAccountName 漏洞補丁 (CVE-2021-42278/42287)',
-        detail: 'KB5008102、KB5008380',
+        text: { zh: '套用 sAMAccountName 漏洞補丁 (CVE-2021-42278/42287)', en: 'Apply sAMAccountName vulnerability patches (CVE-2021-42278/42287)', ja: 'sAMAccountName 脆弱性パッチ (CVE-2021-42278/42287) を適用する' },
+        detail: { zh: 'KB5008102、KB5008380', en: 'KB5008102, KB5008380', ja: 'KB5008102、KB5008380' },
         steps: [
           { type: 'cmd', text: '# 確認補丁已安裝\nGet-HotFix -Id KB5008102  # CVE-2021-42278\nGet-HotFix -Id KB5008380  # CVE-2021-42287' },
           { type: 'cmd', text: '# 確認 MachineAccountQuota 已降低（防止一般使用者建立電腦帳戶）\nGet-ADDomain | Select -Expand DistinguishedName | Get-ADObject -Properties ms-DS-MachineAccountQuota\n# 建議改為 0\nSet-ADDomain -Identity corp.local -Replace @{"ms-DS-MachineAccountQuota"=0}' },
@@ -1024,11 +1043,11 @@ const DEFENSE_CHECKLIST = [
         ]
       },
       {
-        text: '確認 MS14-068 補丁已安裝',
-        detail: 'KB3011780，防止 Kerberos PAC 偽造',
+        text: { zh: '確認 MS14-068 補丁已安裝', en: 'Confirm MS14-068 patch is installed', ja: 'MS14-068 パッチがインストールされていることを確認する' },
+        detail: { zh: 'KB3011780，防止 Kerberos PAC 偽造', en: 'KB3011780; prevent Kerberos PAC forgery', ja: 'KB3011780; Kerberos PAC の偽造を防止する' },
         steps: [
           { type: 'cmd', text: '# 確認 KB3011780 已安裝\nGet-HotFix -Id KB3011780\n\n# 若系統已更新至 2014-11 之後的累積更新，此修補已包含在內\n(Get-HotFix | Sort InstalledOn -Descending | Select -First 1).InstalledOn' },
-          { type: 'info', text: 'MS14-068 修補 Kerberos KDC 未驗證 PAC Checksum 的漏洞；任何 Windows Server 2012 R2 + 2014-11 之後的更新均已包含此修補' },
+          { type: 'info', text: { zh: 'MS14-068 修補 Kerberos KDC 未驗證 PAC Checksum 的漏洞；任何 Windows Server 2012 R2 + 2014-11 之後的更新均已包含此修補', en: 'MS14-068 fixes the Kerberos KDC vulnerability that did not validate PAC checksums; any Windows Server 2012 R2 + updates after November 2014 already include this patch', ja: 'MS14-068 は Kerberos KDC が PAC チェックサムを検証しない脆弱性を修正します。Windows Server 2012 R2 および 2014 年 11 月以降のすべての更新プログラムにはこのパッチが含まれています' } },
           { type: 'cmd', text: '# 確認 DC 的 OS 版本與補丁狀態\nGet-ADDomainController -Filter * | Select Name,OperatingSystem,OperatingSystemVersion | Format-Table' }
         ]
       }

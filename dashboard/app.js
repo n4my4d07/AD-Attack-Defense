@@ -140,6 +140,13 @@ function t(key, ...args) {
   return val !== undefined ? val : (I18N.zh[key] || key);
 }
 
+function d(val) {
+  if (val && typeof val === 'object' && !Array.isArray(val)) {
+    return val[state.lang] || val.en || val.zh || '';
+  }
+  return val != null ? val : '';
+}
+
 function applyI18n() {
   // Nav tabs
   document.querySelector('[data-tab="dashboard"]').innerHTML = `<i class="bi bi-grid-1x2"></i> ${t('nav_dashboard')}`;
@@ -280,7 +287,7 @@ function renderDashDefenseCats() {
   if (!el) return;
   const priorityColors = { critical: 'var(--severity-critical)', high: 'var(--severity-high)', medium: 'var(--severity-medium)' };
   el.innerHTML = DEFENSE_CHECKLIST.map(s =>
-    `<div><span style="color:${priorityColors[s.priority] || 'var(--text-muted)'}">●</span> ${s.category}</div>`
+    `<div><span style="color:${priorityColors[s.priority] || 'var(--text-muted)'}">●</span> ${d(s.category)}</div>`
   ).join('');
 }
 
@@ -509,7 +516,7 @@ function renderTechniques() {
                class="mitre-badge" style="text-decoration:none" title="MITRE ATT&CK ${cat.mitre}">
               ${cat.mitre} <i class="bi bi-box-arrow-up-right" style="font-size:9px"></i>
             </a>
-            &nbsp;${cat.description}
+            &nbsp;${d(cat.description)}
           </div>
         </div>
         <span class="tool-tag" style="color:${cat.color}; border-color:${cat.color}40; background:${cat.color}15">
@@ -546,7 +553,7 @@ function renderTechniqueCard(technique, category) {
         <div class="tc-indicator" style="background:${category.color}"></div>
         <div class="tc-content">
           <div class="tc-name">${technique.name}</div>
-          <div class="tc-desc">${technique.description}</div>
+          <div class="tc-desc">${d(technique.description)}</div>
         </div>
         <i class="bi bi-chevron-down tc-expand"></i>
       </div>
@@ -590,7 +597,7 @@ function renderCVERows(data, tbody) {
         <td class="fw-600">${cve.name}</td>
         <td><span class="badge badge-${cve.severity}">${cve.severity.toUpperCase()}</span></td>
         <td class="text-secondary text-small">${cve.year}</td>
-        <td class="text-secondary text-small" style="max-width:280px">${cve.description}</td>
+        <td class="text-secondary text-small" style="max-width:280px">${d(cve.description)}</td>
         <td>
           ${toolTags ? `<div class="d-flex gap-8" style="flex-wrap:wrap">${toolTags}</div>` : '<span class="text-muted">—</span>'}
           <a href="${cve.url}" target="_blank" rel="noopener" class="text-small" style="color:var(--accent-blue); display:inline-flex; align-items:center; gap:4px; margin-top:4px; text-decoration:none;">
@@ -610,7 +617,7 @@ function filterCVEs() {
     const matchSearch = !searchVal ||
       cve.id.toLowerCase().includes(searchVal) ||
       cve.name.toLowerCase().includes(searchVal) ||
-      cve.description.toLowerCase().includes(searchVal);
+      d(cve.description).toLowerCase().includes(searchVal);
     return matchSeverity && matchSearch;
   });
   const tbody = document.getElementById('cve-table-body');
@@ -633,7 +640,7 @@ function renderDetectionRows(data, tbody) {
     const eventIds = event.eventIds.map(id =>
       `<span class="event-id" onclick="copyEventId('${id}')" title="${t('click_to_copy')}">${id}</span>`
     ).join('');
-    const descriptions = event.descriptions.map(d => `<div class="text-small text-secondary">${d}</div>`).join('');
+    const descriptions = event.descriptions.map(desc => `<div class="text-small text-secondary">${d(desc)}</div>`).join('');
     const catColor = (CATEGORIES.find(c => c.id === event.category) || {}).color || '#8b949e';
     return `
       <tr>
@@ -656,7 +663,7 @@ function filterDetection() {
     !searchVal ||
     e.attack.toLowerCase().includes(searchVal) ||
     e.eventIds.some(id => id.includes(searchVal)) ||
-    e.descriptions.some(d => d.toLowerCase().includes(searchVal))
+    e.descriptions.some(desc => d(desc).toLowerCase().includes(searchVal))
   );
   const tbody = document.getElementById('detection-table-body');
   if (tbody) renderDetectionRows(filtered, tbody);
@@ -694,7 +701,7 @@ function renderToolCards(data, container) {
               </a>
             </div>
           </div>
-          <div class="tool-desc">${tool.description}</div>
+          <div class="tool-desc">${d(tool.description)}</div>
           <div class="tool-tags">${tags}</div>
         </div>
       `;
@@ -709,7 +716,7 @@ function filterTools() {
     const matchType = typeFilter === 'all' || tool.type === typeFilter;
     const matchSearch = !searchVal ||
       tool.name.toLowerCase().includes(searchVal) ||
-      tool.description.toLowerCase().includes(searchVal) ||
+      d(tool.description).toLowerCase().includes(searchVal) ||
       (tool.tags || []).some(t => t.toLowerCase().includes(searchVal));
     return matchType && matchSearch;
   });
@@ -735,7 +742,7 @@ function renderDefense() {
             <i class="bi ${icons[step.type] || 'bi-dot'}" style="color:${colors[step.type] || 'var(--text-muted)'}; flex-shrink:0; margin-top:2px"></i>
             ${isCode
               ? `<pre class="step-code">${escapeHtml(step.text)}</pre>`
-              : `<span class="step-text">${step.text}</span>`
+              : `<span class="step-text">${d(step.text)}</span>`
             }
           </div>
         `;
@@ -747,12 +754,12 @@ function renderDefense() {
           <div class="ci-checkbox" onclick="toggleChecklist('${key}', this.closest('.checklist-item'))">${checked ? '<i class="bi bi-check-lg"></i>' : ''}</div>
           <div class="ci-content">
             <div class="ci-header">
-              <div class="ci-text" onclick="toggleChecklist('${key}', this.closest('.checklist-item'))">${item.text}</div>
+              <div class="ci-text" onclick="toggleChecklist('${key}', this.closest('.checklist-item'))">${d(item.text)}</div>
               ${hasSteps ? `<button class="steps-toggle" onclick="toggleSteps(this)" aria-expanded="false">
                 <i class="bi bi-list-task"></i> ${t('steps_btn')} <i class="bi bi-chevron-down steps-chevron"></i>
               </button>` : ''}
             </div>
-            <div class="ci-detail">${item.detail}</div>
+            <div class="ci-detail">${d(item.detail)}</div>
             ${hasSteps ? `<div class="steps-container" style="display:none">${stepsHtml}</div>` : ''}
           </div>
         </div>
@@ -768,7 +775,7 @@ function renderDefense() {
         <div class="checklist-category-header">
           <div class="checklist-category-title">
             <span style="width:10px; height:10px; border-radius:50%; background:${priorityColors[section.priority] || 'var(--text-muted)'}; display:inline-block"></span>
-            ${section.category}
+            ${d(section.category)}
           </div>
           <span class="checklist-progress">${checkedCount} / ${section.items.length} ${t('checklist_done')}</span>
         </div>
