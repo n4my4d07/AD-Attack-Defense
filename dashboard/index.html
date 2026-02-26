@@ -104,10 +104,10 @@
       <!-- Quick CVE -->
       <div>
         <div class="d-flex justify-between align-center mb-16">
-          <div class="fw-600 text-primary" style="font-size:14px">
+          <div class="fw-600 text-primary" style="font-size:14px" id="dash-quick-cve-label">
             <i class="bi bi-bug" style="color:var(--severity-high)"></i> 高危 CVE（按嚴重性排序）
           </div>
-          <button class="filter-btn" onclick="switchTab('cves')">
+          <button class="filter-btn" id="dash-view-all-btn" onclick="switchTab('cves')">
             查看全部 <i class="bi bi-arrow-right"></i>
           </button>
         </div>
@@ -117,9 +117,9 @@
               <thead>
                 <tr>
                   <th>CVE ID</th>
-                  <th>漏洞名稱</th>
-                  <th>嚴重性</th>
-                  <th>年份</th>
+                  <th id="dash-th-cve-name">漏洞名稱</th>
+                  <th id="dash-th-cve-severity">嚴重性</th>
+                  <th id="dash-th-cve-year">年份</th>
                 </tr>
               </thead>
               <tbody id="quick-cve-body"></tbody>
@@ -131,10 +131,10 @@
       <!-- Defense Progress -->
       <div>
         <div class="d-flex justify-between align-center mb-16">
-          <div class="fw-600 text-primary" style="font-size:14px">
+          <div class="fw-600 text-primary" style="font-size:14px" id="dash-defense-progress-label">
             <i class="bi bi-shield-check" style="color:var(--color-defense)"></i> 防禦清單進度
           </div>
-          <button class="filter-btn" onclick="switchTab('defense')">
+          <button class="filter-btn" id="dash-start-audit-btn" onclick="switchTab('defense')">
             開始稽核 <i class="bi bi-arrow-right"></i>
           </button>
         </div>
@@ -144,14 +144,7 @@
             <div class="progress-bar-wrap" style="height:8px; margin-bottom:20px">
               <div id="dash-progress-fill" class="progress-bar-fill" style="width:0%"></div>
             </div>
-            <div class="text-secondary text-small" style="line-height:1.8">
-              <div><span style="color:var(--severity-critical)">●</span> 管理員憑證保護</div>
-              <div><span style="color:var(--severity-high)">●</span> Kerberos 與 AD 安全</div>
-              <div><span style="color:var(--severity-high)">●</span> 網路與系統安全</div>
-              <div><span style="color:var(--severity-high)">●</span> 日誌與監控</div>
-              <div><span style="color:var(--severity-high)">●</span> AD CS 憑證服務</div>
-              <div><span style="color:var(--severity-critical)">●</span> 重要安全更新</div>
-            </div>
+            <div id="dash-defense-cats" class="text-secondary text-small" style="line-height:1.8"></div>
           </div>
         </div>
       </div>
@@ -234,11 +227,11 @@
           <thead>
             <tr>
               <th>CVE ID</th>
-              <th>漏洞名稱</th>
-              <th>嚴重性</th>
-              <th>年份</th>
-              <th>描述</th>
-              <th>工具 / 連結</th>
+              <th id="cve-th-name">漏洞名稱</th>
+              <th id="cve-th-severity">嚴重性</th>
+              <th id="cve-th-year">年份</th>
+              <th id="cve-th-desc">描述</th>
+              <th id="cve-th-tools">工具 / 連結</th>
             </tr>
           </thead>
           <tbody id="cve-table-body"></tbody>
@@ -269,9 +262,9 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>攻擊手法</th>
-              <th>Windows Event ID（點擊複製）</th>
-              <th>說明</th>
+              <th id="det-th-attack">攻擊手法</th>
+              <th id="det-th-eventids">Windows Event ID（點擊複製）</th>
+              <th id="det-th-notes">說明</th>
             </tr>
           </thead>
           <tbody id="detection-table-body"></tbody>
@@ -281,7 +274,7 @@
 
     <!-- Reference note -->
     <div class="card mt-16">
-      <div class="card-body text-secondary text-small" style="line-height:2">
+      <div class="card-body text-secondary text-small" style="line-height:2" id="detection-tips-body">
         <div class="fw-600 text-primary mb-16"><i class="bi bi-info-circle"></i> 偵測建議</div>
         <div>• 啟用 <strong>Enhanced Audit Policy</strong>（gpedit.msc → Advanced Audit Policy Configuration）</div>
         <div>• 部署 <strong>Sysmon</strong> 並使用 sysmon-modular 設定，以擷取更詳細的程序、網路、登錄事件</div>
@@ -332,7 +325,7 @@
       <div class="card-body">
         <div class="d-flex justify-between align-center">
           <div>
-            <div class="fw-600 text-primary">整體完成進度</div>
+            <div class="fw-600 text-primary" id="defense-overall-label">整體完成進度</div>
             <div id="dash-checklist-progress-defense" class="text-secondary text-small mt-4">載入中…</div>
           </div>
           <button class="filter-btn" onclick="
@@ -353,6 +346,14 @@
   </div>
 
 </main>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────────── -->
+<footer class="app-footer">
+  <span id="data-source-label">資料來源</span>：
+  <a href="https://github.com/infosecn1nja/AD-Attack-Defense" target="_blank" rel="noopener">
+    <i class="bi bi-github"></i> github.com/infosecn1nja/AD-Attack-Defense
+  </a>
+</footer>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
