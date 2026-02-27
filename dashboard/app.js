@@ -44,6 +44,8 @@ const I18N = {
     results: (n) => `${n} 項結果`,
     progress_text: (done, total, pct) => `${done} / ${total} 項目完成 (${pct}%)`,
     techniques_count: (n) => `${n} techniques`,
+    export_checklist: '匯出清單',
+    export_toast: '防禦清單已匯出為 Markdown 檔案',
   },
   en: {
     search_placeholder: 'Search techniques, tools, CVE…',
@@ -87,6 +89,8 @@ const I18N = {
     results: (n) => `${n} result${n === 1 ? '' : 's'}`,
     progress_text: (done, total, pct) => `${done} / ${total} items done (${pct}%)`,
     techniques_count: (n) => `${n} techniques`,
+    export_checklist: 'Export Checklist',
+    export_toast: 'Defense checklist exported as Markdown',
   },
   ja: {
     search_placeholder: '技術・ツール・CVEを検索…',
@@ -130,6 +134,8 @@ const I18N = {
     results: (n) => `${n}件の結果`,
     progress_text: (done, total, pct) => `${done} / ${total} 項目完了 (${pct}%)`,
     techniques_count: (n) => `${n} 技術`,
+    export_checklist: 'チェックリスト出力',
+    export_toast: '防御チェックリストを Markdown ファイルとして出力しました',
   }
 };
 
@@ -206,8 +212,9 @@ function applyI18n() {
 
   // Defense section header
   setTextById('defense-overall-label', t('defense_overall'));
-  const resetBtn = document.querySelector('[onclick*="ad_checklist"]');
+  const resetBtn = document.getElementById('reset-progress-btn');
   if (resetBtn) resetBtn.innerHTML = `<i class="bi bi-arrow-counterclockwise"></i> ${t('reset_progress')}`;
+  setTextById('export-btn-label', t('export_checklist'));
 
   // Dashboard: quick CVE section
   const quickCveLabel = document.getElementById('dash-quick-cve-label');
@@ -256,6 +263,8 @@ function applyI18n() {
   });
 
   // Re-render dynamic content
+  renderTechniques();
+  filterTechniques();
   renderCVEs();
   renderDetection();
   renderTools();
@@ -420,6 +429,14 @@ function bindEvents() {
       applyI18n();
     });
   });
+
+  // Back-to-top button
+  const backToTopBtn = document.getElementById('back-to-top');
+  if (backToTopBtn) {
+    window.addEventListener('scroll', () => {
+      backToTopBtn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+  }
 
   // Keyboard shortcut: press "/" to focus global search
   document.addEventListener('keydown', e => {
@@ -831,6 +848,37 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+function exportChecklist() {
+  const lines = ['# AD Defense Checklist Export', ''];
+  const priorityLabel = { critical: '🔴 Critical', high: '🟡 High', medium: '🔵 Medium' };
+
+  DEFENSE_CHECKLIST.forEach((section, sIdx) => {
+    lines.push(`## ${d(section.category)} [${priorityLabel[section.priority] || section.priority}]`);
+    lines.push('');
+    section.items.forEach((item, iIdx) => {
+      const key = `${sIdx}-${iIdx}`;
+      const checked = state.checkedItems[key] ? '[x]' : '[ ]';
+      lines.push(`- ${checked} ${d(item.text)}`);
+      if (item.detail) lines.push(`  > ${d(item.detail)}`);
+    });
+    lines.push('');
+  });
+
+  const totalItems = DEFENSE_CHECKLIST.reduce((s, c) => s + c.items.length, 0);
+  const checkedCount = Object.keys(state.checkedItems).length;
+  lines.push(`---`);
+  lines.push(`Progress: ${checkedCount} / ${totalItems} (${Math.round((checkedCount / totalItems) * 100)}%)`);
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ad-defense-checklist.md';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(t('export_toast'));
+}
+
 function updateTotalProgress() {
   const totalItems = DEFENSE_CHECKLIST.reduce((s, c) => s + c.items.length, 0);
   const checkedCount = Object.keys(state.checkedItems).length;
@@ -869,6 +917,10 @@ function filterTechniques() {
 
     if (!search) {
       section.style.display = '';
+      if (section.dataset.searchExpanded) {
+        section.classList.remove('expanded');
+        delete section.dataset.searchExpanded;
+      }
       section.querySelectorAll('.technique-card').forEach(c => { c.style.display = ''; });
       totalVisible += section.querySelectorAll('.technique-card').length;
       return;
@@ -884,7 +936,14 @@ function filterTechniques() {
     });
 
     section.style.display = anyVisible ? '' : 'none';
-    if (anyVisible && search) section.classList.add('expanded');
+    if (anyVisible && !section.classList.contains('expanded')) {
+      section.classList.add('expanded');
+      section.dataset.searchExpanded = '1';
+    }
+    if (!anyVisible && section.dataset.searchExpanded) {
+      section.classList.remove('expanded');
+      delete section.dataset.searchExpanded;
+    }
   });
 
   const countEl = document.getElementById('technique-count');

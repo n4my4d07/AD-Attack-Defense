@@ -328,13 +328,18 @@
             <div class="fw-600 text-primary" id="defense-overall-label">整體完成進度</div>
             <div id="dash-checklist-progress-defense" class="text-secondary text-small mt-4">載入中…</div>
           </div>
+          <div class="d-flex gap-8">
+          <button class="filter-btn" onclick="exportChecklist()" id="export-checklist-btn">
+            <i class="bi bi-download"></i> <span id="export-btn-label">匯出清單</span>
+          </button>
           <button class="filter-btn" onclick="
             state.checkedItems = {};
             localStorage.removeItem('ad_checklist');
             renderDefense();
-          " style="color:var(--severity-critical); border-color:var(--severity-critical)40">
+          " style="color:var(--severity-critical); border-color:var(--severity-critical)40" id="reset-progress-btn">
             <i class="bi bi-arrow-counterclockwise"></i> 重設進度
           </button>
+        </div>
         </div>
         <div class="progress-bar-wrap" style="height:8px; margin-top:12px; margin-bottom:0">
           <div id="defense-progress-fill" class="progress-bar-fill" style="width:0%"></div>
@@ -346,6 +351,11 @@
   </div>
 
 </main>
+
+<!-- ── BACK TO TOP ────────────────────────────────────────────────────── -->
+<button id="back-to-top" class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <i class="bi bi-arrow-up"></i>
+</button>
 
 <!-- ── FOOTER ────────────────────────────────────────────────────────── -->
 <footer class="app-footer">

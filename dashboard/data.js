@@ -66,6 +66,15 @@ const CATEGORIES = [
           { title: 'Attacking ADFS Endpoints with PowerShell', url: 'https://www.youtube.com/watch?v=oTyLdAUjw30' },
           { title: 'Using PowerShell to Identify Federated Domains', url: 'https://blog.netspi.com/using-powershell-identify-federated-domains/' }
         ]
+      },
+      {
+        name: 'ADIDNS Enumeration',
+        description: { zh: '列舉 Active Directory 整合 DNS 區域，找出主機名稱、IP 與隱藏服務', en: 'Enumerate Active Directory Integrated DNS zones to discover hostnames, IPs, and hidden services', ja: 'Active Directory 統合 DNS ゾーンを列挙してホスト名・IP・隠れたサービスを発見する' },
+        tools: ['adidnsdump', 'dnstool.py', 'Powermad'],
+        resources: [
+          { title: 'Getting in the Zone: Dumping Active Directory DNS using adidnsdump', url: 'https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/' },
+          { title: 'Beyond LLMNR/NBNS Spoofing – Exploiting Active Directory-Integrated DNS', url: 'https://blog.netspi.com/exploiting-adidns/' }
+        ]
       }
     ]
   },
@@ -173,6 +182,43 @@ const CATEGORIES = [
           { title: 'Pwning with Responder – A Pentester\'s Guide', url: 'https://www.notsosecure.com/pwning-with-responder-a-pentesters-guide/' },
           { title: 'Practical guide to NTLM Relaying in 2017', url: 'https://byt3bl33d3r.github.io/practical-guide-to-ntlm-relaying-in-2017-aka-getting-a-foothold-in-under-5-minutes.html' },
           { title: 'mitm6 – compromising IPv4 networks via IPv6', url: 'https://www.fox-it.com/en/news/blog/mitm6-compromising-ipv4-networks-via-ipv6/' }
+        ]
+      },
+      {
+        name: 'Shadow Credentials',
+        description: { zh: '利用 msDS-KeyCredentialLink 屬性新增金鑰憑證，在無需知道密碼的情況下取得 TGT', en: 'Add key credentials via the msDS-KeyCredentialLink attribute to obtain a TGT without knowing the target password', ja: 'msDS-KeyCredentialLink 属性にキー資格情報を追加し、パスワードなしで TGT を取得する' },
+        tools: ['Whisker', 'pywhisker', 'Certipy'],
+        resources: [
+          { title: 'Shadow Credentials: Abusing Key Trust Account Mapping for Account Takeover', url: 'https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab' },
+          { title: 'Whisker GitHub', url: 'https://github.com/eladshamir/Whisker' }
+        ]
+      },
+      {
+        name: 'PrintNightmare (Print Spooler RCE)',
+        description: { zh: 'CVE-2021-34527：Windows Print Spooler 遠端程式碼執行，以 SYSTEM 權限在 DC 上執行任意程式碼', en: 'CVE-2021-34527: Windows Print Spooler remote code execution to run arbitrary code as SYSTEM on a DC', ja: 'CVE-2021-34527: Windows Print Spooler のリモートコード実行により DC 上で SYSTEM 権限で任意のコードを実行する' },
+        tools: ['Impacket', 'SharpPrintNightmare'],
+        cves: ['CVE-2021-34527'],
+        resources: [
+          { title: 'PrintNightmare – CVE-2021-34527 Technical Analysis', url: 'https://www.truesec.com/hub/blog/printnightmare-cve-2021-34527' },
+          { title: 'Detecting PrintNightmare', url: 'https://www.huntress.com/blog/detecting-printnightmare' }
+        ]
+      },
+      {
+        name: 'Certifried (AD CS EoP)',
+        description: { zh: 'CVE-2022-26923：一般使用者透過操控電腦帳戶 dNSHostName 屬性，從 AD CS 取得域管理員憑證', en: 'CVE-2022-26923: Standard users obtain Domain Admin certificates from AD CS by manipulating the dNSHostName attribute of computer accounts', ja: 'CVE-2022-26923: 一般ユーザーがコンピューターアカウントの dNSHostName 属性を操作し、AD CS からドメイン管理者証明書を取得する' },
+        tools: ['Certipy', 'Certify'],
+        cves: ['CVE-2022-26923'],
+        resources: [
+          { title: 'Certifried: Active Directory Domain Privilege Escalation (CVE-2022-26923)', url: 'https://research.ifcr.dk/certifried-active-directory-domain-privilege-escalation-cve-2022-26923-9e098652bef4' }
+        ]
+      },
+      {
+        name: 'Coercion Attacks (PrinterBug / Coercer)',
+        description: { zh: '利用 MS-RPRN、MS-EFSR 等多種 Windows 協定強制 DC 向攻擊者進行 NTLM 認證，再中繼提權', en: 'Force DCs to perform NTLM authentication to the attacker using MS-RPRN, MS-EFSR, and other Windows protocols, then relay for privilege escalation', ja: 'MS-RPRN・MS-EFSR などの複数 Windows プロトコルで DC に攻撃者への NTLM 認証を強制し、リレーして権限昇格する' },
+        tools: ['Coercer', 'SpoolSample', 'PetitPotam', 'Impacket'],
+        resources: [
+          { title: 'SpoolSample (PrinterBug) GitHub', url: 'https://github.com/leechristensen/SpoolSample' },
+          { title: 'Coercer – Coerce Windows Servers to Authenticate', url: 'https://github.com/p0dalirius/Coercer' }
         ]
       }
     ]
@@ -290,6 +336,24 @@ const CATEGORIES = [
           { title: 'Password Spraying Windows Active Directory Accounts', url: 'https://www.youtube.com/watch?v=xB26QhnL64c' },
           { title: 'Attacking Exchange with MailSniper', url: 'https://www.blackhillsinfosec.com/attacking-exchange-with-mailsniper/' }
         ]
+      },
+      {
+        name: 'Pass-the-Ticket (PTT)',
+        description: { zh: '注入竊取的 Kerberos 票據，以合法使用者身份進行認證，無需知道其密碼', en: 'Inject stolen Kerberos tickets to authenticate as a legitimate user without knowing their password', ja: '盗んだ Kerberos チケットを注入して、パスワードを知らずに正規ユーザーとして認証する' },
+        tools: ['Rubeus', 'Mimikatz'],
+        resources: [
+          { title: 'Rubeus – Pass-the-Ticket', url: 'https://github.com/GhostPack/Rubeus#ptt' },
+          { title: 'Pass The Ticket Attack', url: 'https://www.hackingarticles.in/lateral-movement-pass-the-ticket-attack/' }
+        ]
+      },
+      {
+        name: 'Over-Pass-the-Hash (Pass-the-Key)',
+        description: { zh: '使用 NTLM 雜湊值申請 Kerberos TGT，將 NTLM 憑證轉換為 Kerberos 認證流程以規避偵測', en: 'Use an NTLM hash to request a Kerberos TGT, converting NTLM credentials into the Kerberos authentication flow to evade detection', ja: 'NTLM ハッシュを使って Kerberos TGT をリクエストし、NTLM 認証情報を Kerberos 認証フローに変換して検知を回避する' },
+        tools: ['Rubeus', 'Mimikatz', 'Impacket'],
+        resources: [
+          { title: 'Overpass the Hash / Pass the Key (PTK)', url: 'https://www.hackingarticles.in/lateral-movement-over-pass-the-hash/' },
+          { title: 'Mimikatz Pass-the-Key', url: 'https://blog.gentilkiwi.com/securite/mimikatz/pass-the-ticket-kerberos' }
+        ]
       }
     ]
   },
@@ -343,6 +407,24 @@ const CATEGORIES = [
         tools: ['Responder'],
         resources: [
           { title: 'LLMNR/NBT-NS Poisoning Using Responder', url: 'https://www.4armed.com/blog/llmnr-nbtns-poisoning-using-responder/' }
+        ]
+      },
+      {
+        name: 'DPAPI Credential Theft',
+        description: { zh: '利用 DPAPI 解密 Windows 儲存的憑證、瀏覽器密碼、WiFi 金鑰及 RDP 連線記錄', en: 'Leverage DPAPI to decrypt Windows-stored credentials, browser passwords, WiFi keys, and RDP connection records', ja: 'DPAPI を利用して Windows が保存した認証情報・ブラウザパスワード・WiFi キー・RDP 接続記録を復号する' },
+        tools: ['Mimikatz', 'SharpDPAPI', 'Impacket'],
+        resources: [
+          { title: 'Operational Guidance for Offensive User DPAPI Abuse', url: 'https://posts.specterops.io/operational-guidance-for-offensive-user-dpapi-abuse-1fb7fac8b107' },
+          { title: 'SharpDPAPI GitHub', url: 'https://github.com/GhostPack/SharpDPAPI' }
+        ]
+      },
+      {
+        name: 'Cached Domain Credentials (DCC2)',
+        description: { zh: '從 LSA 機密提取並離線破解 Windows 快取的網域登入憑證（Domain Cached Credentials v2）', en: 'Extract and offline-crack Windows cached domain login credentials (Domain Cached Credentials v2) from LSA secrets', ja: 'LSA シークレットから Windows がキャッシュしたドメインログイン認証情報（DCC2）を抽出してオフラインで解析する' },
+        tools: ['Mimikatz', 'CrackMapExec', 'hashcat'],
+        resources: [
+          { title: 'Domain Cached Credentials (MITRE T1003.005)', url: 'https://attack.mitre.org/techniques/T1003/005/' },
+          { title: 'Dumping and Cracking mscash – Cached Domain Credentials', url: 'https://www.ired.team/offensive-security/credential-access-and-credential-dumping/dumping-and-cracking-mscash-cached-domain-credentials' }
         ]
       }
     ]
@@ -413,6 +495,24 @@ const CATEGORIES = [
         resources: [
           { title: 'Sneaky Active Directory Persistence #11: DSRM', url: 'https://adsecurity.org/?p=1714' },
           { title: 'Sneaky Active Directory Persistence #13: DSRM Persistence v2', url: 'https://adsecurity.org/?p=1785' }
+        ]
+      },
+      {
+        name: 'Machine Account Backdoor (RBCD)',
+        description: { zh: '建立受控機器帳戶並設定 Resource-Based Constrained Delegation，以持久性後門方式委派任意服務票據', en: 'Create a controlled machine account and configure Resource-Based Constrained Delegation to persistently delegate arbitrary service tickets', ja: '管理下のマシンアカウントを作成し、リソースベースの制約付き委任を設定して任意のサービスチケットを永続的に委任する' },
+        tools: ['Rubeus', 'Impacket', 'Powermad'],
+        resources: [
+          { title: 'Wagging the Dog: Abusing Resource-Based Constrained Delegation', url: 'https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html' },
+          { title: 'RBCD Persistence', url: 'https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/resource-based-constrained-delegation-ad-computer-object-take-over-and-privilged-access' }
+        ]
+      },
+      {
+        name: 'ACL Backdoor (GenericAll / WriteDACL)',
+        description: { zh: '在 AD 物件 ACL 上植入隱藏後門權限（GenericAll、WriteDACL 等），確保在密碼重設後仍可持續存取', en: 'Plant hidden backdoor permissions (GenericAll, WriteDACL, etc.) in AD object ACLs to maintain persistent access even after password resets', ja: 'AD オブジェクトの ACL に隠れたバックドア権限（GenericAll・WriteDACL など）を植え付け、パスワードリセット後も持続的なアクセスを確保する' },
+        tools: ['PowerView', 'RACE', 'Impacket'],
+        resources: [
+          { title: 'Backdooring Active Directory ACLs / DACLs', url: 'https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/backdooring-ad-acls-dacls' },
+          { title: 'Sneaky Active Directory Persistence Using Security Descriptors', url: 'https://adsecurity.org/?p=3032' }
         ]
       }
     ]
@@ -549,6 +649,26 @@ const CVES = [
     category: 'Credential Dumping',
     url: 'https://support.microsoft.com/en-us/help/2962486/ms14-025-vulnerability-in-group-policy-preferences-could-allow-elevati',
     tools: ['PowerView']
+  },
+  {
+    id: 'CVE-2022-26923',
+    name: 'Certifried (AD CS EoP)',
+    severity: 'critical',
+    year: 2022,
+    description: { zh: '普通使用者可修改電腦帳戶 dNSHostName 屬性造成名稱碰撞，從 AD CS 取得域管理員憑證', en: 'Standard users can modify the dNSHostName attribute of computer accounts to cause name collisions, obtaining Domain Admin certificates from AD CS', ja: '一般ユーザーがコンピューターアカウントの dNSHostName 属性を変更して名前衝突を起こし、AD CS からドメイン管理者証明書を取得できる' },
+    category: 'Privilege Escalation',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-26923',
+    tools: ['Certipy', 'Certify']
+  },
+  {
+    id: 'CVE-2021-34527',
+    name: 'PrintNightmare (Windows Print Spooler)',
+    severity: 'critical',
+    year: 2021,
+    description: { zh: 'Windows Print Spooler 遠端程式碼執行漏洞，允許遠端攻擊者以 SYSTEM 權限執行任意程式碼，廣泛用於網域提權', en: 'Windows Print Spooler remote code execution vulnerability allowing remote attackers to run arbitrary code as SYSTEM, widely exploited for domain privilege escalation', ja: 'Windows Print Spooler のリモートコード実行の脆弱性。リモート攻撃者が SYSTEM 権限で任意のコードを実行でき、ドメイン権限昇格に広く悪用された' },
+    category: 'Privilege Escalation',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-34527',
+    tools: ['Impacket', 'SharpPrintNightmare']
   }
 ];
 
@@ -687,6 +807,45 @@ const DETECTION_EVENTS = [
       { zh: '4624: 帳戶登入', en: '4624: An account was successfully logged on', ja: '4624: アカウントのログオンに成功した' },
       { zh: '4768: Kerberos TGT 請求', en: '4768: A Kerberos TGT was requested', ja: '4768: Kerberos TGT がリクエストされた' }
     ]
+  },
+  {
+    attack: 'Shadow Credentials',
+    category: 'privilege-escalation',
+    eventIds: ['5136', '4662'],
+    descriptions: [
+      { zh: '5136: 目錄服務物件已修改（注意 msDS-KeyCredentialLink 屬性的異常寫入）', en: '5136: A directory service object was modified (watch for unexpected writes to msDS-KeyCredentialLink)', ja: '5136: ディレクトリサービスオブジェクトが変更された（msDS-KeyCredentialLink への予期しない書き込みに注意）' },
+      { zh: '4662: 已對物件執行操作（非 DC 帳戶對 msDS-KeyCredentialLink 的寫入操作為高風險）', en: '4662: An operation was performed on an object (writes to msDS-KeyCredentialLink by non-DC accounts are high risk)', ja: '4662: オブジェクトに対して操作が実行された（非 DC アカウントによる msDS-KeyCredentialLink への書き込みは高リスク）' }
+    ]
+  },
+  {
+    attack: 'PrintNightmare / Print Spooler Abuse',
+    category: 'privilege-escalation',
+    eventIds: ['7031', '7045', '316'],
+    descriptions: [
+      { zh: '7031: 服務意外終止（Print Spooler 頻繁崩潰可能是攻擊跡象）', en: '7031: A service terminated unexpectedly (frequent Print Spooler crashes may indicate an attack)', ja: '7031: サービスが予期せず終了した（Print Spooler の頻繁なクラッシュは攻撃を示す可能性がある）' },
+      { zh: '7045: 系統安裝了新服務（Print Spooler DLL 注入安裝惡意驅動服務）', en: '7045: A new service was installed on the system (Print Spooler DLL injection for malicious driver/service installation)', ja: '7045: 新しいサービスがインストールされた（Print Spooler DLL インジェクションによる悪意のあるドライバー・サービスのインストール）' },
+      { zh: '316: PrintService 操作日誌 – 新增印表機驅動程式（非預期的驅動程式安裝）', en: '316: PrintService operational log – adding a printer driver (unexpected driver installation)', ja: '316: PrintService 操作ログ – プリンタードライバーの追加（予期しないドライバーのインストール）' }
+    ]
+  },
+  {
+    attack: 'NTDS.DIT / VSS Shadow Copy Abuse',
+    category: 'credential-dumping',
+    eventIds: ['8222', '4688', '7036'],
+    descriptions: [
+      { zh: '8222: 磁碟區陰影複製已建立（VSS 事件，可能為 NTDS.DIT 竊取前置作業）', en: '8222: A volume shadow copy was created (VSS event; may indicate NTDS.DIT theft preparation)', ja: '8222: ボリュームシャドウコピーが作成された（VSS イベント、NTDS.DIT 窃取の前準備の可能性）' },
+      { zh: '4688: ntdsutil.exe 或 vssadmin.exe 程序建立（非 DC 執行此程序屬異常行為）', en: '4688: ntdsutil.exe or vssadmin.exe process created (non-DC execution is suspicious)', ja: '4688: ntdsutil.exe または vssadmin.exe プロセスの作成（非 DC での実行は不審）' },
+      { zh: '7036: VSS 服務狀態變更（生產環境中突然啟動 VSS 服務值得注意）', en: '7036: VSS service state change (sudden VSS service startup in a production environment is suspicious)', ja: '7036: VSS サービスの状態変化（本番環境での突然の VSS サービス起動に注意）' }
+    ]
+  },
+  {
+    attack: 'Pass-the-Ticket (PTT)',
+    category: 'lateral-movement',
+    eventIds: ['4768', '4769', '4624'],
+    descriptions: [
+      { zh: '4768: TGT 請求來自非 DC 且帳戶已在其他位置成功登入（票據注入跡象）', en: '4768: TGT request from non-DC while the account is already successfully logged on elsewhere (possible ticket injection)', ja: '4768: 非 DC からの TGT リクエストで、アカウントが他の場所で既にログオン成功している（チケット注入の可能性）' },
+      { zh: '4769: 異常服務票據請求（加密類型與正常請求不符）', en: '4769: Anomalous service ticket request (encryption type inconsistent with normal requests)', ja: '4769: 異常なサービスチケットリクエスト（暗号化タイプが通常のリクエストと一致しない）' },
+      { zh: '4624: 登入類型 3（網路登入）來自異常來源 IP 或時間', en: '4624: Logon type 3 (network logon) from an unusual source IP or time', ja: '4624: 異常な送信元 IP または時間帯からのログオンタイプ 3（ネットワークログオン）' }
+    ]
   }
 ];
 
@@ -711,6 +870,11 @@ const TOOLS = [
   { name: 'SharpDump', type: 'offensive', url: 'https://github.com/GhostPack/SharpDump', description: { zh: 'PowerSploit Out-Minidump 的 C# 版本，產生 LSASS 記憶體轉儲', en: "C# version of PowerSploit's Out-Minidump for generating LSASS memory dumps", ja: 'LSASS メモリダンプを生成する PowerSploit Out-Minidump の C# バージョン' }, tags: ['LSASS', 'C#', '憑證', '記憶體轉儲'] },
   { name: 'Powermad', type: 'offensive', url: 'https://github.com/Kevin-Robertson/Powermad', description: { zh: 'MachineAccountQuota 和 DNS 利用工具，用於 RBCD 攻擊', en: 'MachineAccountQuota and DNS exploitation tool used for RBCD attacks', ja: 'RBCD 攻撃に使用する MachineAccountQuota および DNS 悪用ツール' }, tags: ['MachineAccountQuota', 'DNS', 'RBCD', 'PowerShell'] },
   { name: 'ldapdomaindump', type: 'offensive', url: 'https://github.com/dirkjanm/ldapdomaindump', description: { zh: '透過 LDAP 轉儲 AD 資訊，輸出 JSON/HTML/CSV 格式', en: 'Dump AD information via LDAP with JSON/HTML/CSV output', ja: 'LDAP 経由で AD 情報をダンプし、JSON/HTML/CSV 形式で出力する' }, tags: ['LDAP', 'AD', '偵察', 'Python'] },
+  { name: 'Whisker', type: 'offensive', url: 'https://github.com/eladshamir/Whisker', description: { zh: 'Shadow Credentials 攻擊工具，操控 msDS-KeyCredentialLink 屬性取得目標帳戶 TGT', en: 'Shadow Credentials attack tool that manipulates the msDS-KeyCredentialLink attribute to obtain a TGT for target accounts', ja: 'msDS-KeyCredentialLink 属性を操作してターゲットアカウントの TGT を取得する Shadow Credentials 攻撃ツール' }, tags: ['Shadow Credentials', 'Kerberos', 'C#', '提權'] },
+  { name: 'Certipy', type: 'offensive', url: 'https://github.com/ly4k/Certipy', description: { zh: 'Python 工具，自動化枚舉與利用 AD CS 漏洞（Certifried、ESC1-8、Shadow Credentials）', en: 'Python tool for automated enumeration and exploitation of AD CS vulnerabilities (Certifried, ESC1–8, Shadow Credentials)', ja: 'AD CS の脆弱性（Certifried・ESC1〜8・Shadow Credentials）を自動列挙・悪用する Python ツール' }, tags: ['AD CS', 'Python', 'Certifried', '提權'] },
+  { name: 'Coercer', type: 'offensive', url: 'https://github.com/p0dalirius/Coercer', description: { zh: '利用多種 Windows 協定（MS-EFSR、MS-FSRVP、MS-RPRN 等）強制伺服器向攻擊者進行 NTLM 認證', en: 'Force servers to perform NTLM authentication to the attacker using multiple Windows protocols (MS-EFSR, MS-FSRVP, MS-RPRN, etc.)', ja: '複数の Windows プロトコル（MS-EFSR・MS-FSRVP・MS-RPRN など）を使用してサーバーに攻撃者への NTLM 認証を強制する' }, tags: ['強制認證', 'NTLM', 'Python', 'Coercion'] },
+  { name: 'netexec (nxc)', type: 'offensive', url: 'https://github.com/Pennyw0rth/NetExec', description: { zh: 'CrackMapExec 的現代化繼承版本，持續維護，支援 SMB、WinRM、RDP、LDAP、FTP 等協定的大規模作業', en: 'Actively maintained modern successor to CrackMapExec, supporting large-scale operations over SMB, WinRM, RDP, LDAP, FTP, and more', ja: 'SMB・WinRM・RDP・LDAP・FTP などの大規模操作をサポートする、積極的にメンテされる CrackMapExec の現代的な後継版' }, tags: ['SMB', 'WinRM', 'LDAP', '橫向移動'] },
+  { name: 'SharpDPAPI', type: 'offensive', url: 'https://github.com/GhostPack/SharpDPAPI', description: { zh: 'C# DPAPI 攻擊工具，解密 Windows 儲存的憑證、瀏覽器密碼與憑證管理員', en: 'C# DPAPI attack tool for decrypting Windows-stored credentials, browser passwords, and credential manager entries', ja: 'Windows が保存した認証情報・ブラウザパスワード・資格情報マネージャーを復号する C# DPAPI 攻撃ツール' }, tags: ['DPAPI', 'C#', '憑證', 'GhostPack'] },
   // Defensive Tools
   { name: 'PingCastle', type: 'defensive', url: 'https://www.pingcastle.com/', description: { zh: '快速評估 AD 安全層級的工具，基於風險評估與成熟度框架產生評分報告', en: 'Tool for rapid AD security level assessment, generating scored reports based on risk assessment and maturity frameworks', ja: 'リスク評価と成熟度フレームワークに基づいてスコアレポートを生成する AD セキュリティレベルの迅速評価ツール' }, tags: ['稽核', '評估', '報告', '合規'] },
   { name: 'ADRecon', type: 'defensive', url: 'https://github.com/sense-of-security/ADRecon', description: { zh: '收集 AD 環境全面資訊並產生 Excel 報告，提供整體安全狀況視圖', en: 'Collect comprehensive AD environment information and generate Excel reports providing an overall security posture view', ja: 'AD 環境の包括的な情報を収集して Excel レポートを生成し、全体的なセキュリティ状況を提供する' }, tags: ['稽核', 'Excel', '報告', '偵察'] },
@@ -726,6 +890,8 @@ const TOOLS = [
   { name: 'RiskySPN', type: 'defensive', url: 'https://github.com/cyberark/RiskySPN', description: { zh: '偵測和列舉與 SPN 關聯的高風險帳戶，評估 Kerberoast 風險', en: 'Detect and enumerate high-risk accounts associated with SPNs to assess Kerberoast risk', ja: 'SPN に関連する高リスクアカウントを検知・列挙して Kerberoast リスクを評価する' }, tags: ['SPN', 'Kerberoasting', '稽核', 'PowerShell'] },
   { name: 'ADTimeline', type: 'defensive', url: 'https://github.com/ANSSI-FR/ADTimeline', description: { zh: '基於 AD 複寫元資料產生時間軸，用於事件回應調查', en: 'Generate a timeline based on AD replication metadata for incident response investigations', ja: 'インシデント対応調査のために AD レプリケーションメタデータに基づいてタイムラインを生成する' }, tags: ['DFIR', '時間軸', 'AD', 'ANSSI'] },
   { name: 'SilkETW', type: 'defensive', url: 'https://github.com/fireeye/SilkETW', description: { zh: 'ETW（Event Tracing for Windows）的 C# 封裝，簡化 ETW 研究與監控', en: 'C# wrapper around ETW (Event Tracing for Windows) to simplify ETW research and monitoring', ja: 'ETW (Event Tracing for Windows) の研究と監視を簡素化する C# ラッパー' }, tags: ['ETW', 'C#', '監控', 'FireEye'] },
+  { name: 'Microsoft Defender for Identity', type: 'defensive', url: 'https://learn.microsoft.com/en-us/defender-for-identity/', description: { zh: '微軟雲端原生 AD 威脅偵測方案，自動識別 Kerberoast、DCSync、Pass-the-Hash、Shadow Credentials 等攻擊行為', en: 'Microsoft cloud-native AD threat detection solution that automatically identifies Kerberoast, DCSync, Pass-the-Hash, Shadow Credentials, and other attacks', ja: 'Kerberoast・DCSync・Pass-the-Hash・Shadow Credentials などの攻撃を自動検知する Microsoft クラウドネイティブ AD 脅威検知ソリューション' }, tags: ['Microsoft', '雲端', '威脅偵測', 'UEBA'] },
+  { name: 'Purple Knight', type: 'defensive', url: 'https://www.purple-knight.com/', description: { zh: 'Semperis 出品的免費 AD 安全評估工具，針對 Golden Ticket、DCSync、AdminSDHolder 等常見 AD 攻擊路徑產生評分報告', en: 'Free AD security assessment tool from Semperis that generates scored reports covering common AD attack paths including Golden Ticket, DCSync, and AdminSDHolder', ja: 'Golden Ticket・DCSync・AdminSDHolder などの一般的な AD 攻撃経路をカバーしたスコアレポートを生成する Semperis 製の無料 AD セキュリティ評価ツール' }, tags: ['稽核', '評估', '報告', 'Semperis'] },
   // Azure Tools
   { name: 'ROADtools', type: 'azure', url: 'https://github.com/dirkjanm/ROADtools', description: { zh: 'Azure AD 互動框架，支援列舉、資料收集與攻擊', en: 'Azure AD interaction framework supporting enumeration, data collection, and attacks', ja: '列挙・データ収集・攻撃をサポートする Azure AD 操作フレームワーク' }, tags: ['Azure AD', 'Python', '列舉', '互動'] },
   { name: 'AADInternals', type: 'azure', url: 'https://github.com/Gerenios/AADInternals', description: { zh: 'Azure AD 與 Office 365 管理 PowerShell 模組，支援攻防兩用', en: 'Azure AD and Office 365 management PowerShell module supporting both offensive and defensive use', ja: '攻撃・防御の両用途をサポートする Azure AD および Office 365 管理 PowerShell モジュール' }, tags: ['Azure AD', 'O365', 'PowerShell', '管理'] },
