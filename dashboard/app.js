@@ -519,7 +519,7 @@ function renderTechniques() {
 
   CATEGORIES.forEach(cat => {
     const section = document.createElement('div');
-    section.className = 'category-section';
+    section.className = 'category-section expanded';
     section.dataset.categoryId = cat.id;
     section.innerHTML = `
       <div class="category-header" onclick="toggleCategory(this.parentElement)">
