@@ -35,6 +35,9 @@
     <button class="nav-tab" data-tab="defense">
       <i class="bi bi-shield-check"></i> 防禦清單
     </button>
+    <button class="nav-tab" data-tab="references">
+      <i class="bi bi-journals"></i> 參考資料
+    </button>
   </div>
 
   <div class="lang-switcher">
@@ -316,8 +319,8 @@
   <div id="tab-defense" class="tab-pane">
     <div class="section-header">
       <div class="section-title"><i class="bi bi-shield-check"></i> 防禦安全清單</div>
-      <div class="section-desc">
-        依 Sean Metcalf (@Pyrotek3) 建議整理的 AD 安全稽核清單，可逐項勾選追蹤進度
+      <div class="section-desc" data-i18n="defense_desc">
+        整合業界最佳實踐與威脅情報，涵蓋帳戶保護、Kerberos 強化、網路隔離、日誌稽核等 AD 關鍵防禦領域，可逐項勾選追蹤修補進度
       </div>
     </div>
 
@@ -348,6 +351,15 @@
     </div>
 
     <div id="defense-container"></div>
+  </div>
+
+  <!-- ── TAB: REFERENCES ─────────────────────────────────────────────────── -->
+  <div id="tab-references" class="tab-pane">
+    <div class="section-header">
+      <div class="section-title"><i class="bi bi-journals"></i> 參考資料</div>
+      <div class="section-desc">整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引</div>
+    </div>
+    <div id="references-container"></div>
   </div>
 
 </main>

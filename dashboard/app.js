@@ -5,7 +5,7 @@ const I18N = {
   zh: {
     search_placeholder: '搜尋技術、工具、CVE…',
     nav_dashboard: '總覽', nav_techniques: '攻擊技術', nav_cves: 'CVE 追蹤',
-    nav_detection: '偵測參考', nav_tools: '工具庫', nav_defense: '防禦清單',
+    nav_detection: '偵測參考', nav_tools: '工具庫', nav_defense: '防禦清單', nav_references: '參考資料',
     dash_title: 'Active Directory 攻防總覽',
     dash_desc: 'AD Kill Chain 攻擊鏈分析與防禦資源整合儀表板 — 紅隊 / 教育訓練用途',
     stat_categories: '攻擊類別', stat_techniques: '攻擊技術', stat_cves: '追蹤 CVE',
@@ -21,7 +21,7 @@ const I18N = {
     tools_title: '工具庫', tools_desc: 'AD 攻防相關工具收錄，涵蓋攻擊、防禦、稽核與 Azure 類別',
     search_tools: '搜尋工具名稱、功能標籤…',
     filter_offensive: '攻擊工具', filter_defensive: '防禦工具', filter_azure: 'Azure 工具',
-    defense_title: '防禦安全清單', defense_desc: '依 Sean Metcalf (@Pyrotek3) 建議整理的 AD 安全稽核清單，可逐項勾選追蹤進度',
+    defense_title: '防禦安全清單', defense_desc: '整合業界最佳實踐與威脅情報，涵蓋帳戶保護、Kerberos 強化、網路隔離、日誌稽核等 AD 關鍵防禦領域，可逐項勾選追蹤修補進度',
     defense_overall: '整體完成進度', reset_progress: '重設進度',
     checklist_done: '完成', steps_btn: '設定步驟',
     col_cve: 'CVE ID', col_cve_name: '漏洞名稱', col_severity: '嚴重性', col_year: '年份',
@@ -46,11 +46,13 @@ const I18N = {
     techniques_count: (n) => `${n} techniques`,
     export_checklist: '匯出清單',
     export_toast: '防禦清單已匯出為 Markdown 檔案',
+    references_title: '參考資料', references_desc: '整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引',
+    ref_tag_official: '官方', ref_tag_research: '研究', ref_tag_tool: '工具', ref_tag_cve: 'CVE', ref_tag_framework: '框架',
   },
   en: {
     search_placeholder: 'Search techniques, tools, CVE…',
     nav_dashboard: 'Overview', nav_techniques: 'Techniques', nav_cves: 'CVE Tracker',
-    nav_detection: 'Detection', nav_tools: 'Tools', nav_defense: 'Defense Checklist',
+    nav_detection: 'Detection', nav_tools: 'Tools', nav_defense: 'Defense Checklist', nav_references: 'References',
     dash_title: 'Active Directory Attack & Defense Overview',
     dash_desc: 'AD Kill Chain analysis and defense resource dashboard — Red Team / Education',
     stat_categories: 'Categories', stat_techniques: 'Techniques', stat_cves: 'CVEs Tracked',
@@ -66,7 +68,7 @@ const I18N = {
     tools_title: 'Tool Library', tools_desc: 'AD attack/defense tools covering offensive, defensive, audit and Azure',
     search_tools: 'Search tool name or tag…',
     filter_offensive: 'Offensive', filter_defensive: 'Defensive', filter_azure: 'Azure',
-    defense_title: 'Defense Checklist', defense_desc: 'AD security audit checklist based on Sean Metcalf (@Pyrotek3) recommendations',
+    defense_title: 'Defense Checklist', defense_desc: 'A comprehensive AD defense checklist integrating industry best practices and threat intelligence — covering account protection, Kerberos hardening, network segmentation, logging, and more. Track your remediation progress item by item.',
     defense_overall: 'Overall Progress', reset_progress: 'Reset Progress',
     checklist_done: 'done', steps_btn: 'Config Steps',
     col_cve: 'CVE ID', col_cve_name: 'Vulnerability', col_severity: 'Severity', col_year: 'Year',
@@ -91,11 +93,13 @@ const I18N = {
     techniques_count: (n) => `${n} techniques`,
     export_checklist: 'Export Checklist',
     export_toast: 'Defense checklist exported as Markdown',
+    references_title: 'References', references_desc: 'A curated index of official documentation, academic research, offensive/defensive tool references, and CVE advisories for AD security research.',
+    ref_tag_official: 'Official', ref_tag_research: 'Research', ref_tag_tool: 'Tool', ref_tag_cve: 'CVE', ref_tag_framework: 'Framework',
   },
   ja: {
     search_placeholder: '技術・ツール・CVEを検索…',
     nav_dashboard: 'ダッシュボード', nav_techniques: '攻撃技術', nav_cves: 'CVE追跡',
-    nav_detection: '検知リファレンス', nav_tools: 'ツール', nav_defense: '防御チェック',
+    nav_detection: '検知リファレンス', nav_tools: 'ツール', nav_defense: '防御チェック', nav_references: '参考資料',
     dash_title: 'Active Directory 攻防ダッシュボード',
     dash_desc: 'AD Kill Chain 攻撃・防御リソース統合ダッシュボード — レッドチーム / 教育用途',
     stat_categories: '攻撃カテゴリ', stat_techniques: '攻撃技術', stat_cves: '追跡CVE',
@@ -111,7 +115,7 @@ const I18N = {
     tools_title: 'ツールライブラリ', tools_desc: 'AD攻防関連ツール（攻撃・防御・監査・Azure）',
     search_tools: 'ツール名またはタグで検索…',
     filter_offensive: '攻撃ツール', filter_defensive: '防御ツール', filter_azure: 'Azureツール',
-    defense_title: '防御セキュリティチェックリスト', defense_desc: 'Sean Metcalf (@Pyrotek3) の推奨に基づくADセキュリティ監査チェックリスト',
+    defense_title: '防御セキュリティチェックリスト', defense_desc: '業界のベストプラクティスと脅威インテリジェンスを統合した AD 包括的防御監査チェックリスト。アカウント保護・Kerberos 強化・ネットワーク分離・ログ監査など主要防御領域を網羅し、項目ごとに修正進捗を管理できます。',
     defense_overall: '全体達成率', reset_progress: 'リセット',
     checklist_done: '完了', steps_btn: '設定手順',
     col_cve: 'CVE ID', col_cve_name: '脆弱性名', col_severity: '深刻度', col_year: '年',
@@ -136,6 +140,8 @@ const I18N = {
     techniques_count: (n) => `${n} 技術`,
     export_checklist: 'チェックリスト出力',
     export_toast: '防御チェックリストを Markdown ファイルとして出力しました',
+    references_title: '参考資料', references_desc: '官方ドキュメント・研究論文・攻防ツール説明・CVE アドバイザリなど AD セキュリティ研究に関する資料を体系的にまとめたインデックスです。',
+    ref_tag_official: '公式', ref_tag_research: '研究', ref_tag_tool: 'ツール', ref_tag_cve: 'CVE', ref_tag_framework: 'フレームワーク',
   }
 };
 
@@ -161,6 +167,7 @@ function applyI18n() {
   document.querySelector('[data-tab="detection"]').innerHTML = `<i class="bi bi-eye"></i> ${t('nav_detection')}`;
   document.querySelector('[data-tab="tools"]').innerHTML = `<i class="bi bi-tools"></i> ${t('nav_tools')}`;
   document.querySelector('[data-tab="defense"]').innerHTML = `<i class="bi bi-shield-check"></i> ${t('nav_defense')}`;
+  document.querySelector('[data-tab="references"]').innerHTML = `<i class="bi bi-journals"></i> ${t('nav_references')}`;
 
   // Global search placeholder
   const gs = document.getElementById('global-search');
@@ -184,6 +191,7 @@ function applyI18n() {
   setI18nSection('tab-detection', 'bi-eye', 'detection_title', 'detection_desc');
   setI18nSection('tab-tools', 'bi-tools', 'tools_title', 'tools_desc');
   setI18nSection('tab-defense', 'bi-shield-check', 'defense_title', 'defense_desc');
+  setI18nSection('tab-references', 'bi-journals', 'references_title', 'references_desc');
 
   // Placeholders
   setPlaceholder('technique-search', t('search_technique'));
@@ -269,6 +277,7 @@ function applyI18n() {
   renderDetection();
   renderTools();
   renderDefense();
+  renderReferences();
   updateTotalProgress();
 }
 
@@ -758,7 +767,7 @@ function renderDefense() {
           <div class="step-item step-${step.type}">
             <i class="bi ${icons[step.type] || 'bi-dot'}" style="color:${colors[step.type] || 'var(--text-muted)'}; flex-shrink:0; margin-top:2px"></i>
             ${isCode
-              ? `<pre class="step-code">${escapeHtml(step.text)}</pre>`
+              ? `<pre class="step-code">${escapeHtml(d(step.text))}</pre>`
               : `<span class="step-text">${d(step.text)}</span>`
             }
           </div>
@@ -877,6 +886,52 @@ function exportChecklist() {
   a.click();
   URL.revokeObjectURL(url);
   showToast(t('export_toast'));
+}
+
+// ── RENDER: REFERENCES ─────────────────────────────────────────────────────
+function renderReferences() {
+  const container = document.getElementById('references-container');
+  if (!container || typeof REFERENCES === 'undefined') return;
+
+  const tagColorMap = {
+    official: 'var(--accent-blue)', research: 'var(--color-lateral)',
+    tool: 'var(--color-defense)', cve: 'var(--severity-high)', framework: 'var(--severity-medium)'
+  };
+  const tagLabelKey = {
+    official: 'ref_tag_official', research: 'ref_tag_research',
+    tool: 'ref_tag_tool', cve: 'ref_tag_cve', framework: 'ref_tag_framework'
+  };
+
+  container.innerHTML = REFERENCES.map(section => {
+    const items = section.refs.map(ref => {
+      const tags = (ref.tags || []).map(tag => {
+        const color = tagColorMap[tag] || 'var(--text-muted)';
+        const label = t(tagLabelKey[tag] || tag);
+        return `<span class="ref-tag" style="background:${color}20;color:${color};border:1px solid ${color}40">${label}</span>`;
+      }).join('');
+      return `
+        <a class="ref-item" href="${ref.url}" target="_blank" rel="noopener noreferrer">
+          <div class="ref-item-inner">
+            <div class="ref-title">${escapeHtml(d(ref.title))}</div>
+            ${ref.desc ? `<div class="ref-desc">${escapeHtml(d(ref.desc))}</div>` : ''}
+          </div>
+          <div class="ref-right">
+            <div class="ref-tags">${tags}</div>
+            <i class="bi bi-box-arrow-up-right ref-arrow"></i>
+          </div>
+        </a>`;
+    }).join('');
+
+    return `
+      <div class="ref-section">
+        <div class="ref-section-header">
+          <i class="bi ${section.icon || 'bi-bookmark'}" style="color:${section.color || 'var(--accent-blue)'}"></i>
+          <span>${d(section.category)}</span>
+          <span class="ref-count">${section.refs.length}</span>
+        </div>
+        <div class="ref-list">${items}</div>
+      </div>`;
+  }).join('');
 }
 
 function updateTotalProgress() {
