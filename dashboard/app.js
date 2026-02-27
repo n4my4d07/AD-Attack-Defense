@@ -40,7 +40,6 @@ const I18N = {
     detect_tip_sigma: '使用 <strong>Sigma</strong> 規則將偵測邏輯轉換為 Splunk、Elastic、Azure Sentinel 等 SIEM 查詢語法',
     detect_tip_events: '留意 4769（Kerberoasting：RC4 加密）、4768（AS-REP Roasting）、4662（DCSync：Replication rights）',
     detect_tip_monitor: '建議監控 <strong>KRBTGT 密碼重設</strong>、<strong>DC 帳戶變更</strong>及<strong>不尋常的 Kerberos TGT 請求</strong>',
-    data_source: '資料來源',
     results: (n) => `${n} 項結果`,
     progress_text: (done, total, pct) => `${done} / ${total} 項目完成 (${pct}%)`,
     techniques_count: (n) => `${n} techniques`,
@@ -87,7 +86,6 @@ const I18N = {
     detect_tip_sigma: 'Use <strong>Sigma</strong> rules to convert detection logic to Splunk, Elastic, Azure Sentinel SIEM queries',
     detect_tip_events: 'Watch for 4769 (Kerberoasting: RC4), 4768 (AS-REP Roasting), 4662 (DCSync: Replication rights)',
     detect_tip_monitor: 'Monitor <strong>KRBTGT password resets</strong>, <strong>DC account changes</strong>, and <strong>unusual Kerberos TGT requests</strong>',
-    data_source: 'Data Source',
     results: (n) => `${n} result${n === 1 ? '' : 's'}`,
     progress_text: (done, total, pct) => `${done} / ${total} items done (${pct}%)`,
     techniques_count: (n) => `${n} techniques`,
@@ -134,7 +132,6 @@ const I18N = {
     detect_tip_sigma: '<strong>Sigma</strong> ルールを使用してSplunk・Elastic・Azure Sentinel向けのSIEMクエリに変換',
     detect_tip_events: '4769（Kerberoasting：RC4）・4768（AS-REP Roasting）・4662（DCSync：Replication rights）に注意',
     detect_tip_monitor: '<strong>KRBTGTパスワードリセット</strong>・<strong>DCアカウント変更</strong>・<strong>異常なKerberos TGTリクエスト</strong>を監視',
-    data_source: 'データソース',
     results: (n) => `${n}件の結果`,
     progress_text: (done, total, pct) => `${done} / ${total} 項目完了 (${pct}%)`,
     techniques_count: (n) => `${n} 技術`,
@@ -258,9 +255,6 @@ function applyI18n() {
 
   // Detection tips card
   renderDetectionTips();
-
-  // Data source footer
-  setTextById('data-source-label', t('data_source'));
 
   // html lang attribute
   document.documentElement.lang = state.lang === 'zh' ? 'zh-TW' : state.lang === 'ja' ? 'ja' : 'en';
