@@ -407,7 +407,7 @@ const CATEGORIES = [
         description: { zh: '規避 Microsoft Advanced Threat Analytics（ATA）與 Microsoft Defender for Identity（MDI）感應器偵測；技術包含修改 Kerberos 加密類型（避免 RC4）、分散攻擊時序、使用 AES 票據取代 RC4 以繞過 Kerberoast 偵測特徵', en: 'Evade Microsoft ATA and Defender for Identity (MDI) sensor detections by modifying Kerberos encryption types (avoid RC4), distributing attack timing, and using AES tickets instead of RC4 to bypass Kerberoast detection signatures.', ja: 'Kerberos 暗号化タイプの変更（RC4 回避）、攻撃タイミングの分散、RC4 の代わりに AES チケットを使用して Kerberoast 検知シグネチャを回避することで、Microsoft ATA および Defender for Identity（MDI）センサーの検知を回避する。' },
         tools: ['Rubeus', 'Impacket'],
         resources: [
-          { title: 'Evading Microsoft ATA for Active Directory Domination', url: 'https://www.blackhat.com/docs/us-17/thursday/us-17-Balmas-Evading-Microsoft-ATA-For-Active-Directory-Domination.pdf' },
+          { title: 'Evading Microsoft ATA for Active Directory Domination', url: 'https://blackhat.com/docs/us-17/thursday/us-17-Mittal-Evading-MicrosoftATA-for-ActiveDirectory-Domination.pdf' },
           { title: 'Bypassing Microsoft Defender for Identity Detections', url: 'https://blog.cyberadvisors.com/technical-blog/blog/bypassing-microsoft-defender-for-identity-detections' },
           { title: 'Microsoft Defender for Identity – Monitored Activities', url: 'https://learn.microsoft.com/en-us/defender-for-identity/monitored-activities' }
         ]
