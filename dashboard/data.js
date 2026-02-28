@@ -399,7 +399,7 @@ const CATEGORIES = [
         tools: ['sysmon-config-bypass-finder'],
         resources: [
           { title: 'Subverting Sysmon: Application of a Formalized Security Product Evasion Methodology', url: 'https://github.com/mattifestation/BHUSA2018_Sysmon' },
-          { title: 'Shhmon — Silencing Sysmon via Driver Unload', url: 'https://posts.specterops.io/shhmon-silencing-sysmon-via-driver-unload-682b5be57650' }
+          { title: 'Shhmon — Silencing Sysmon via Driver Unload', url: 'https://medium.com/@matterpreter/shhmon-silencing-sysmon-via-driver-unload-682b5be57650' }
         ]
       },
       {
