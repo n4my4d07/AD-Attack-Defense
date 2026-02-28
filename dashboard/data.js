@@ -897,28 +897,44 @@ const DETECTION_EVENTS = [
     ]
   },
   {
-    attack: { zh: '稽核日誌清除 / 事件日誌清除', en: 'Audit/Event Log Cleared', ja: '監査ログのクリア' },
+    attack: 'Audit/Event Log Cleared',
     category: 'defense-evasion',
-    eventIds: [1102, 517],
-    notes: { zh: '攻擊者清除事件日誌以消除入侵痕跡；1102 = 安全日誌已清除（Security log cleared），517 = 舊版 Windows 等效事件', en: 'Adversaries clear event logs to remove intrusion traces. 1102 = Security log cleared; 517 = legacy Windows equivalent.', ja: '攻撃者が侵入痕跡を消去するためにイベントログをクリア。1102 = セキュリティログのクリア; 517 = レガシー Windows の等価イベント。' }
+    eventIds: ['1102', '517'],
+    descriptions: [
+      { zh: '1102: 安全性稽核日誌已清除（攻擊者清除入侵痕跡的常見操作）', en: '1102: The audit log was cleared (common attacker action to remove intrusion traces)', ja: '1102: 監査ログがクリアされた（攻撃者が侵入痕跡を消去する一般的な操作）' },
+      { zh: '517: 舊版 Windows 等效事件 — 系統記錄已清除', en: '517: Legacy Windows equivalent — system log cleared', ja: '517: レガシー Windows 等価イベント — システムログのクリア' }
+    ]
   },
   {
-    attack: { zh: '帳戶操控 / 密碼重設', en: 'Account Manipulation / Password Reset', ja: 'アカウント操作・パスワードリセット' },
+    attack: 'Account Manipulation / Password Reset',
     category: 'persistence',
-    eventIds: [4722, 4723, 4724, 4738],
-    notes: { zh: '4722 = 帳戶已啟用；4723 = 嘗試變更密碼；4724 = 嘗試重設密碼（管理員操作）；4738 = 帳戶屬性變更。監控管理員以外的來源執行此類操作', en: '4722 = Account enabled; 4723 = Password change attempt; 4724 = Password reset attempt (admin); 4738 = Account attributes changed. Alert on non-admin sources performing these actions.', ja: '4722 = アカウント有効化; 4723 = パスワード変更試行; 4724 = パスワードリセット試行（管理者）; 4738 = アカウント属性変更。管理者以外のソースからのこれらのアクションを監視。' }
+    eventIds: ['4722', '4723', '4724', '4738'],
+    descriptions: [
+      { zh: '4722: 使用者帳戶已啟用', en: '4722: A user account was enabled', ja: '4722: ユーザーアカウントが有効化された' },
+      { zh: '4723: 嘗試變更帳戶密碼', en: '4723: An attempt was made to change an account password', ja: '4723: アカウントのパスワード変更が試行された' },
+      { zh: '4724: 嘗試重設帳戶密碼（管理員操作）', en: '4724: An attempt was made to reset an account password (admin action)', ja: '4724: アカウントのパスワードリセットが試行された（管理者操作）' },
+      { zh: '4738: 使用者帳戶屬性已變更', en: '4738: A user account was changed', ja: '4738: ユーザーアカウントが変更された' }
+    ]
   },
   {
-    attack: { zh: '本機群組成員操控', en: 'Local Group Membership Manipulation', ja: 'ローカルグループメンバーシップ操作' },
+    attack: 'Local Group Membership Manipulation',
     category: 'persistence',
-    eventIds: [4732, 4733, 4728, 4729],
-    notes: { zh: '4732 = 成員加入安全群組（本機）；4733 = 成員從安全群組移除（本機）；4728 = 全域群組新增成員；4729 = 全域群組移除成員。攻擊者常透過加入 Administrators 達成持久化', en: '4732 = Member added to security-enabled local group; 4733 = Member removed; 4728 = Member added to global group; 4729 = Member removed from global group. Attackers often add to Administrators for persistence.', ja: '4732 = セキュリティ有効ローカルグループへのメンバー追加; 4733 = メンバー削除; 4728 = グローバルグループへのメンバー追加; 4729 = メンバー削除。攻撃者は永続化のために Administrators グループに追加することが多い。' }
+    eventIds: ['4732', '4733', '4728', '4729'],
+    descriptions: [
+      { zh: '4732: 成員已加入安全性群組（本機）', en: '4732: A member was added to a security-enabled local group', ja: '4732: セキュリティ有効ローカルグループにメンバーが追加された' },
+      { zh: '4733: 成員已從安全性群組移除（本機）', en: '4733: A member was removed from a security-enabled local group', ja: '4733: セキュリティ有効ローカルグループからメンバーが削除された' },
+      { zh: '4728/4729: 全域群組成員新增 / 移除', en: '4728/4729: Member added to / removed from a global group', ja: '4728/4729: グローバルグループへのメンバー追加・削除' }
+    ]
   },
   {
-    attack: { zh: '網路共享存取 / 橫向移動偵測', en: 'Network Share Access / Lateral Movement Detection', ja: 'ネットワーク共有アクセス・横移動検知' },
+    attack: 'Network Share Access / Lateral Movement',
     category: 'lateral-movement',
-    eventIds: [5140, 5145, 5142, 5143],
-    notes: { zh: '5140 = 網路共享物件被存取；5145 = 共享物件詳細稽核（含操作類型）；5142/5143 = 共享建立/修改。監控 ADMIN$、C$ 等管理共享的存取，以及異常時段的 IPC$ 連線', en: '5140 = Network share object accessed; 5145 = Detailed network share audit (including operation type); 5142/5143 = Share created/modified. Monitor access to ADMIN$, C$, and unusual IPC$ connections.', ja: '5140 = ネットワーク共有オブジェクトへのアクセス; 5145 = 詳細ネットワーク共有監査; 5142/5143 = 共有の作成・変更。ADMIN$、C$ などの管理共有へのアクセスや異常な IPC$ 接続を監視。' }
+    eventIds: ['5140', '5145', '5142', '5143'],
+    descriptions: [
+      { zh: '5140: 網路共享物件已被存取（監控 ADMIN$、C$ 等管理共享）', en: '5140: A network share object was accessed (monitor ADMIN$, C$ admin shares)', ja: '5140: ネットワーク共有オブジェクトへのアクセス（ADMIN$、C$ などの管理共有を監視）' },
+      { zh: '5145: 共享物件詳細稽核（含操作類型、存取遮罩）', en: '5145: Detailed network share audit (includes operation type and access mask)', ja: '5145: 詳細ネットワーク共有監査（操作タイプとアクセスマスクを含む）' },
+      { zh: '5142/5143: 網路共享建立 / 修改', en: '5142/5143: Network share created / modified', ja: '5142/5143: ネットワーク共有の作成・変更' }
+    ]
   }
 ];
 
