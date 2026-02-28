@@ -359,6 +359,22 @@
       <div class="section-title"><i class="bi bi-journals"></i> 參考資料</div>
       <div class="section-desc">整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引</div>
     </div>
+
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <i class="bi bi-search"></i>
+        <input id="ref-search" type="text" placeholder="搜尋標題、說明…">
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn active" id="ref-filter-all" data-ref-filter="all">全部</button>
+        <button class="filter-btn" id="ref-filter-official" data-ref-filter="official">官方</button>
+        <button class="filter-btn" id="ref-filter-research" data-ref-filter="research">研究</button>
+        <button class="filter-btn" id="ref-filter-tool" data-ref-filter="tool">工具</button>
+        <button class="filter-btn" id="ref-filter-cve" data-ref-filter="cve">CVE</button>
+        <button class="filter-btn" id="ref-filter-framework" data-ref-filter="framework">框架</button>
+      </div>
+    </div>
+
     <div id="references-container"></div>
   </div>
 

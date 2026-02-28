@@ -47,6 +47,9 @@ const I18N = {
     export_toast: '防禦清單已匯出為 Markdown 檔案',
     references_title: '參考資料', references_desc: '整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引',
     ref_tag_official: '官方', ref_tag_research: '研究', ref_tag_tool: '工具', ref_tag_cve: 'CVE', ref_tag_framework: '框架',
+    search_references: '搜尋標題、說明…', ref_filter_all: '全部',
+    no_references: '找不到符合的參考資料',
+    no_techniques: '找不到符合的攻擊技術',
   },
   en: {
     search_placeholder: 'Search techniques, tools, CVE…',
@@ -93,6 +96,9 @@ const I18N = {
     export_toast: 'Defense checklist exported as Markdown',
     references_title: 'References', references_desc: 'A curated index of official documentation, academic research, offensive/defensive tool references, and CVE advisories for AD security research.',
     ref_tag_official: 'Official', ref_tag_research: 'Research', ref_tag_tool: 'Tool', ref_tag_cve: 'CVE', ref_tag_framework: 'Framework',
+    search_references: 'Search title, description…', ref_filter_all: 'All',
+    no_references: 'No matching references found',
+    no_techniques: 'No matching techniques found',
   },
   ja: {
     search_placeholder: '技術・ツール・CVEを検索…',
@@ -139,6 +145,9 @@ const I18N = {
     export_toast: '防御チェックリストを Markdown ファイルとして出力しました',
     references_title: '参考資料', references_desc: '官方ドキュメント・研究論文・攻防ツール説明・CVE アドバイザリなど AD セキュリティ研究に関する資料を体系的にまとめたインデックスです。',
     ref_tag_official: '公式', ref_tag_research: '研究', ref_tag_tool: 'ツール', ref_tag_cve: 'CVE', ref_tag_framework: 'フレームワーク',
+    search_references: 'タイトル・説明を検索…', ref_filter_all: 'すべて',
+    no_references: '一致する参考資料が見つかりません',
+    no_techniques: '一致する攻撃技術が見つかりません',
   }
 };
 
@@ -195,6 +204,16 @@ function applyI18n() {
   setPlaceholder('cve-search', t('search_cve'));
   setPlaceholder('detection-search', t('search_detection'));
   setPlaceholder('tools-search', t('search_tools'));
+  setPlaceholder('ref-search', t('search_references'));
+
+  // References tag filter buttons
+  const refAllBtn = document.getElementById('ref-filter-all');
+  if (refAllBtn) refAllBtn.textContent = t('ref_filter_all');
+  const refTagKeys = { official: 'ref_tag_official', research: 'ref_tag_research', tool: 'ref_tag_tool', cve: 'ref_tag_cve', framework: 'ref_tag_framework' };
+  Object.entries(refTagKeys).forEach(([tag, key]) => {
+    const btn = document.getElementById(`ref-filter-${tag}`);
+    if (btn) btn.textContent = t(key);
+  });
 
   // Filter buttons
   document.querySelectorAll('[data-cat-filter="all"], [data-cve-filter="all"], [data-tool-filter="all"]').forEach(b => b.textContent = t('filter_all'));
@@ -323,6 +342,8 @@ const state = {
   techniquesFilter: 'all',
   toolsFilter: 'all',
   cveFilter: 'all',
+  refSearch: '',
+  refTagFilter: 'all',
   lang: localStorage.getItem('ad_lang') || 'zh',
   checkedItems: JSON.parse(localStorage.getItem('ad_checklist') || '{}'),
 };
@@ -405,6 +426,23 @@ function bindEvents() {
   // Tools search
   const toolsSearch = document.getElementById('tools-search');
   if (toolsSearch) toolsSearch.addEventListener('input', filterTools);
+
+  // References search
+  const refSearchInput = document.getElementById('ref-search');
+  if (refSearchInput) refSearchInput.addEventListener('input', () => {
+    state.refSearch = refSearchInput.value.toLowerCase().trim();
+    filterReferences();
+  });
+
+  // References tag filter buttons
+  document.querySelectorAll('[data-ref-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.refTagFilter = btn.dataset.refFilter;
+      document.querySelectorAll('[data-ref-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterReferences();
+    });
+  });
 
   // Techniques search
   const techSearch = document.getElementById('technique-search');
@@ -883,24 +921,44 @@ function exportChecklist() {
 }
 
 // ── RENDER: REFERENCES ─────────────────────────────────────────────────────
+const REF_TAG_COLOR = {
+  official: 'var(--accent-blue)', research: 'var(--color-lateral)',
+  tool: 'var(--color-defense)', cve: 'var(--severity-high)', framework: 'var(--severity-medium)'
+};
+const REF_TAG_KEY = {
+  official: 'ref_tag_official', research: 'ref_tag_research',
+  tool: 'ref_tag_tool', cve: 'ref_tag_cve', framework: 'ref_tag_framework'
+};
+
 function renderReferences() {
+  filterReferences();
+}
+
+function filterReferences() {
   const container = document.getElementById('references-container');
   if (!container || typeof REFERENCES === 'undefined') return;
 
-  const tagColorMap = {
-    official: 'var(--accent-blue)', research: 'var(--color-lateral)',
-    tool: 'var(--color-defense)', cve: 'var(--severity-high)', framework: 'var(--severity-medium)'
-  };
-  const tagLabelKey = {
-    official: 'ref_tag_official', research: 'ref_tag_research',
-    tool: 'ref_tag_tool', cve: 'ref_tag_cve', framework: 'ref_tag_framework'
-  };
+  const search = state.refSearch;
+  const tagFilter = state.refTagFilter;
 
-  container.innerHTML = REFERENCES.map(section => {
-    const items = section.refs.map(ref => {
+  let totalVisible = 0;
+
+  const html = REFERENCES.map(section => {
+    const filtered = section.refs.filter(ref => {
+      const matchTag = tagFilter === 'all' || (ref.tags || []).includes(tagFilter);
+      const matchSearch = !search ||
+        d(ref.title).toLowerCase().includes(search) ||
+        d(ref.desc || '').toLowerCase().includes(search);
+      return matchTag && matchSearch;
+    });
+
+    if (!filtered.length) return '';
+    totalVisible += filtered.length;
+
+    const items = filtered.map(ref => {
       const tags = (ref.tags || []).map(tag => {
-        const color = tagColorMap[tag] || 'var(--text-muted)';
-        const label = t(tagLabelKey[tag] || tag);
+        const color = REF_TAG_COLOR[tag] || 'var(--text-muted)';
+        const label = t(REF_TAG_KEY[tag] || tag);
         return `<span class="ref-tag" style="background:${color}20;color:${color};border:1px solid ${color}40">${label}</span>`;
       }).join('');
       return `
@@ -921,11 +979,15 @@ function renderReferences() {
         <div class="ref-section-header">
           <i class="bi ${section.icon || 'bi-bookmark'}" style="color:${section.color || 'var(--accent-blue)'}"></i>
           <span>${d(section.category)}</span>
-          <span class="ref-count">${section.refs.length}</span>
+          <span class="ref-count">${filtered.length}</span>
         </div>
         <div class="ref-list">${items}</div>
       </div>`;
   }).join('');
+
+  container.innerHTML = totalVisible
+    ? html
+    : `<div class="no-results"><i class="bi bi-journals"></i><br>${t('no_references')}</div>`;
 }
 
 function updateTotalProgress() {
@@ -998,6 +1060,26 @@ function filterTechniques() {
   const countEl = document.getElementById('technique-count');
   if (countEl) {
     countEl.textContent = search || catFilter !== 'all' ? t('results', totalVisible) : '';
+  }
+
+  // Zero-results feedback
+  const container = document.getElementById('techniques-container');
+  const noRes = document.getElementById('techniques-no-results');
+  if (container) {
+    if (totalVisible === 0 && (search || catFilter !== 'all')) {
+      if (!noRes) {
+        const el = document.createElement('div');
+        el.id = 'techniques-no-results';
+        el.className = 'no-results';
+        el.innerHTML = `<i class="bi bi-search"></i><br>${t('no_techniques')}`;
+        container.after(el);
+      } else {
+        noRes.innerHTML = `<i class="bi bi-search"></i><br>${t('no_techniques')}`;
+        noRes.style.display = '';
+      }
+    } else if (noRes) {
+      noRes.style.display = 'none';
+    }
   }
 }
 

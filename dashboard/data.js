@@ -220,6 +220,17 @@ const CATEGORIES = [
           { title: 'SpoolSample (PrinterBug) GitHub', url: 'https://github.com/leechristensen/SpoolSample' },
           { title: 'Coercer – Coerce Windows Servers to Authenticate', url: 'https://github.com/p0dalirius/Coercer' }
         ]
+      },
+      {
+        id: 'print-spooler-abuse',
+        name: { zh: 'Print Spooler 服務濫用', en: 'Print Spooler Service Abuse', ja: 'Print Spooler サービス悪用' },
+        mitre: 'T1547.012',
+        severity: 'high',
+        desc: { zh: '利用 Windows Print Spooler 服務強制 DC 發起 NTLM 認證（SpoolSample/PrinterBug），或配合 PrintNightmare（CVE-2021-34527）直接提權；常作為 Coercion 攻擊的入口點', en: "Abuses Windows Print Spooler to coerce DC NTLM authentication (SpoolSample/PrinterBug), or exploits PrintNightmare (CVE-2021-34527) for direct privilege escalation. Commonly used as the entry point for coercion attacks.", ja: 'Windows Print Spooler を悪用して DC の NTLM 認証を強制（SpoolSample/PrinterBug）、または PrintNightmare（CVE-2021-34527）で直接特権昇格。強制認証攻撃の入口点として頻繁に使用。' },
+        tools: ['Coercer', 'Impacket'],
+        cves: ['CVE-2021-34527'],
+        detection: { zh: '停用 Print Spooler 服務於 DC（推薦）；監控 Event ID 316（Print Spooler 載入驅動程式）、4688（spoolsv.exe 子程序建立）', en: 'Disable Print Spooler on DCs (recommended); monitor Event ID 316 (Spooler driver load) and 4688 (spoolsv.exe child process creation).', ja: 'DC の Print Spooler を無効化（推奨）。Event ID 316（スプーラードライバロード）と 4688（spoolsv.exe 子プロセス作成）を監視。' },
+        resources: [{ title: 'MITRE ATT&CK T1547.012', url: 'https://attack.mitre.org/techniques/T1547/012/' }, { title: 'SpoolSample – @tifkin_', url: 'https://github.com/leechristensen/SpoolSample' }]
       }
     ]
   },
@@ -514,6 +525,26 @@ const CATEGORIES = [
           { title: 'Backdooring Active Directory ACLs / DACLs', url: 'https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/backdooring-ad-acls-dacls' },
           { title: 'Sneaky Active Directory Persistence Using Security Descriptors', url: 'https://adsecurity.org/?p=3032' }
         ]
+      },
+      {
+        id: 'wmi-event-sub',
+        name: { zh: 'WMI 事件訂閱持久化', en: 'WMI Event Subscription Persistence', ja: 'WMI イベントサブスクリプション永続化' },
+        mitre: 'T1546.003',
+        severity: 'high',
+        desc: { zh: '透過 WMI 永久事件訂閱（WMI Permanent Event Subscription）在系統事件觸發時執行惡意程式，隱蔽性極高，Autoruns 等一般工具難以偵測', en: 'Uses WMI Permanent Event Subscriptions to execute malicious code when system events occur. Highly stealthy — difficult to detect with common tools like Autoruns.', ja: 'WMI 永続的イベントサブスクリプションを使用し、システムイベント発生時に悪意のあるコードを実行。Autoruns などの一般的なツールでは検出が困難な高いステルス性を持つ。' },
+        tools: ['PowerSploit', 'Impacket'],
+        detection: { zh: '監控 Event ID 5857/5858/5860/5861（WMI 事件活動）；Sysmon Event ID 19/20/21；檢查 MOF 檔案與 WMI Repository', en: 'Monitor Event IDs 5857/5858/5860/5861 (WMI event activity); Sysmon Event IDs 19/20/21; inspect MOF files and WMI Repository.', ja: 'Event ID 5857/5858/5860/5861（WMI イベント）を監視。Sysmon Event ID 19/20/21。MOF ファイルと WMI リポジトリを検査。' },
+        resources: [{ title: 'MITRE ATT&CK T1546.003 – Event Triggered Execution: WMI', url: 'https://attack.mitre.org/techniques/T1546/003/' }]
+      },
+      {
+        id: 'gpo-script-persistence',
+        name: { zh: 'GPO 登入腳本 / 排程工作持久化', en: 'GPO Logon Script / Scheduled Task Persistence', ja: 'GPO ログオンスクリプト・スケジュールタスク永続化' },
+        mitre: 'T1037.001',
+        severity: 'high',
+        desc: { zh: '若取得 AD 中 GPO 的修改權限（如 WriteDacl、WriteProperty），可注入登入腳本或排程工作，使指定 OU 內的所有機器或使用者在登入時執行惡意程式', en: 'If an attacker gains GPO modification rights (WriteDacl, WriteProperty), they can inject logon scripts or scheduled tasks that execute malicious code on all machines or users in the targeted OU.', ja: '攻撃者が GPO の変更権限（WriteDacl、WriteProperty）を取得すると、ログオンスクリプトやスケジュールタスクを注入し、対象 OU 内の全マシンまたはユーザーがログオン時に悪意のあるコードを実行させられる。' },
+        tools: ['PowerView', 'SharpGPOAbuse'],
+        detection: { zh: '監控 Event ID 5136（GPO 屬性修改）、4729（GPO ACL 變更）；定期稽核 SYSVOL 中的腳本檔案；使用 GPO 變更稽核工具', en: 'Monitor Event ID 5136 (GPO attribute modified) and 4729 (GPO ACL change); regularly audit script files in SYSVOL; use GPO change auditing tools.', ja: 'Event ID 5136（GPO 属性変更）と 4729（GPO ACL 変更）を監視。SYSVOL 内のスクリプトファイルを定期的に監査。GPO 変更監査ツールを使用。' },
+        resources: [{ title: 'MITRE ATT&CK T1037.001 – Boot or Logon Initialization Scripts', url: 'https://attack.mitre.org/techniques/T1037/001/' }, { title: 'SharpGPOAbuse', url: 'https://github.com/FSecureLABS/SharpGPOAbuse' }]
       }
     ]
   }
@@ -669,6 +700,33 @@ const CVES = [
     category: 'Privilege Escalation',
     url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-34527',
     tools: ['Impacket', 'SharpPrintNightmare']
+  },
+  {
+    id: 'CVE-2022-37969',
+    severity: 'high',
+    year: 2022,
+    name: { zh: 'Windows CLFS 本機提權', en: 'Windows Common Log File System Driver EoP', ja: 'Windows CLFS ローカル特権昇格' },
+    desc: { zh: 'Windows Common Log File System (CLFS) 驅動程式的越界寫入漏洞，允許本機攻擊者提權至 SYSTEM；常被 APT 及勒索軟體組合利用，在 AD 環境中用於提升網域機器權限', en: 'Out-of-bounds write in Windows CLFS driver allows local attackers to escalate to SYSTEM. Frequently chained with other exploits by APT groups and ransomware to elevate privileges on domain-joined machines.', ja: 'Windows CLFS ドライバの境界外書き込みにより、ローカル攻撃者が SYSTEM に昇格可能。APT グループやランサムウェアが他の脆弱性と組み合わせてドメイン参加マシンで権限昇格に悪用。' },
+    link: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-37969',
+    mitigations: { zh: '安裝 2022-09 累積更新（KB5017308）；監控 Event ID 4688 的 clfs.sys 異常載入', en: 'Install September 2022 cumulative update (KB5017308); monitor Event ID 4688 for abnormal clfs.sys loading', ja: '2022年9月の累積更新（KB5017308）を適用。Event ID 4688 で clfs.sys の異常ロードを監視。' }
+  },
+  {
+    id: 'CVE-2023-23397',
+    severity: 'critical',
+    year: 2023,
+    name: { zh: 'Microsoft Outlook NTLM 雜湊洩漏', en: 'Microsoft Outlook NTLM Hash Leak', ja: 'Microsoft Outlook NTLM ハッシュ漏洩' },
+    desc: { zh: '攻擊者可傳送含 UNC 路徑的惡意行事曆邀請，受害者無需開啟即可觸發 NTLM 認證；適用 NTLM Relay 或離線破解，可取得 Net-NTLMv2 雜湊值', en: 'Attacker sends malicious calendar invites with UNC paths; victim triggers NTLM authentication without opening the email. Enables NTLM relay or offline cracking of Net-NTLMv2 hashes.', ja: '攻撃者が UNC パスを含む悪意のあるカレンダー招待を送信し、被害者がメールを開かずに NTLM 認証をトリガー。Net-NTLMv2 ハッシュの NTLM リレーまたはオフライン解析が可能。' },
+    link: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-23397',
+    mitigations: { zh: '安裝 2023-03 安全更新；停用 NTLM 或啟用 EPA；封鎖外部 SMB（TCP 445）流量', en: 'Install March 2023 security update; disable NTLM or enable EPA; block outbound SMB (TCP 445) traffic', ja: '2023年3月のセキュリティ更新を適用。NTLM を無効化するか EPA を有効化。外部向け SMB（TCP 445）トラフィックをブロック。' }
+  },
+  {
+    id: 'CVE-2023-28252',
+    severity: 'high',
+    year: 2023,
+    name: { zh: 'Windows CLFS 本機提權 (v2 / 零時差)', en: 'Windows CLFS Driver EoP (Zero-Day in the Wild)', ja: 'Windows CLFS ローカル特権昇格（ゼロデイ悪用）' },
+    desc: { zh: 'CLFS 驅動程式的第二個嚴重提權漏洞，2023 年被 Nokoyawa 勒索軟體組織積極利用於野外攻擊（zero-day）；在 AD 環境中可被用於提升至 SYSTEM 後再橫向移動', en: 'Second critical CLFS driver EoP, actively exploited as a zero-day by the Nokoyawa ransomware group in 2023. In AD environments, used to escalate to SYSTEM before lateral movement.', ja: 'CLFS ドライバの2つ目の重大な EoP 脆弱性。2023年に Nokoyawa ランサムウェアグループによってゼロデイとして積極的に悪用。AD 環境では SYSTEM 昇格後の横移動に使用。' },
+    link: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-28252',
+    mitigations: { zh: '安裝 2023-04 安全更新；啟用 Microsoft Defender for Endpoint；監控 Exploit Protection 告警', en: 'Install April 2023 security update; enable Microsoft Defender for Endpoint; monitor Exploit Protection alerts', ja: '2023年4月のセキュリティ更新を適用。Microsoft Defender for Endpoint を有効化。Exploit Protection アラートを監視。' }
   }
 ];
 
@@ -846,6 +904,30 @@ const DETECTION_EVENTS = [
       { zh: '4769: 異常服務票據請求（加密類型與正常請求不符）', en: '4769: Anomalous service ticket request (encryption type inconsistent with normal requests)', ja: '4769: 異常なサービスチケットリクエスト（暗号化タイプが通常のリクエストと一致しない）' },
       { zh: '4624: 登入類型 3（網路登入）來自異常來源 IP 或時間', en: '4624: Logon type 3 (network logon) from an unusual source IP or time', ja: '4624: 異常な送信元 IP または時間帯からのログオンタイプ 3（ネットワークログオン）' }
     ]
+  },
+  {
+    attack: { zh: '稽核日誌清除 / 事件日誌清除', en: 'Audit/Event Log Cleared', ja: '監査ログのクリア' },
+    category: 'defense-evasion',
+    eventIds: [1102, 517],
+    notes: { zh: '攻擊者清除事件日誌以消除入侵痕跡；1102 = 安全日誌已清除（Security log cleared），517 = 舊版 Windows 等效事件', en: 'Adversaries clear event logs to remove intrusion traces. 1102 = Security log cleared; 517 = legacy Windows equivalent.', ja: '攻撃者が侵入痕跡を消去するためにイベントログをクリア。1102 = セキュリティログのクリア; 517 = レガシー Windows の等価イベント。' }
+  },
+  {
+    attack: { zh: '帳戶操控 / 密碼重設', en: 'Account Manipulation / Password Reset', ja: 'アカウント操作・パスワードリセット' },
+    category: 'persistence',
+    eventIds: [4722, 4723, 4724, 4738],
+    notes: { zh: '4722 = 帳戶已啟用；4723 = 嘗試變更密碼；4724 = 嘗試重設密碼（管理員操作）；4738 = 帳戶屬性變更。監控管理員以外的來源執行此類操作', en: '4722 = Account enabled; 4723 = Password change attempt; 4724 = Password reset attempt (admin); 4738 = Account attributes changed. Alert on non-admin sources performing these actions.', ja: '4722 = アカウント有効化; 4723 = パスワード変更試行; 4724 = パスワードリセット試行（管理者）; 4738 = アカウント属性変更。管理者以外のソースからのこれらのアクションを監視。' }
+  },
+  {
+    attack: { zh: '本機群組成員操控', en: 'Local Group Membership Manipulation', ja: 'ローカルグループメンバーシップ操作' },
+    category: 'persistence',
+    eventIds: [4732, 4733, 4728, 4729],
+    notes: { zh: '4732 = 成員加入安全群組（本機）；4733 = 成員從安全群組移除（本機）；4728 = 全域群組新增成員；4729 = 全域群組移除成員。攻擊者常透過加入 Administrators 達成持久化', en: '4732 = Member added to security-enabled local group; 4733 = Member removed; 4728 = Member added to global group; 4729 = Member removed from global group. Attackers often add to Administrators for persistence.', ja: '4732 = セキュリティ有効ローカルグループへのメンバー追加; 4733 = メンバー削除; 4728 = グローバルグループへのメンバー追加; 4729 = メンバー削除。攻撃者は永続化のために Administrators グループに追加することが多い。' }
+  },
+  {
+    attack: { zh: '網路共享存取 / 橫向移動偵測', en: 'Network Share Access / Lateral Movement Detection', ja: 'ネットワーク共有アクセス・横移動検知' },
+    category: 'lateral-movement',
+    eventIds: [5140, 5145, 5142, 5143],
+    notes: { zh: '5140 = 網路共享物件被存取；5145 = 共享物件詳細稽核（含操作類型）；5142/5143 = 共享建立/修改。監控 ADMIN$、C$ 等管理共享的存取，以及異常時段的 IPC$ 連線', en: '5140 = Network share object accessed; 5145 = Detailed network share audit (including operation type); 5142/5143 = Share created/modified. Monitor access to ADMIN$, C$, and unusual IPC$ connections.', ja: '5140 = ネットワーク共有オブジェクトへのアクセス; 5145 = 詳細ネットワーク共有監査; 5142/5143 = 共有の作成・変更。ADMIN$、C$ などの管理共有へのアクセスや異常な IPC$ 接続を監視。' }
   }
 ];
 
@@ -875,6 +957,7 @@ const TOOLS = [
   { name: 'Coercer', type: 'offensive', url: 'https://github.com/p0dalirius/Coercer', description: { zh: '利用多種 Windows 協定（MS-EFSR、MS-FSRVP、MS-RPRN 等）強制伺服器向攻擊者進行 NTLM 認證', en: 'Force servers to perform NTLM authentication to the attacker using multiple Windows protocols (MS-EFSR, MS-FSRVP, MS-RPRN, etc.)', ja: '複数の Windows プロトコル（MS-EFSR・MS-FSRVP・MS-RPRN など）を使用してサーバーに攻撃者への NTLM 認証を強制する' }, tags: ['強制認證', 'NTLM', 'Python', 'Coercion'] },
   { name: 'netexec (nxc)', type: 'offensive', url: 'https://github.com/Pennyw0rth/NetExec', description: { zh: 'CrackMapExec 的現代化繼承版本，持續維護，支援 SMB、WinRM、RDP、LDAP、FTP 等協定的大規模作業', en: 'Actively maintained modern successor to CrackMapExec, supporting large-scale operations over SMB, WinRM, RDP, LDAP, FTP, and more', ja: 'SMB・WinRM・RDP・LDAP・FTP などの大規模操作をサポートする、積極的にメンテされる CrackMapExec の現代的な後継版' }, tags: ['SMB', 'WinRM', 'LDAP', '橫向移動'] },
   { name: 'SharpDPAPI', type: 'offensive', url: 'https://github.com/GhostPack/SharpDPAPI', description: { zh: 'C# DPAPI 攻擊工具，解密 Windows 儲存的憑證、瀏覽器密碼與憑證管理員', en: 'C# DPAPI attack tool for decrypting Windows-stored credentials, browser passwords, and credential manager entries', ja: 'Windows が保存した認証情報・ブラウザパスワード・資格情報マネージャーを復号する C# DPAPI 攻撃ツール' }, tags: ['DPAPI', 'C#', '憑證', 'GhostPack'] },
+  { name: 'Kerbrute', category: 'offensive', tags: ['kerberos', 'enumeration', 'bruteforce', 'reconnaissance'], desc: { zh: '以 Kerberos 協定進行使用者名稱列舉與密碼噴灑的 Go 語言工具；不產生 LDAP 查詢，隱蔽性較高；可枚舉有效帳戶並進行 AS-REP Roasting', en: 'Go-based tool for Kerberos username enumeration and password spraying. Avoids LDAP queries for lower detection; can enumerate valid accounts and perform AS-REP Roasting.', ja: 'Kerberos プロトコルを使用したユーザー名列挙とパスワードスプレーの Go 製ツール。LDAP クエリを回避して検出を下げる。有効なアカウントの列挙と AS-REP Roasting が可能。' }, url: 'https://github.com/ropnop/kerbrute' },
   // Defensive Tools
   { name: 'PingCastle', type: 'defensive', url: 'https://www.pingcastle.com/', description: { zh: '快速評估 AD 安全層級的工具，基於風險評估與成熟度框架產生評分報告', en: 'Tool for rapid AD security level assessment, generating scored reports based on risk assessment and maturity frameworks', ja: 'リスク評価と成熟度フレームワークに基づいてスコアレポートを生成する AD セキュリティレベルの迅速評価ツール' }, tags: ['稽核', '評估', '報告', '合規'] },
   { name: 'ADRecon', type: 'defensive', url: 'https://github.com/sense-of-security/ADRecon', description: { zh: '收集 AD 環境全面資訊並產生 Excel 報告，提供整體安全狀況視圖', en: 'Collect comprehensive AD environment information and generate Excel reports providing an overall security posture view', ja: 'AD 環境の包括的な情報を収集して Excel レポートを生成し、全体的なセキュリティ状況を提供する' }, tags: ['稽核', 'Excel', '報告', '偵察'] },

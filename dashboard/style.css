@@ -871,7 +871,33 @@ body {
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .technique-grid { grid-template-columns: 1fr; }
   .tools-grid { grid-template-columns: 1fr; }
-  .navbar-search { display: none; }
+
+  /* Navbar: 2-row layout on small screens */
+  .app-navbar {
+    flex-wrap: wrap;
+    padding: 8px 12px 0;
+    gap: 0;
+  }
+  .navbar-brand { order: 1; flex-shrink: 0; }
+  .lang-switcher { order: 2; margin-left: auto; }
+  .navbar-search {
+    order: 3;
+    flex: 1 1 100%;
+    min-width: 0;
+    margin: 6px 0 8px;
+    max-width: 100%;
+  }
+  .navbar-search input { width: 100%; }
+  .navbar-tabs {
+    order: 4;
+    flex: 1 1 100%;
+    padding-bottom: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand .navbar-title { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 600px) {
