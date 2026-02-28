@@ -408,8 +408,8 @@ const CATEGORIES = [
         tools: ['Rubeus', 'Impacket'],
         resources: [
           { title: 'Evading Microsoft ATA for Active Directory Domination', url: 'https://www.blackhat.com/docs/us-17/thursday/us-17-Balmas-Evading-Microsoft-ATA-For-Active-Directory-Domination.pdf' },
-          { title: 'Bypassing Microsoft Defender for Identity Detections', url: 'https://posts.specterops.io/bypassing-microsoft-defender-for-identity-detections-7a17be8a80f8' },
-          { title: 'Microsoft Defender for Identity – Detection Coverage', url: 'https://learn.microsoft.com/en-us/defender-for-identity/coverage-filter' }
+          { title: 'Bypassing Microsoft Defender for Identity Detections', url: 'https://blog.cyberadvisors.com/technical-blog/blog/bypassing-microsoft-defender-for-identity-detections' },
+          { title: 'Microsoft Defender for Identity – Monitored Activities', url: 'https://learn.microsoft.com/en-us/defender-for-identity/monitored-activities' }
         ]
       },
       {
