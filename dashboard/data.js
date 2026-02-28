@@ -94,6 +94,16 @@ const CATEGORIES = [
           { title: 'Trust Direction and Transitivity', url: 'https://adsecurity.org/?p=1588' },
           { title: 'BloodHound – Abusing Active Directory Trust Relationships', url: 'https://posts.specterops.io/not-a-security-boundary-breaking-forest-trusts-cd125829518d' }
         ]
+      },
+      {
+        name: 'Unconstrained Delegation Target Discovery',
+        description: { zh: '找出 AD 中設有「無限制委派（Unconstrained Delegation）」的電腦帳戶或使用者帳戶；這些主機一旦接受 Coercion（PrinterBug / PetitPotam / Coercer）攻擊，即會自動向攻擊者提交 DC 的 TGT，是高價值攻擊目標的首要偵察步驟', en: 'Identify computer and user accounts configured with Unconstrained Delegation in Active Directory. These hosts automatically forward DC TGTs to attackers when subjected to coercion attacks (PrinterBug/PetitPotam/Coercer), making them prime high-value targets and the first step of the coercion attack chain.', ja: 'Active Directory 内で無制限委任（Unconstrained Delegation）が設定されたコンピューター・ユーザーアカウントを特定する。これらのホストは強制認証攻撃（PrinterBug・PetitPotam・Coercer）を受けると DC の TGT を自動転送するため、高価値攻撃目標の偵察として最初のステップとなる。' },
+        tools: ['PowerView', 'BloodHound', 'ldapdomaindump'],
+        resources: [
+          { title: 'HackTricks – Unconstrained Delegation', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/unconstrained-delegation' },
+          { title: 'Hunting for Unconstrained Delegation with PowerView', url: 'https://blog.harmj0y.net/redteaming/the-printer-bug/' },
+          { title: 'Taming the Beast – Turning Unconstrained Delegation to Full Compromise', url: 'https://dirkjanm.io/krbrelayx-unconstrained-delegation-abuse-toolkit/' }
+        ]
       }
     ]
   },
@@ -106,13 +116,14 @@ const CATEGORIES = [
     description: { zh: '從一般使用者提升至域管理員或更高權限', en: 'Escalate from standard user to Domain Admin or higher privileges', ja: '一般ユーザーからドメイン管理者以上の権限への昇格' },
     techniques: [
       {
-        name: 'sAMAccountName Spoofing',
-        description: { zh: 'CVE-2021-42287/42278：利用電腦帳戶冒充 DC，取得域管理員 TGT', en: 'CVE-2021-42287/42278: Use a computer account to impersonate a DC and obtain a Domain Admin TGT', ja: 'CVE-2021-42287/42278: コンピューターアカウントを使って DC を偽装し、ドメイン管理者の TGT を取得する' },
-        tools: ['sam-the-admin', 'noPac'],
+        name: 'sAMAccountName Spoofing / noPac (CVE-2021-42278 + CVE-2021-42287)',
+        description: { zh: '兩個 CVE 組合成 noPac 攻擊鏈：CVE-2021-42278 允許電腦帳戶名稱省略末尾「$」（冒充 DC 名稱），CVE-2021-42287 使 KDC 在找不到帳戶時自動補上「$」重試 TGT 申請，導致攻擊者建立的電腦帳戶取得 DC 身份的 TGT；noPac 工具鏈在數秒內從標準網域使用者提升至域管理員，CVSS 9.8', en: 'Two CVEs combine to form the noPac attack chain: CVE-2021-42278 allows computer account names to omit the trailing "$" (impersonating a DC name), while CVE-2021-42287 causes the KDC to automatically retry TGT requests by appending "$" when the account is not found — causing an attacker-created computer account to receive a DC-identity TGT. The noPac toolchain escalates from a standard domain user to Domain Admin in seconds (CVSS 9.8).', ja: '2 つの CVE が noPac 攻撃チェーンを形成する。CVE-2021-42278 はコンピューターアカウント名の末尾「$」省略（DC 名を偽装）を許可し、CVE-2021-42287 は KDC がアカウント未発見時に「$」付きで TGT リクエストを自動リトライする動作を悪用する。これにより攻撃者作成のコンピューターアカウントが DC 身元の TGT を取得。noPac ツールチェーンで標準ドメインユーザーから数秒でドメイン管理者に昇格（CVSS 9.8）。' },
+        tools: ['noPac', 'sam-the-admin', 'Impacket'],
         cves: ['CVE-2021-42287', 'CVE-2021-42278'],
         resources: [
-          { title: 'sAMAccountName spoofing', url: 'https://www.thehacker.recipes/ad/movement/kerberos/samaccountname-spoofing' },
-          { title: 'CVE-2021-42287/CVE-2021-42278 Weaponisation', url: 'https://exploit.ph/cve-2021-42287-cve-2021-42278-weaponisation.html' }
+          { title: 'CVE-2021-42287/CVE-2021-42278 Weaponisation – noPac chain explained', url: 'https://exploit.ph/cve-2021-42287-cve-2021-42278-weaponisation.html' },
+          { title: 'sAMAccountName Spoofing – The Hacker Recipes', url: 'https://www.thehacker.recipes/ad/movement/kerberos/samaccountname-spoofing' },
+          { title: 'noPac: Exploit the Latest Microsoft AD Vulnerabilities – CrowdStrike', url: 'https://www.crowdstrike.com/blog/nopac-exploit-latest-microsoft-ad-flaw-may-lead-to-total-domain-compromise-in-seconds/' }
         ]
       },
       {
@@ -267,6 +278,66 @@ const CATEGORIES = [
           { title: 'MS14-068: Vulnerability in Kerberos Could Allow Elevation of Privilege', url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068' },
           { title: 'Digging into MS14-068, Exploitation and Defence', url: 'https://labs.mwrinfosecurity.com/blog/digging-into-ms14-068-exploitation-and-defence/' },
           { title: 'PyKEK – Python Kerberos Exploitation Kit', url: 'https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS14-068/pykek' }
+        ]
+      },
+      {
+        name: 'Backup Operators / SeBackupPrivilege Abuse',
+        description: { zh: 'Backup Operators 群組成員擁有 SeBackupPrivilege 與 SeRestorePrivilege；利用此特權可繞過 NTFS ACL，備份 NTDS.dit 與 SYSTEM 登錄機碼，離線提取所有網域帳戶雜湊，達成與 DCSync 相同效果但不需要複寫權限', en: 'Members of the Backup Operators group hold SeBackupPrivilege and SeRestorePrivilege. These allow bypassing NTFS ACLs to back up NTDS.dit and the SYSTEM registry hive, then extract all domain account hashes offline — achieving the same result as DCSync without requiring replication rights.', ja: 'Backup Operators グループのメンバーは SeBackupPrivilege と SeRestorePrivilege を保有する。これにより NTFS ACL をバイパスして NTDS.dit と SYSTEM レジストリハイブをバックアップし、全ドメインアカウントのハッシュをオフラインで抽出できる。複製権限なしに DCSync と同等の結果が得られる。' },
+        tools: ['BackupOperatorToDA', 'Impacket', 'SeBackupPrivilegeCmdLets'],
+        resources: [
+          { title: 'HackTricks – Backup Operators Group', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges#backup-operators' },
+          { title: 'Backup Operator Privilege Escalation – PentestLab', url: 'https://pentestlab.blog/2024/01/22/domain-escalation-backup-operator/' },
+          { title: 'BackupOperatorToDA GitHub', url: 'https://github.com/mpgn/BackupOperatorToDA' }
+        ]
+      },
+      {
+        name: 'Built-in Groups Abuse (Server / Account / Print Operators)',
+        description: { zh: '三個內建群組各有獨特提權路徑：Server Operators 可修改服務二進位路徑以 SYSTEM 執行任意程式；Account Operators 可建立帳戶並修改非受保護群組；Print Operators 擁有 SeLoadDriverPrivilege，可載入惡意驅動程式提升至 SYSTEM', en: 'Three built-in groups each provide distinct escalation paths: Server Operators can modify service binary paths to execute arbitrary code as SYSTEM; Account Operators can create accounts and modify unprotected groups; Print Operators hold SeLoadDriverPrivilege to load malicious kernel drivers and escalate to SYSTEM.', ja: '3 つの組み込みグループはそれぞれ独自の昇格経路を持つ。Server Operators はサービスのバイナリパスを変更して SYSTEM として任意コードを実行でき、Account Operators はアカウント作成と非保護グループの変更が可能、Print Operators は SeLoadDriverPrivilege で悪意のあるカーネルドライバーを読み込んで SYSTEM に昇格できる。' },
+        tools: ['sc.exe', 'PowerView', 'SharpServiceHijack'],
+        resources: [
+          { title: 'HackTricks – Privileged AD Groups', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges' },
+          { title: 'Server Operators Group – Lateral Movement to DA', url: 'https://cube0x0.github.io/Pocing-Beyond-DA/' },
+          { title: 'Print Operators Group – SeLoadDriverPrivilege Abuse', url: 'https://www.tarlogic.com/blog/seloaddriverprivilege-privilege-escalation/' }
+        ]
+      },
+      {
+        name: 'KrbRelayUp (Kerberos Relay → RBCD → SYSTEM)',
+        description: { zh: '在不需要 NTLM 的環境中，利用 Kerberos Relay（KrbRelay）強制本機服務向攻擊者的偽造 KDC 進行 Kerberos 認證，再透過 RBCD 設定委派，最終以 S4U2Self+S4U2Proxy 取得 SYSTEM 等級的服務票據；無需網路憑證即可從一般使用者提升至 SYSTEM', en: 'In environments without NTLM, use Kerberos Relay (KrbRelay) to force a local service to authenticate to an attacker-controlled KDC, then configure RBCD and use S4U2Self+S4U2Proxy to obtain a SYSTEM-level service ticket — escalating from a standard user to SYSTEM without any network credentials.', ja: 'NTLM のない環境で、Kerberos Relay（KrbRelay）を使ってローカルサービスを攻撃者制御の偽 KDC に認証させ、RBCD を設定して S4U2Self+S4U2Proxy でシステムレベルのサービスチケットを取得する。ネットワーク認証情報なしで一般ユーザーから SYSTEM に昇格可能。' },
+        tools: ['KrbRelayUp', 'KrbRelay'],
+        resources: [
+          { title: 'KrbRelayUp GitHub', url: 'https://github.com/Dec0ne/KrbRelayUp' },
+          { title: 'Relaying Kerberos over DNS using krbrelayx and mitm6', url: 'https://dirkjanm.io/relaying-kerberos-over-dns-with-krbrelayx-and-mitm6/' },
+          { title: 'Detecting and Preventing KrbRelayUp – Microsoft Security Blog', url: 'https://www.microsoft.com/en-us/security/blog/2022/05/25/detecting-and-preventing-privilege-escalation-attacks-leveraging-kerberos-relaying-krbrelayup/' }
+        ]
+      },
+      {
+        name: 'Child-to-Parent Domain Escalation',
+        description: { zh: '在 SID Filtering 未啟用的子域與父域信任關係中，取得子域 KRBTGT 雜湊後可偽造含 Enterprise Admins SID（S-1-5-21-<RootDomain>-519）的 Golden Ticket，該 SID 在父域中被視為合法，從而提升至根域 Enterprise Admin；HackTricks 稱此為「信任票據（Trust Ticket）」攻擊', en: 'When SID Filtering is disabled on a child-to-parent domain trust, compromising the child domain KRBTGT hash allows forging a Golden Ticket containing the Enterprise Admins SID (S-1-5-21-<RootDomain>-519). This SID is treated as legitimate in the parent domain, escalating to root domain Enterprise Admin — known as the "Trust Ticket" attack.', ja: '子ドメインと親ドメインの信頼関係で SID Filtering が無効な場合、子ドメインの KRBTGT ハッシュを取得後に Enterprise Admins SID（S-1-5-21-<RootDomain>-519）を含む Golden Ticket を偽造できる。この SID は親ドメインで正規として扱われ、ルートドメインの Enterprise Admin に昇格できる（「信頼チケット」攻撃）。' },
+        tools: ['Mimikatz', 'Rubeus', 'Impacket'],
+        resources: [
+          { title: 'HackTricks – Abusing AD Trust', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/sid-history-injection' },
+          { title: 'A Guide to Attacking Domain Trusts – harmj0y', url: 'https://blog.harmj0y.net/redteaming/a-guide-to-attacking-domain-trusts/' },
+          { title: 'From Child to Parent – Escalating in Active Directory Forests', url: 'https://adsecurity.org/?p=1772' }
+        ]
+      },
+      {
+        name: 'Constrained Delegation S4U2Proxy Abuse',
+        description: { zh: '若服務帳戶設有受限委派（Constrained Delegation），攻擊者取得該帳戶後可透過 S4U2Self 取得任意使用者（含 DA）的 Forwardable TGS，再以 S4U2Proxy 代替目標使用者存取委派允許的服務；Protocol Transition（任意服務）更為危險，可直接冒充 DA', en: 'If a service account has Constrained Delegation configured, an attacker who compromises that account can use S4U2Self to obtain a Forwardable TGS for any user (including DA), then use S4U2Proxy to access delegated services as that user. Protocol Transition (any service) is especially dangerous — it allows direct Domain Admin impersonation.', ja: 'サービスアカウントに制約委任が設定されている場合、攻撃者がそのアカウントを侵害すると S4U2Self で任意ユーザー（DA を含む）の Forwardable TGS を取得し、S4U2Proxy で委任許可されたサービスにそのユーザーとしてアクセスできる。プロトコル遷移（任意サービス）は特に危険で、DA への直接なりすましが可能。' },
+        tools: ['Rubeus', 'Impacket', 'BloodHound'],
+        resources: [
+          { title: 'HackTricks – Constrained Delegation', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/constrained-delegation' },
+          { title: 'Kerberos Delegation Explained – S4U2Self & S4U2Proxy', url: 'https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html' },
+          { title: 'Rubeus – S4U Module Documentation', url: 'https://github.com/GhostPack/Rubeus#s4u' }
+        ]
+      },
+      {
+        name: 'AD CS ESC4–ESC8 Extended Abuses',
+        description: { zh: 'Certified Pre-Owned 論文描述的進階 AD CS 濫用類型：ESC4（修改憑證範本為 ESC1 可利用狀態）、ESC5（PKI 物件 ACL 濫用）、ESC6（EDITF_ATTRIBUTESUBJECTALTNAME2 旗標）、ESC7（CA 管理員特權）、ESC8（HTTP NTLM Relay 到 AD CS Web Enrollment）；ESC8 無需任何帳戶即可從網路存取取得域管理員憑證', en: 'Advanced AD CS abuse types from the Certified Pre-Owned paper: ESC4 (modify certificate templates to become ESC1-exploitable), ESC5 (PKI object ACL abuse), ESC6 (EDITF_ATTRIBUTESUBJECTALTNAME2 flag), ESC7 (CA administrator privileges), ESC8 (HTTP NTLM relay to AD CS Web Enrollment). ESC8 can obtain Domain Admin certificates from network access alone with no account required.', ja: 'Certified Pre-Owned 論文に記載された高度な AD CS 悪用タイプ: ESC4（証明書テンプレートを ESC1 悪用可能な状態に変更）、ESC5（PKI オブジェクト ACL 悪用）、ESC6（EDITF_ATTRIBUTESUBJECTALTNAME2 フラグ）、ESC7（CA 管理者権限）、ESC8（AD CS Web Enrollment への HTTP NTLM リレー）。ESC8 はアカウントなしのネットワークアクセスのみでドメイン管理者証明書を取得できる。' },
+        tools: ['Certify', 'Certipy', 'Impacket'],
+        resources: [
+          { title: 'Certified Pre-Owned – Full Paper (ESC4–ESC8)', url: 'https://posts.specterops.io/certified-pre-owned-d95910965cd2' },
+          { title: 'HackTricks – AD CS Domain Escalation ESC4–ESC8', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/ad-certificates/domain-escalation' },
+          { title: 'Certipy – ESC8 NTLM Relay to AD CS', url: 'https://github.com/ly4k/Certipy#relay' }
         ]
       }
     ]
@@ -432,6 +503,37 @@ const CATEGORIES = [
           { title: 'BloodHound Attack Paths – Automated Exploitation', url: 'https://hausec.com/2019/09/09/bloodhound-and-domain-attacks/' },
           { title: 'aclpwn.py – Automated ACL Abuse', url: 'https://github.com/fox-it/aclpwn.py' }
         ]
+      },
+      {
+        name: 'Exchange Privilege Abuse (PrivExchange)',
+        description: { zh: 'Exchange 伺服器預設具備 WriteDACL 至 AD 網域物件的權限；PrivExchange 攻擊強制 Exchange 向攻擊者進行 NTLM 認證，再中繼至 LDAP 賦予攻擊者 DCSync 權限；Organization Management 群組成員還可存取所有使用者信箱，竊取憑證或敏感資訊', en: 'Exchange servers have WriteDACL rights over AD domain objects by default. The PrivExchange attack coerces Exchange into NTLM authentication to the attacker, which is then relayed to LDAP to grant the attacker DCSync rights. Organization Management group members can also access all user mailboxes to steal credentials or sensitive information.', ja: 'Exchange サーバーはデフォルトで AD ドメインオブジェクトへの WriteDACL 権限を持つ。PrivExchange 攻撃は Exchange に攻撃者への NTLM 認証を強制し、LDAP にリレーして攻撃者に DCSync 権限を付与する。Organization Management グループメンバーは全ユーザーのメールボックスにアクセスして認証情報や機密情報を窃取できる。' },
+        tools: ['PrivExchange', 'Impacket', 'NtlmRelayToEWS'],
+        cves: ['CVE-2018-8581'],
+        resources: [
+          { title: 'Abusing Exchange: One API call away from Domain Admin', url: 'https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/' },
+          { title: 'PrivExchange GitHub', url: 'https://github.com/dirkjanm/PrivExchange' },
+          { title: 'HackTricks – Exchange Mailbox Escalation', url: 'https://book.hacktricks.xyz/network-services-pentesting/pentesting-smtp/ms-exchange-tricks' }
+        ]
+      },
+      {
+        name: 'WinRM / PSRemoting Lateral Movement',
+        description: { zh: '利用 Windows Remote Management（WinRM / PowerShell Remoting）進行橫向移動；WinRM（Port 5985/5986）在現代 AD 環境中廣泛啟用；可用 evil-winrm 互動式 Shell、netexec 批次執行、或 Invoke-Command 遠端執行 PowerShell', en: 'Use Windows Remote Management (WinRM/PowerShell Remoting) for lateral movement. WinRM (Port 5985/5986) is widely enabled in modern AD environments. Supports interactive shells via evil-winrm, batch execution with netexec, or remote PowerShell via Invoke-Command.', ja: 'Windows Remote Management（WinRM/PowerShell Remoting）を使った横移動。WinRM（ポート 5985/5986）は現代の AD 環境で広く有効化されている。evil-winrm によるインタラクティブシェル、netexec によるバッチ実行、Invoke-Command によるリモート PowerShell が利用可能。' },
+        tools: ['evil-winrm', 'netexec (nxc)', 'CrackMapExec'],
+        resources: [
+          { title: 'HackTricks – WinRM Lateral Movement', url: 'https://book.hacktricks.xyz/network-services-pentesting/5985-5986-pentesting-winrm' },
+          { title: 'evil-winrm GitHub', url: 'https://github.com/Hackplayers/evil-winrm' },
+          { title: 'T1021.006 – Remote Services: Windows Remote Management', url: 'https://attack.mitre.org/techniques/T1021/006/' }
+        ]
+      },
+      {
+        name: 'Kerberos Double Hop Problem',
+        description: { zh: 'Kerberos 認證預設不支援憑證跨主機轉發（Double Hop）；在 PSRemoting / WinRM 場景下，認證在第二台主機上無法繼續使用，導致橫向移動受阻；繞過方式包含：Unconstrained Delegation、Constrained Delegation、CredSSP（有安全風險）、顯式憑證注入', en: 'Kerberos authentication does not support credential forwarding across multiple hops (Double Hop) by default. In PSRemoting/WinRM scenarios, credentials cannot be used on the second host, blocking lateral movement. Bypass methods include: Unconstrained Delegation, Constrained Delegation, CredSSP (security risk), and explicit credential injection.', ja: 'Kerberos 認証はデフォルトで複数ホップ間での認証情報の転送（Double Hop）をサポートしない。PSRemoting/WinRM シナリオでは、第 2 ホストで認証情報を使用できず横移動が阻害される。回避方法: 無制限委任・制約委任・CredSSP（セキュリティリスクあり）・明示的な認証情報注入。' },
+        tools: ['Rubeus', 'PowerShell'],
+        resources: [
+          { title: 'HackTricks – Kerberos Double Hop Problem', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/kerberos-double-hop-problem' },
+          { title: 'PowerShell Remoting Caveats – Kerberos Double Hop', url: 'https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ps-remoting-second-hop' },
+          { title: 'Solving the Kerberos Double Hop Problem with S4U2Proxy', url: 'https://blog.harmj0y.net/powershell/kerberos-double-hop-and-powershell-remoting/' }
+        ]
       }
     ]
   },
@@ -523,6 +625,46 @@ const CATEGORIES = [
           { title: 'Dumping Windows Credentials – Hacker Recipes', url: 'https://www.thehacker.recipes/ad/movement/credentials/dumping/windows-credentials' },
           { title: 'T1555.004 – Windows Credential Manager', url: 'https://attack.mitre.org/techniques/T1555/004/' },
           { title: 'LaZagne – Credentials Recovery Tool', url: 'https://github.com/AlessandroZ/LaZagne' }
+        ]
+      },
+      {
+        name: 'LSASS Memory Dump',
+        description: { zh: '轉儲 LSASS（Local Security Authority Subsystem Service）程序記憶體，從中提取已登入使用者的明文密碼、NTLM 雜湊值與 Kerberos 票據；方法包含 ProcDump、comsvcs.dll MiniDump、Task Manager、以及 Mimikatz sekurlsa::logonpasswords', en: 'Dump the LSASS process memory to extract plaintext passwords, NTLM hashes, and Kerberos tickets of logged-in users. Methods include ProcDump, comsvcs.dll MiniDump, Task Manager, and Mimikatz sekurlsa::logonpasswords.', ja: 'LSASS プロセスメモリをダンプして、ログイン済みユーザーの平文パスワード・NTLM ハッシュ・Kerberos チケットを抽出する。方法: ProcDump・comsvcs.dll MiniDump・タスクマネージャー・Mimikatz sekurlsa::logonpasswords。' },
+        tools: ['Mimikatz', 'ProcDump', 'SafetyKatz', 'SharpDump'],
+        resources: [
+          { title: 'T1003.001 – OS Credential Dumping: LSASS Memory', url: 'https://attack.mitre.org/techniques/T1003/001/' },
+          { title: 'Dumping LSASS with comsvcs.dll', url: 'https://www.ired.team/offensive-security/credential-access-and-credential-dumping/dump-credentials-from-lsass-process-without-mimikatz' },
+          { title: 'HackTricks – LSASS Memory Dump', url: 'https://book.hacktricks.xyz/windows-hardening/stealing-credentials/credentials-mimikatz#lsass' }
+        ]
+      },
+      {
+        name: 'UnPAC-the-Hash (PKINIT Credential Extraction)',
+        description: { zh: '當使用 PKINIT（憑證或 Shadow Credentials）取得 TGT 後，TGT 的 PAC 中包含加密的 PAC_CREDENTIAL_INFO；透過 U2U（User-to-User）Kerberos 交換可解密此結構，提取目標帳戶的 NT/LM 雜湊值，即使沒有 DCSync 權限也能取得雜湊值並進行 Pass-the-Hash', en: 'After obtaining a TGT via PKINIT (certificate or Shadow Credentials), the TGT PAC contains an encrypted PAC_CREDENTIAL_INFO structure. A U2U (User-to-User) Kerberos exchange can decrypt this to extract the target account\'s NT/LM hashes — obtaining hashes for Pass-the-Hash even without DCSync rights.', ja: 'PKINIT（証明書または Shadow Credentials）で TGT を取得後、TGT の PAC に暗号化された PAC_CREDENTIAL_INFO が含まれる。U2U（User-to-User）Kerberos 交換でこれを復号してターゲットアカウントの NT/LM ハッシュを抽出できる。DCSync 権限なしでも Pass-the-Hash 用のハッシュが得られる。' },
+        tools: ['PKINITtools', 'Rubeus', 'Certipy'],
+        resources: [
+          { title: 'UnPAC-the-Hash – The Hacker Recipes', url: 'https://www.thehacker.recipes/ad/movement/kerberos/unpac-the-hash' },
+          { title: 'PKINITtools GitHub – gettgtpkinit & gets4uticket', url: 'https://github.com/dirkjanm/PKINITtools' },
+          { title: 'Shadow Credentials + UnPAC-the-Hash Chain', url: 'https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab' }
+        ]
+      },
+      {
+        name: 'Forced AS-REP Roasting via ACL (WriteDACL)',
+        description: { zh: '若攻擊者對目標帳戶擁有 GenericWrite 或 WriteDACL 權限，可設定 DONT_REQ_PREAUTH 旗標，使原本不可 Roast 的帳戶變得可被 AS-REP Roasting；此為 ACL 濫用與 AS-REP Roasting 的組合攻擊，不需要目標帳戶事先錯誤設定', en: 'If an attacker has GenericWrite or WriteDACL over a target account, they can set the DONT_REQ_PREAUTH flag, making previously non-roastable accounts vulnerable to AS-REP Roasting. This combines ACL abuse with AS-REP Roasting and requires no pre-existing misconfiguration on the target account.', ja: '攻撃者がターゲットアカウントに対して GenericWrite または WriteDACL 権限を持つ場合、DONT_REQ_PREAUTH フラグを設定して元々 Roast 不可能なアカウントを AS-REP Roasting に脆弱にできる。ACL 悪用と AS-REP Roasting を組み合わせた攻撃で、ターゲットアカウントの事前の設定ミスを必要としない。' },
+        tools: ['PowerView', 'Rubeus', 'Impacket'],
+        resources: [
+          { title: 'Targeted AS-REP Roasting via ACL – The Hacker Recipes', url: 'https://www.thehacker.recipes/ad/movement/kerberos/asreproast#targeted-asreproast' },
+          { title: 'Targeted Kerberoasting / AS-REP Roasting via ACL', url: 'https://blog.harmj0y.net/activedirectory/targeted-kerberoasting/' },
+          { title: 'T1558.004 – Steal or Forge Kerberos Tickets: AS-REP Roasting', url: 'https://attack.mitre.org/techniques/T1558/004/' }
+        ]
+      },
+      {
+        name: 'Azure AD Connect Credential Theft',
+        description: { zh: 'Azure AD Connect 服務帳戶（MSOL_* 或 AAD_*）在 AD 本地端持有複寫密碼（DCSync 等級）及 Azure AD 全域管理員同步憑證；透過 ADSyncDecrypt 或 AADInternals 可從 SQL LocalDB 提取加密憑證並解密，同時取得 on-premise AD 與 Azure AD 的最高控制權', en: 'The Azure AD Connect service account (MSOL_* or AAD_*) holds replication passwords (DCSync-level) for on-premises AD and Azure AD Global Admin sync credentials. Tools like ADSyncDecrypt or AADInternals can extract and decrypt these credentials from SQL LocalDB, granting simultaneous full control of both on-premises AD and Azure AD.', ja: 'Azure AD Connect サービスアカウント（MSOL_* または AAD_*）は、オンプレミス AD の複製パスワード（DCSync レベル）と Azure AD グローバル管理者同期認証情報を保有する。ADSyncDecrypt や AADInternals で SQL LocalDB から暗号化認証情報を抽出・復号し、オンプレミス AD と Azure AD の完全制御を同時に取得できる。' },
+        tools: ['AADInternals', 'AdSyncDecrypt', 'Impacket'],
+        resources: [
+          { title: 'Abusing Azure AD Connect – dirkjanm', url: 'https://dirkjanm.io/azure-ad-privilege-escalation-application-admin/' },
+          { title: 'AADInternals – Get-AADIntSyncCredentials', url: 'https://aadinternals.com/post/on-prem_admin/' },
+          { title: 'Azure AD Connect for Red Teamers – MDSec', url: 'https://www.mdsec.co.uk/2017/04/purplesharp-active-directory-attack-scenarios/' }
         ]
       }
     ]
@@ -643,6 +785,16 @@ const CATEGORIES = [
           { title: 'The Most Dangerous User Right You Probably Have Never Heard Of', url: 'https://www.harmj0y.net/blog/activedirectory/the-most-dangerous-user-right-you-probably-have-never-heard-of/' },
           { title: 'SeEnableDelegationPrivilege – Active Directory Security', url: 'https://adsecurity.org/?p=3800' },
           { title: 'T1078.002 – Valid Accounts: Domain Accounts', url: 'https://attack.mitre.org/techniques/T1078/002/' }
+        ]
+      },
+      {
+        name: 'RID Hijacking',
+        description: { zh: '修改現有低權限帳戶的 RID（Relative Identifier）為 500（內建 Administrator），使 Windows 存取控制邏輯將其視為完整管理員；即使帳戶名稱不是 Administrator，也能取得等效特權；需要 SYSTEM 或 DCSync 等級的存取，但修改後帳戶難以被標準安全工具識別', en: 'Modify the RID (Relative Identifier) of an existing low-privilege account to 500 (built-in Administrator), causing Windows access control logic to treat it as a full administrator. Even if the account name is not "Administrator," it gains equivalent privileges. Requires SYSTEM or DCSync-level access, but the modified account is difficult for standard security tools to identify.', ja: '既存の低権限アカウントの RID（相対識別子）を 500（組み込み Administrator）に変更し、Windows アクセス制御ロジックがそれを完全な管理者として扱うようにする。アカウント名が "Administrator" でなくても等価な特権を取得できる。SYSTEM または DCSync レベルのアクセスが必要だが、変更されたアカウントは標準セキュリティツールでは特定が困難。' },
+        tools: ['Impacket', 'Empire', 'Metasploit'],
+        resources: [
+          { title: 'HackTricks – RID Hijacking', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/rid-hijacking' },
+          { title: 'RID Hijacking: When Guests Become Admins', url: 'https://sebastianrinaldi.medium.com/rid-hijacking-when-guests-become-admins-ec3c6c6d5c56' },
+          { title: 'T1098.005 – Account Manipulation: Device Registration', url: 'https://attack.mitre.org/techniques/T1098/' }
         ]
       }
     ]
@@ -869,6 +1021,26 @@ const CVES = [
     category: 'Defense Evasion',
     url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-26234',
     tools: []
+  },
+  {
+    id: 'CVE-2021-26855',
+    name: 'ProxyLogon (Exchange Server RCE)',
+    severity: 'critical',
+    year: 2021,
+    description: { zh: 'Exchange Server SSRF 漏洞，允許未認證攻擊者繞過驗證執行任意程式碼；常與 CVE-2021-27065 組合使用，可在 Exchange 伺服器上植入 WebShell，取得 Exchange 服務帳戶（SYSTEM 等級）權限後再橫向移動至 AD', en: 'Exchange Server SSRF vulnerability allowing unauthenticated attackers to bypass authentication and execute arbitrary code. Often combined with CVE-2021-27065 to plant WebShells on Exchange servers, gaining Exchange service account (SYSTEM-level) access before lateral movement to AD.', ja: 'Exchange Server SSRF 脆弱性。未認証の攻撃者が認証をバイパスして任意のコードを実行できる。CVE-2021-27065 と組み合わせて Exchange サーバーに WebShell を設置し、Exchange サービスアカウント（SYSTEM レベル）権限を取得後に AD へ横移動する。' },
+    category: 'Initial Access',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-26855',
+    tools: ['Impacket', 'ExchangeRelayX']
+  },
+  {
+    id: 'CVE-2019-0724',
+    name: 'PrivExchange (Exchange NTLM Relay)',
+    severity: 'high',
+    year: 2019,
+    description: { zh: 'Exchange 訂閱 EWS Push Notification 功能可被濫用，強制 Exchange 伺服器向攻擊者進行 NTLM 認證，再中繼至 LDAP 賦予攻擊者 WriteDACL 至 AD 網域物件的權限，進而取得 DCSync 權限', en: 'The Exchange EWS Push Notification subscription feature can be abused to force the Exchange server to perform NTLM authentication to the attacker, which is then relayed to LDAP to grant WriteDACL over the AD domain object — enabling DCSync.', ja: 'Exchange EWS プッシュ通知サブスクリプション機能を悪用して Exchange サーバーに攻撃者への NTLM 認証を強制し、LDAP にリレーして AD ドメインオブジェクトへの WriteDACL 権限を取得。その後 DCSync が可能になる。' },
+    category: 'Privilege Escalation',
+    url: 'https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/',
+    tools: ['PrivExchange', 'Impacket']
   }
 ];
 
@@ -1137,6 +1309,66 @@ const DETECTION_EVENTS = [
       { zh: '5140: 網路共享物件已被存取（監控對 SYSVOL 共享的存取，特別是針對 Groups.xml、Services.xml、Drives.xml 等 GPP 檔案）', en: '5140: A network share object was accessed (monitor access to the SYSVOL share, especially GPP files like Groups.xml, Services.xml, and Drives.xml)', ja: '5140: ネットワーク共有オブジェクトへのアクセス（SYSVOL 共有、特に Groups.xml・Services.xml・Drives.xml などの GPP ファイルへのアクセスを監視）' },
       { zh: '4663: 嘗試存取物件（對 Groups.xml 等含 cpassword 欄位的檔案的存取為高風險指標）', en: '4663: An attempt was made to access an object (access to Groups.xml and other files containing cpassword fields is a high-risk indicator)', ja: '4663: オブジェクトへのアクセスが試行された（cpassword フィールドを含む Groups.xml などのファイルへのアクセスは高リスク指標）' }
     ]
+  },
+  {
+    attack: 'LSASS Memory Dump',
+    category: 'credential-dumping',
+    eventIds: ['4656', '4663', '10'],
+    descriptions: [
+      { zh: '4656: 已要求物件的控制碼（非 System / Antimalware 程序請求 LSASS 的 PROCESS_VM_READ 存取為高度可疑）', en: '4656: A handle to an object was requested (non-System/Antimalware processes requesting PROCESS_VM_READ on LSASS are highly suspicious)', ja: '4656: オブジェクトへのハンドルが要求された（System/Antimalware 以外のプロセスが LSASS に PROCESS_VM_READ アクセスを要求するのは高度に疑わしい）' },
+      { zh: '4663: 嘗試存取物件（結合 PID 過濾監控 LSASS 記憶體讀取操作）', en: '4663: An attempt was made to access an object (monitor LSASS memory read operations combined with PID filtering)', ja: '4663: オブジェクトへのアクセスが試行された（PID フィルタリングと組み合わせて LSASS メモリ読み取り操作を監視）' },
+      { zh: 'Sysmon Event 10: ProcessAccess – 監控以 PROCESS_VM_READ | PROCESS_DUP_HANDLE 存取 lsass.exe 的程序（Sysmon 為最有效的 LSASS Dump 偵測手段）', en: 'Sysmon Event 10: ProcessAccess – monitor processes accessing lsass.exe with PROCESS_VM_READ | PROCESS_DUP_HANDLE (Sysmon is the most effective means to detect LSASS dumps)', ja: 'Sysmon Event 10: ProcessAccess – PROCESS_VM_READ | PROCESS_DUP_HANDLE で lsass.exe にアクセスするプロセスを監視（Sysmon が LSASS ダンプ検出に最も効果的）' }
+    ]
+  },
+  {
+    attack: 'Backup Operators / SeBackupPrivilege Abuse',
+    category: 'privilege-escalation',
+    eventIds: ['4672', '4688', '4663'],
+    descriptions: [
+      { zh: '4672: 管理員登入（含 SeBackupPrivilege 的登入為高風險指標）', en: '4672: Special privileges assigned to new logon (logon with SeBackupPrivilege is a high-risk indicator)', ja: '4672: 新しいログオンに特権が割り当てられた（SeBackupPrivilege を含むログオンは高リスク指標）' },
+      { zh: '4688: 新程序已建立（監控 reg.exe save SAM/SYSTEM、ntdsutil.exe 等備份相關指令）', en: '4688: A new process was created (monitor backup-related commands like reg.exe save SAM/SYSTEM, ntdsutil.exe)', ja: '4688: 新しいプロセスが作成された（reg.exe save SAM/SYSTEM・ntdsutil.exe などのバックアップ関連コマンドを監視）' },
+      { zh: '4663: 嘗試存取物件（對 NTDS.dit、SYSTEM、SAM 等檔案的非預期存取）', en: '4663: An attempt was made to access an object (unexpected access to NTDS.dit, SYSTEM, SAM files)', ja: '4663: オブジェクトへのアクセスが試行された（NTDS.dit・SYSTEM・SAM ファイルへの予期しないアクセス）' }
+    ]
+  },
+  {
+    attack: 'Constrained Delegation S4U Abuse',
+    category: 'privilege-escalation',
+    eventIds: ['4769', '4768', '4674'],
+    descriptions: [
+      { zh: '4769: Kerberos 服務票據已請求（監控由非委派服務帳戶發出的 S4U2Proxy 請求：AddressType=0, 請求者≠使用者）', en: '4769: A Kerberos service ticket was requested (monitor S4U2Proxy requests from non-delegation service accounts: AddressType=0, requester ≠ user)', ja: '4769: Kerberos サービスチケットがリクエストされた（非委任サービスアカウントからの S4U2Proxy リクエストを監視: AddressType=0、リクエスター≠ユーザー）' },
+      { zh: '4768: Kerberos TGT 已請求（S4U2Self 使用服務帳戶名義為其他使用者請求 TGT，可疑的代理 TGT 申請）', en: '4768: A Kerberos TGT was requested (S4U2Self requesting a TGT on behalf of another user using a service account — suspicious proxy TGT request)', ja: '4768: Kerberos TGT がリクエストされた（S4U2Self がサービスアカウント名で別ユーザーのために TGT をリクエスト — 疑わしいプロキシ TGT 申請）' },
+      { zh: '4674: 嘗試對特殊權限物件進行操作（監控委派帳戶的特殊服務呼叫）', en: '4674: An operation was attempted on a privileged object (monitor special service calls from delegation accounts)', ja: '4674: 特権オブジェクトへの操作が試行された（委任アカウントからの特殊サービス呼び出しを監視）' }
+    ]
+  },
+  {
+    attack: 'RID Hijacking',
+    category: 'persistence',
+    eventIds: ['4738', '4657', '4624'],
+    descriptions: [
+      { zh: '4738: 使用者帳戶屬性已變更（監控非正常管理操作的帳戶屬性修改，特別是 SAM 相關欄位）', en: '4738: A user account was changed (monitor account attribute modifications outside normal admin operations, especially SAM-related fields)', ja: '4738: ユーザーアカウントが変更された（通常の管理操作以外のアカウント属性変更、特に SAM 関連フィールドを監視）' },
+      { zh: '4657: 登錄值已修改（監控 HKLM\\SAM\\SAM\\Domains\\Account\\Users 下的 RID 值異常修改）', en: '4657: A registry value was modified (monitor abnormal RID value modifications under HKLM\\SAM\\SAM\\Domains\\Account\\Users)', ja: '4657: レジストリ値が変更された（HKLM\\SAM\\SAM\\Domains\\Account\\Users 下の RID 値の異常な変更を監視）' },
+      { zh: '4624: 帳戶登入成功（若低權限帳戶以 0x1F4/500 等效 RID 登入並獲得管理員權限，為明確的 RID Hijacking 跡象）', en: '4624: An account was successfully logged on (if a low-privilege account logs on with 0x1F4/500-equivalent RID and gains admin privileges, this is a clear RID Hijacking indicator)', ja: '4624: アカウントのログオンに成功した（低権限アカウントが 0x1F4/500 相当の RID でログオンして管理者権限を取得した場合、明確な RID Hijacking の指標）' }
+    ]
+  },
+  {
+    attack: 'Azure AD Connect Credential Theft',
+    category: 'credential-dumping',
+    eventIds: ['4688', '4624', '7045'],
+    descriptions: [
+      { zh: '4688: 新程序已建立（監控 ADSync.exe 相關程序的異常存取，或 AADInternals / AdSyncDecrypt 工具的啟動）', en: '4688: A new process was created (monitor abnormal access to ADSync.exe-related processes or execution of AADInternals/AdSyncDecrypt tools)', ja: '4688: 新しいプロセスが作成された（ADSync.exe 関連プロセスへの異常アクセス、または AADInternals/AdSyncDecrypt ツールの起動を監視）' },
+      { zh: '4624: 帳戶登入成功（MSOL_* 或 AAD_* 帳戶的異常登入位置或時間為警示指標）', en: '4624: An account was successfully logged on (unusual login location or time for MSOL_* or AAD_* accounts is an alert indicator)', ja: '4624: アカウントのログオンに成功した（MSOL_* または AAD_* アカウントの異常なログオン場所や時間は警告指標）' },
+      { zh: '7045: 系統安裝了新服務（非預期的 ADSync 相關服務安裝或修改為異常行為）', en: '7045: A new service was installed on the system (unexpected ADSync-related service installation or modification is abnormal)', ja: '7045: 新しいサービスがインストールされた（予期しない ADSync 関連サービスのインストールまたは変更は異常）' }
+    ]
+  },
+  {
+    attack: 'Exchange Privilege Abuse (PrivExchange)',
+    category: 'lateral-movement',
+    eventIds: ['4662', '4648', '4624'],
+    descriptions: [
+      { zh: '4662: 已對物件執行操作（監控 Exchange 帳戶對 AD 根域物件的 WriteDACL / GenericAll 操作）', en: '4662: An operation was performed on an object (monitor Exchange account WriteDACL/GenericAll operations on the AD root domain object)', ja: '4662: オブジェクトに対して操作が実行された（Exchange アカウントによる AD ルートドメインオブジェクトへの WriteDACL/GenericAll 操作を監視）' },
+      { zh: '4648: 使用明確憑證嘗試登入（Exchange 伺服器向非正常目標進行 NTLM 認證為強制認證攻擊指標）', en: '4648: A logon was attempted using explicit credentials (Exchange server performing NTLM authentication to an unusual target is a coercion attack indicator)', ja: '4648: 明示的な認証情報を使用してログオンが試みられた（Exchange サーバーが通常でないターゲットへ NTLM 認証を行うのは強制認証攻撃の指標）' },
+      { zh: '4624: 帳戶登入成功（Exchange 服務帳戶以網路登入（Type 3）連線至 LDAP 服務為異常行為）', en: '4624: An account was successfully logged on (Exchange service account connecting to LDAP services via network logon (Type 3) is abnormal)', ja: '4624: アカウントのログオンに成功した（Exchange サービスアカウントがネットワークログオン（タイプ 3）で LDAP サービスに接続するのは異常）' }
+    ]
   }
 ];
 
@@ -1167,6 +1399,13 @@ const TOOLS = [
   { name: 'netexec (nxc)', type: 'offensive', url: 'https://github.com/Pennyw0rth/NetExec', description: { zh: 'CrackMapExec 的現代化繼承版本，持續維護，支援 SMB、WinRM、RDP、LDAP、FTP 等協定的大規模作業', en: 'Actively maintained modern successor to CrackMapExec, supporting large-scale operations over SMB, WinRM, RDP, LDAP, FTP, and more', ja: 'SMB・WinRM・RDP・LDAP・FTP などの大規模操作をサポートする、積極的にメンテされる CrackMapExec の現代的な後継版' }, tags: ['SMB', 'WinRM', 'LDAP', '橫向移動'] },
   { name: 'SharpDPAPI', type: 'offensive', url: 'https://github.com/GhostPack/SharpDPAPI', description: { zh: 'C# DPAPI 攻擊工具，解密 Windows 儲存的憑證、瀏覽器密碼與憑證管理員', en: 'C# DPAPI attack tool for decrypting Windows-stored credentials, browser passwords, and credential manager entries', ja: 'Windows が保存した認証情報・ブラウザパスワード・資格情報マネージャーを復号する C# DPAPI 攻撃ツール' }, tags: ['DPAPI', 'C#', '憑證', 'GhostPack'] },
   { name: 'Kerbrute', type: 'offensive', url: 'https://github.com/ropnop/kerbrute', description: { zh: '以 Kerberos 協定進行使用者名稱列舉與密碼噴灑的 Go 語言工具；不產生 LDAP 查詢，隱蔽性較高；可枚舉有效帳戶並進行 AS-REP Roasting', en: 'Go-based tool for Kerberos username enumeration and password spraying. Avoids LDAP queries for lower detection; can enumerate valid accounts and perform AS-REP Roasting.', ja: 'Kerberos プロトコルを使用したユーザー名列挙とパスワードスプレーの Go 製ツール。LDAP クエリを回避して検出を下げる。有効なアカウントの列挙と AS-REP Roasting が可能。' }, tags: ['Kerberos', 'Go', '列舉', '密碼噴灑'] },
+  { name: 'evil-winrm', type: 'offensive', url: 'https://github.com/Hackplayers/evil-winrm', description: { zh: '功能完整的 WinRM Shell 工具，支援檔案上傳下載、PowerShell 腳本載入、AMSI Bypass、Pass-the-Hash 及 Pass-the-Ticket 認證', en: 'Full-featured WinRM shell tool supporting file upload/download, PowerShell script loading, AMSI bypass, Pass-the-Hash, and Pass-the-Ticket authentication', ja: 'ファイルアップロード・ダウンロード・PowerShell スクリプト読み込み・AMSI バイパス・Pass-the-Hash・Pass-the-Ticket 認証をサポートする機能豊富な WinRM シェルツール' }, tags: ['WinRM', 'Ruby', '橫向移動', 'Shell'] },
+  { name: 'PKINITtools', type: 'offensive', url: 'https://github.com/dirkjanm/PKINITtools', description: { zh: 'Dirk-jan Mollema 開發的 PKINIT 工具集；gettgtpkinit.py 以憑證取得 TGT，gets4uticket.py 以 U2U 解密 PAC_CREDENTIAL_INFO 提取 NT Hash（UnPAC-the-Hash）', en: 'PKINIT toolkit by Dirk-jan Mollema. gettgtpkinit.py obtains TGTs using certificates; gets4uticket.py decrypts PAC_CREDENTIAL_INFO via U2U to extract NT hashes (UnPAC-the-Hash)', ja: 'Dirk-jan Mollema 作の PKINIT ツールキット。gettgtpkinit.py で証明書を使って TGT を取得し、gets4uticket.py で U2U を使って PAC_CREDENTIAL_INFO を復号して NT ハッシュを抽出（UnPAC-the-Hash）' }, tags: ['PKINIT', 'Python', 'Kerberos', 'UnPAC'] },
+  { name: 'KrbRelayUp', type: 'offensive', url: 'https://github.com/Dec0ne/KrbRelayUp', description: { zh: 'KrbRelay 的整合工具，自動化執行 Kerberos Relay → RBCD 設定 → S4U2Self+S4U2Proxy → 本機提升至 SYSTEM 的完整攻擊鏈，無需網路憑證', en: 'Integrated KrbRelay toolchain that automates the full attack chain: Kerberos Relay → RBCD configuration → S4U2Self+S4U2Proxy → local SYSTEM escalation, with no network credentials required', ja: 'KrbRelay の統合ツール。Kerberos Relay → RBCD 設定 → S4U2Self+S4U2Proxy → ローカル SYSTEM 昇格の完全な攻撃チェーンをネットワーク認証情報なしで自動化する' }, tags: ['KrbRelay', 'RBCD', 'C#', '提權'] },
+  { name: 'BackupOperatorToDA', type: 'offensive', url: 'https://github.com/mpgn/BackupOperatorToDA', description: { zh: '利用 SeBackupPrivilege 從遠端備份 NTDS.dit 與 SYSTEM 登錄機碼，再透過 Impacket 離線提取所有網域帳戶雜湊值，達成 Backup Operators → Domain Admin 提升', en: 'Uses SeBackupPrivilege to remotely back up NTDS.dit and the SYSTEM registry hive, then extracts all domain account hashes offline via Impacket — achieving Backup Operators → Domain Admin escalation', ja: 'SeBackupPrivilege を使って NTDS.dit と SYSTEM レジストリハイブをリモートバックアップし、Impacket でオフライン全ドメインアカウントのハッシュを抽出。Backup Operators → Domain Admin 昇格を達成する' }, tags: ['SeBackupPrivilege', 'C#', '提權', 'NTDS'] },
+  { name: 'PrivExchange', type: 'offensive', url: 'https://github.com/dirkjanm/PrivExchange', description: { zh: '利用 Exchange EWS PushSubscription 強制 Exchange 伺服器向攻擊者進行 NTLM 認證，再中繼至 LDAP 取得 DCSync 權限（CVE-2019-0724）', en: 'Abuses Exchange EWS PushSubscription to force the Exchange server to perform NTLM authentication to the attacker, relayed to LDAP to obtain DCSync rights (CVE-2019-0724)', ja: 'Exchange EWS PushSubscription を悪用して Exchange サーバーに攻撃者への NTLM 認証を強制し、LDAP にリレーして DCSync 権限を取得（CVE-2019-0724）' }, tags: ['Exchange', 'NTLM', 'Python', '提權'] },
+  { name: 'LaZagne', type: 'offensive', url: 'https://github.com/AlessandroZ/LaZagne', description: { zh: '從 Windows 與 Linux 系統提取儲存在各種應用程式中的明文密碼，支援瀏覽器、WiFi、RDP、Windows Credential Manager 等數十種來源', en: 'Extract plaintext passwords stored in various applications on Windows and Linux, supporting dozens of sources including browsers, WiFi, RDP, and Windows Credential Manager', ja: 'Windows と Linux のさまざまなアプリケーションに保存された平文パスワードを抽出。ブラウザ・WiFi・RDP・Windows Credential Manager など数十種類のソースをサポート' }, tags: ['憑證', 'Python', '密碼', '多來源'] },
+  { name: 'noPac', type: 'offensive', url: 'https://github.com/Ridter/noPac', description: { zh: 'CVE-2021-42278 + CVE-2021-42287 組合利用工具（noPac 攻擊鏈），可在數秒內從標準網域使用者提升至域管理員並取得 Shell', en: 'Combined exploit tool for CVE-2021-42278 + CVE-2021-42287 (noPac attack chain) that escalates from a standard domain user to Domain Admin and obtains a shell in seconds', ja: 'CVE-2021-42278 + CVE-2021-42287 の組み合わせ悪用ツール（noPac 攻撃チェーン）。数秒で標準ドメインユーザーからドメイン管理者に昇格してシェルを取得する' }, tags: ['CVE-2021-42278', 'CVE-2021-42287', 'Python', '提權'] },
   // Defensive Tools
   { name: 'PingCastle', type: 'defensive', url: 'https://www.pingcastle.com/', description: { zh: '快速評估 AD 安全層級的工具，基於風險評估與成熟度框架產生評分報告', en: 'Tool for rapid AD security level assessment, generating scored reports based on risk assessment and maturity frameworks', ja: 'リスク評価と成熟度フレームワークに基づいてスコアレポートを生成する AD セキュリティレベルの迅速評価ツール' }, tags: ['稽核', '評估', '報告', '合規'] },
   { name: 'ADRecon', type: 'defensive', url: 'https://github.com/sense-of-security/ADRecon', description: { zh: '收集 AD 環境全面資訊並產生 Excel 報告，提供整體安全狀況視圖', en: 'Collect comprehensive AD environment information and generate Excel reports providing an overall security posture view', ja: 'AD 環境の包括的な情報を収集して Excel レポートを生成し、全体的なセキュリティ状況を提供する' }, tags: ['稽核', 'Excel', '報告', '偵察'] },
