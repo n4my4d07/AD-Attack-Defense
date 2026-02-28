@@ -418,7 +418,8 @@ const CATEGORIES = [
         description: { zh: '在取得本機管理員或 SYSTEM 權限後，停用 Windows Defender（含 Tamper Protection）、稽核原則、事件日誌服務或第三方 AV/EDR，以降低偵測風險並為後續橫向移動鋪路', en: 'After obtaining local admin or SYSTEM privileges, disable Windows Defender (including Tamper Protection), audit policies, event log services, or third-party AV/EDR to reduce detection risk and prepare for lateral movement.', ja: 'ローカル管理者または SYSTEM 権限取得後、Windows Defender（Tamper Protection を含む）・監査ポリシー・イベントログサービス・サードパーティ AV/EDR を無効化し、検出リスクを低下させて横方向移動の準備をする。' },
         tools: ['Invoke-Phant0m', 'PowerShell'],
         resources: [
-          { title: 'Disabling Windows Event Logging – Invoke-Phant0m', url: 'https://artofpwn.com/phant0m-killing-windows-event-log.html' },
+          { title: 'Disabling Windows Event Logging – Invoke-Phant0m', url: 'https://www.ired.team/offensive-security/defense-evasion/disabling-windows-event-logs-by-suspending-eventlog-service-threads' },
+          { title: 'Invoke-Phant0m', url: 'https://github.com/hlldz/Phant0m' },
           { title: 'T1562.001 – Impair Defenses: Disable or Modify Tools', url: 'https://attack.mitre.org/techniques/T1562/001/' },
           { title: 'Disabling Windows Defender via PowerShell and Group Policy', url: 'https://www.tenforums.com/tutorials/5918-turn-off-windows-defender-antivirus-windows-10-a.html' }
         ]
