@@ -1041,6 +1041,96 @@ const CVES = [
     category: 'Privilege Escalation',
     url: 'https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/',
     tools: ['PrivExchange', 'Impacket']
+  },
+  {
+    id: 'CVE-2025-21293',
+    name: 'AD DS Network Config Operators EoP',
+    severity: 'high',
+    year: 2025,
+    description: { zh: 'Active Directory Domain Services 中 Network Configuration Operators 群組對特定登錄機碼的 DACL 設定不正確；攻擊者可建立惡意登錄子機碼並透過 WMI 查詢觸發系統載入惡意 DLL，以 SYSTEM 權限執行任意程式碼。CVSS 8.8，2025 年 1 月 Patch Tuesday 修補，PoC 已公開', en: 'Misconfigured DACL on specific registry keys grants the Network Configuration Operators group write access. An attacker can create a malicious registry subkey and trigger SYSTEM-level DLL loading via a WMI query, achieving arbitrary code execution. CVSS 8.8, patched January 2025 Patch Tuesday, public PoC available.', ja: 'Network Configuration Operators グループへの特定のレジストリキーの DACL 設定が不正確。攻撃者は悪意のあるレジストリサブキーを作成し、WMI クエリを介して SYSTEM レベルの DLL 読み込みをトリガーし、任意のコードを実行できる。CVSS 8.8、2025 年 1 月 Patch Tuesday で修正、PoC 公開済み。' },
+    category: 'Privilege Escalation',
+    url: 'https://www.picussecurity.com/resource/blog/microsoft-active-directory-domain-services-cve-2025-21293-vulnerability-explained',
+    tools: []
+  },
+  {
+    id: 'CVE-2025-26663',
+    name: 'Windows LDAP Unauthenticated RCE (Wormable)',
+    severity: 'critical',
+    year: 2025,
+    description: { zh: 'Windows LDAP 服務中的 Use-After-Free 漏洞；未認證的遠端攻擊者僅需向目標 LDAP 伺服器依序發送特製請求即可觸發競態條件，執行任意程式碼或導致 LSASS 崩潰。因 LDAP 幾乎在所有 Windows 環境中運作，此漏洞具備蠕蟲傳播能力；2025 年 4 月 Patch Tuesday 修補', en: 'Use-After-Free vulnerability in Windows LDAP service. An unauthenticated remote attacker can trigger a race condition by sending specially crafted LDAP requests sequentially, achieving arbitrary code execution or crashing LSASS. Since LDAP runs in virtually all Windows environments, this vulnerability is wormable. Patched in April 2025 Patch Tuesday.', ja: 'Windows LDAP サービスの Use-After-Free 脆弱性。未認証のリモート攻撃者が特製の LDAP リクエストを順次送信して競合状態をトリガーし、任意のコード実行または LSASS クラッシュを引き起こせる。LDAP はほぼすべての Windows 環境で動作するため、この脆弱性はワーム可能。2025 年 4 月 Patch Tuesday で修正。' },
+    category: 'Initial Access',
+    url: 'https://windowsforum.com/threads/cve-2025-26663-understanding-the-critical-ldap-vulnerability-in-windows.359952/',
+    tools: []
+  },
+  {
+    id: 'CVE-2025-26670',
+    name: 'Windows LDAP Unauthenticated RCE (Companion)',
+    severity: 'critical',
+    year: 2025,
+    description: { zh: 'CVE-2025-26663 的同系列漏洞，同樣是 Windows LDAP 的 Use-After-Free 競態條件 RCE；未認證攻擊者可遠端執行任意程式碼，攻擊面涵蓋所有開放 LDAP 服務的 Windows 主機（含 DC）；同於 2025 年 4 月 Patch Tuesday 修補，並與 CVE-2025-26663 組合時增加可靠性', en: 'A companion vulnerability to CVE-2025-26663 — also a Use-After-Free race condition RCE in Windows LDAP. Unauthenticated attackers can execute arbitrary code remotely, affecting all Windows hosts running LDAP (including DCs). Patched in April 2025 Patch Tuesday alongside CVE-2025-26663; combining both increases exploitation reliability.', ja: 'CVE-2025-26663 の同系列脆弱性。同様に Windows LDAP の Use-After-Free 競合状態 RCE。未認証の攻撃者がリモートで任意のコードを実行でき、LDAP を実行するすべての Windows ホスト（DC を含む）に影響する。CVE-2025-26663 と同時に 2025 年 4 月 Patch Tuesday で修正。組み合わせることで悪用の信頼性が高まる。' },
+    category: 'Initial Access',
+    url: 'https://www.thezdi.com/blog/2025/4/8/the-april-2025-security-update-review',
+    tools: []
+  },
+  {
+    id: 'CVE-2025-26647',
+    name: 'Kerberos CBA Certificate Auth Bypass EoP',
+    severity: 'high',
+    year: 2025,
+    description: { zh: 'Kerberos 憑證式認證（CBA）在處理「非 NTAuth Store 受信任但具備 SKI 對應」的憑證頒發機構時存在驗證漏洞；攻擊者可利用此漏洞繞過認證並取得提升的 Kerberos 票據。必須在所有 DC 安裝 2025 年 4 月更新並設定 AllowNtAuthPolicyBypass 為 Enforcement 模式才能完全修補', en: 'A Kerberos certificate-based authentication (CBA) validation flaw when the issuing CA is trusted but not in the NTAuth store while a Subject Key Identifier (SKI) mapping exists. Attackers can bypass authentication and obtain elevated Kerberos tickets. Full remediation requires applying the April 2025 update to all DCs and setting AllowNtAuthPolicyBypass to Enforcement mode.', ja: 'Kerberos 証明書ベース認証（CBA）において、発行 CA が信頼されているが NTAuth ストアにない状態で SKI マッピングが存在する場合の検証欠陥。攻撃者は認証をバイパスして昇格された Kerberos チケットを取得できる。完全な修正には、すべての DC に 2025 年 4 月の更新を適用し、AllowNtAuthPolicyBypass を Enforcement モードに設定する必要がある。' },
+    category: 'Privilege Escalation',
+    url: 'https://support.microsoft.com/en-us/topic/protections-for-cve-2025-26647-kerberos-authentication-5f5d753b-4023-4dd3-b7b7-c8b104933d53',
+    tools: ['Certipy', 'Rubeus']
+  },
+  {
+    id: 'CVE-2025-29809',
+    name: 'Kerberos Credential Guard Bypass',
+    severity: 'high',
+    year: 2025,
+    description: { zh: 'Kerberos TGT 中 krbtgt 服務名稱驗證不足，導致 Virtualization-Based Security（VBS）保護下的 Windows Defender Credential Guard 可被繞過，允許本機已授權攻擊者洩漏 Kerberos 憑證；修補後仍需重新部署 VBS 原則才能完全修復。CVSS 7.1，2025 年 4 月 Patch Tuesday', en: 'Insufficient validation of the Kerberos krbtgt service name within a TGT allows an authorized local attacker to bypass Windows Defender Credential Guard (protected by Virtualization-Based Security) and leak Kerberos credentials. Patching alone is insufficient — VBS policy must also be redeployed. CVSS 7.1, April 2025 Patch Tuesday.', ja: 'TGT 内の Kerberos krbtgt サービス名の検証が不十分で、仮想化ベースのセキュリティ（VBS）で保護された Windows Defender Credential Guard をバイパスし、認証されたローカル攻撃者が Kerberos 認証情報を漏洩できる。パッチ適用だけでは不十分で、VBS ポリシーの再展開も必要。CVSS 7.1、2025 年 4 月 Patch Tuesday。' },
+    category: 'Credential Dumping',
+    url: 'https://www.netspi.com/blog/technical-blog/adversary-simulation/cve-2025-21299-cve-2025-29809-unguarding-microsoft-credential-guard/',
+    tools: []
+  },
+  {
+    id: 'CVE-2025-53779',
+    name: 'BadSuccessor (dMSA Kerberos Privilege Escalation)',
+    severity: 'high',
+    year: 2025,
+    description: { zh: 'Windows Server 2025 的 dMSA（delegated Managed Service Account）功能設計缺陷；任何對 OU 具備 CreateChild 權限的使用者可建立 dMSA 並偽造單向的繼承連結指向任意 AD 帳戶（含 DA、Protected Users），KDC 將目標帳戶的 SID 與 Kerberos 金鑰合併至 dMSA PAC，達成帳戶完全接管；PoC 工具 SharpSuccessor 已公開，91% 受測環境受影響。CVSS 7.2，2025 年 8 月 Patch Tuesday 修補', en: 'Design flaw in the Windows Server 2025 dMSA (delegated Managed Service Account) feature. Any user with CreateChild permission on an OU can create a dMSA and forge a one-sided successor link targeting any AD account (including DA, Protected Users). The KDC merges the target\'s SIDs and Kerberos keys into the dMSA PAC, fully compromising the target account. PoC tool SharpSuccessor is public; 91% of tested environments are affected. CVSS 7.2, patched August 2025 Patch Tuesday.', ja: 'Windows Server 2025 の dMSA（委任マネージドサービスアカウント）機能の設計欠陥。OU に CreateChild 権限を持つユーザーが dMSA を作成し、任意の AD アカウント（DA・Protected Users を含む）への一方向の後継リンクを偽造できる。KDC はターゲットの SID と Kerberos キーを dMSA PAC にマージし、アカウントを完全に乗っ取る。PoC ツール SharpSuccessor 公開済み、テスト環境の 91% が影響を受ける。CVSS 7.2、2025 年 8 月 Patch Tuesday で修正。' },
+    category: 'Privilege Escalation',
+    url: 'https://www.akamai.com/blog/security-research/abusing-dmsa-for-privilege-escalation-in-active-directory',
+    tools: ['SharpSuccessor', 'Impacket']
+  },
+  {
+    id: 'CVE-2025-54918',
+    name: 'NTLM LDAP Auth Bypass → SYSTEM (High Severity)',
+    severity: 'high',
+    year: 2025,
+    description: { zh: 'Windows NTLM 認證邏輯缺陷，可結合強制認證攻擊（Coercion）與 NTLM Relay 修改認證封包，繞過 LDAP Channel Binding 與 LDAP Signing 等標準強化措施，將標準網域使用者的認證中繼至 LDAP 取得 SYSTEM 等級存取權；即使環境已實施標準防護仍受影響；CVSS 8.8，2025 年 9 月 Patch Tuesday 修補，已有 4 個公開 PoC', en: 'A Windows NTLM authentication logic flaw that, combined with coerced authentication (e.g., PrinterBug) and NTLM relay with modified authentication packets, bypasses standard hardening measures including LDAP Channel Binding and LDAP Signing — relaying a standard domain user\'s credentials to LDAP for SYSTEM-level access. Environments with standard hardening are still affected. CVSS 8.8, patched September 2025 Patch Tuesday, 4 public PoCs available.', ja: 'Windows NTLM 認証ロジックの欠陥。強制認証攻撃（PrinterBug など）と認証パケットを改変した NTLM リレーを組み合わせることで、LDAP チャネルバインディングと LDAP 署名などの標準的な強化対策をバイパスし、標準ドメインユーザーの認証情報を LDAP にリレーして SYSTEM レベルのアクセスを取得。標準的な強化が実施された環境でも影響を受ける。CVSS 8.8、2025 年 9 月 Patch Tuesday で修正、公開 PoC 4 件。' },
+    category: 'Privilege Escalation',
+    url: 'https://www.crowdstrike.com/en-us/blog/analyzing-ntlm-ldap-authentication-bypass-vulnerability/',
+    tools: ['Impacket', 'Responder']
+  },
+  {
+    id: 'CVE-2025-60704',
+    name: 'CheckSum — Kerberos Constrained Delegation MitM EoP',
+    severity: 'high',
+    year: 2025,
+    description: { zh: 'Kerberos 受限委派（Constrained Delegation）S4U 協定流程中缺少關鍵的密碼學驗證步驟；攻擊者可透過中間人攻擊（MitM）操控 Kerberos 票據，冒充任意使用者並最終控制整個網域；無需初始權限即可發起，受影響範圍涵蓋所有啟用 Kerberos Delegation 的 AD 環境。由 Silverfort 發現並於 Black Hat EU 2025 揭露，CVSS 7.5，2025 年 11 月 Patch Tuesday 修補', en: 'A missing cryptographic validation step in the Kerberos Constrained Delegation (S4U) protocol flow. An attacker using a Man-in-the-Middle technique can manipulate Kerberos tickets to impersonate arbitrary users and ultimately gain full domain control. No initial privileges required; affects all AD environments with Kerberos Delegation enabled. Discovered by Silverfort and presented at Black Hat EU 2025. CVSS 7.5, patched November 2025 Patch Tuesday.', ja: 'Kerberos 制約委任（S4U）プロトコルフローにおける重要な暗号検証ステップの欠如。中間者攻撃（MitM）を使用して Kerberos チケットを操作し、任意のユーザーを偽装して最終的にドメイン全体を制御できる。初期権限不要、Kerberos 委任を有効にしたすべての AD 環境が影響を受ける。Silverfort が発見し Black Hat EU 2025 で発表。CVSS 7.5、2025 年 11 月 Patch Tuesday で修正。' },
+    category: 'Privilege Escalation',
+    url: 'https://www.silverfort.com/blog/you-win-some-you-checksum-kerberos-delegation-vulnerability-cve-2025-60704/',
+    tools: []
+  },
+  {
+    id: 'CVE-2026-26119',
+    name: 'Windows Admin Center Improper Auth EoP',
+    severity: 'high',
+    year: 2026,
+    description: { zh: 'Windows Admin Center（WAC，Port 6516）的不正當驗證漏洞；攻擊者無需使用者互動即可低權限遠端利用，在 WAC 管理的 AD 加入主機、Windows Server 及 Hyper-V 叢集上提升至管理員；2025 年 7 月由 Andrea Pierini（Semperis）發現，同年 12 月以 WAC 版本 2511 修補，2026 年 2 月公開揭露', en: 'Improper authentication vulnerability in Windows Admin Center (WAC, Port 6516). An attacker can exploit this remotely with low privileges and no user interaction to escalate to administrator on WAC-managed AD-joined hosts, Windows Servers, and Hyper-V clusters. Discovered by Andrea Pierini (Semperis) in July 2025, patched in December 2025 with WAC version 2511, publicly disclosed February 2026.', ja: 'Windows Admin Center（WAC、ポート 6516）の不正な認証の脆弱性。攻撃者は低権限・ユーザー操作なしでリモートから悪用し、WAC 管理下の AD 参加ホスト・Windows Server・Hyper-V クラスターで管理者に昇格できる。2025 年 7 月に Andrea Pierini（Semperis）が発見、同年 12 月に WAC バージョン 2511 で修正、2026 年 2 月に公開開示。' },
+    category: 'Privilege Escalation',
+    url: 'https://www.helpnetsecurity.com/2026/02/19/windows-admin-center-cve-2026-26119/',
+    tools: []
   }
 ];
 
