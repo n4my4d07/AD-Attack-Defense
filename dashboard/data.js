@@ -26,7 +26,7 @@ const CATEGORIES = [
         tools: ['PowerUpSQL', 'MailSniper'],
         resources: [
           { title: 'A Data Hunting Overview', url: 'https://thevivi.net/2018/05/23/a-data-hunting-overview/' },
-          { title: 'Finding Sensitive Data on Domain SQL Servers using PowerUpSQL', url: 'https://blog.netspi.com/finding-sensitive-data-domain-sql-servers-using-powerupsql/' },
+          { title: 'Finding Sensitive Data on Domain SQL Servers using PowerUpSQL', url: 'https://www.netspi.com/blog/technical-blog/network-pentesting/finding-sensitive-data-domain-sql-servers-using-powerupsql/' },
           { title: 'I Hunt Sysadmins', url: 'https://blog.harmj0y.net/penetesting/i-hunt-sysadmins/' }
         ]
       },
@@ -64,7 +64,7 @@ const CATEGORIES = [
         tools: ['PowerShell'],
         resources: [
           { title: 'Attacking ADFS Endpoints with PowerShell', url: 'https://www.youtube.com/watch?v=oTyLdAUjw30' },
-          { title: 'Using PowerShell to Identify Federated Domains', url: 'https://blog.netspi.com/using-powershell-identify-federated-domains/' }
+          { title: 'Using PowerShell to Identify Federated Domains', url: 'https://www.netspi.com/blog/technical-blog/cloud-pentesting/using-powershell-identify-federated-domains/' }
         ]
       },
       {
@@ -73,7 +73,7 @@ const CATEGORIES = [
         tools: ['adidnsdump', 'dnstool.py', 'Powermad'],
         resources: [
           { title: 'Getting in the Zone: Dumping Active Directory DNS using adidnsdump', url: 'https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/' },
-          { title: 'Beyond LLMNR/NBNS Spoofing – Exploiting Active Directory-Integrated DNS', url: 'https://blog.netspi.com/exploiting-adidns/' }
+          { title: 'Beyond LLMNR/NBNS Spoofing – Exploiting Active Directory-Integrated DNS', url: 'https://www.netspi.com/blog/technical-blog/network-pentesting/exploiting-adidns/' }
         ]
       },
       {
@@ -181,7 +181,7 @@ const CATEGORIES = [
         description: { zh: '利用不安全的 Group Policy Object 設定進行提權', en: 'Exploit insecure Group Policy Object configurations for privilege escalation', ja: '安全でないグループポリシーオブジェクトの設定を悪用して権限を昇格する' },
         tools: ['PowerView', 'SharpGPOAbuse', 'Grouper'],
         resources: [
-          { title: 'Abusing GPO Permissions', url: 'https://www.harmj0y.net/blog/redteaming/abusing-gpo-permissions/' },
+          { title: 'Abusing GPO Permissions', url: 'https://blog.harmj0y.net/redteaming/abusing-gpo-permissions/' },
           { title: 'A Red Teamer\'s Guide to GPOs and OUs', url: 'https://wald0.com/?p=179' }
         ]
       },
@@ -265,7 +265,7 @@ const CATEGORIES = [
         cves: ['CVE-2014-1812'],
         resources: [
           { title: 'Finding Passwords in SYSVOL & Exploiting Group Policy Preferences', url: 'https://adsecurity.org/?p=2288' },
-          { title: 'MS14-025: Vulnerability in Group Policy Preferences Could Allow Elevation of Privilege', url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-025' },
+          { title: 'MS14-025: Vulnerability in Group Policy Preferences Could Allow Elevation of Privilege', url: 'https://learn.microsoft.com/en-us/security-updates/SecurityBulletins/2014/ms14-025' },
           { title: 'Get-GPPPassword – PowerSploit', url: 'https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Get-GPPPassword.ps1' }
         ]
       },
@@ -275,8 +275,8 @@ const CATEGORIES = [
         tools: ['Impacket', 'PyKEK'],
         cves: ['CVE-2014-6324'],
         resources: [
-          { title: 'MS14-068: Vulnerability in Kerberos Could Allow Elevation of Privilege', url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068' },
-          { title: 'Digging into MS14-068, Exploitation and Defence', url: 'https://labs.mwrinfosecurity.com/blog/digging-into-ms14-068-exploitation-and-defence/' },
+          { title: 'MS14-068: Vulnerability in Kerberos Could Allow Elevation of Privilege', url: 'https://learn.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068' },
+          { title: 'Digging into MS14-068, Exploitation and Defence', url: 'https://labs.withsecure.com/publications/digging-into-ms14-068-exploitation-and-defence' },
           { title: 'PyKEK – Python Kerberos Exploitation Kit', url: 'https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS14-068/pykek' }
         ]
       },
@@ -438,7 +438,7 @@ const CATEGORIES = [
         tools: ['Mimikatz', 'CrackMapExec', 'Impacket'],
         resources: [
           { title: 'Performing Pass-the-hash Attacks With Mimikatz', url: 'https://blog.stealthbits.com/passing-the-hash-with-mimikatz' },
-          { title: 'Pass-the-Hash Is Dead: Long Live LocalAccountTokenFilterPolicy', url: 'https://www.harmj0y.net/blog/redteaming/pass-the-hash-is-dead-long-live-localaccounttokenfilterpolicy/' }
+          { title: 'Pass-the-Hash Is Dead: Long Live LocalAccountTokenFilterPolicy', url: 'https://posts.specterops.io/pass-the-hash-is-dead-long-live-localaccounttokenfilterpolicy-506c25a7c167' }
         ]
       },
       {
@@ -446,8 +446,8 @@ const CATEGORIES = [
         description: { zh: '利用 SQL Server 資料庫連結進行橫向移動', en: 'Leverage SQL Server database links for lateral movement', ja: 'SQL Server のデータベースリンクを利用して横方向に移動する' },
         tools: ['PowerUpSQL'],
         resources: [
-          { title: 'SQL Server – Link… Link… Link… and Shell', url: 'https://blog.netspi.com/how-to-hack-database-links-in-sql-server/' },
-          { title: 'SQL Server Link Crawling with PowerUpSQL', url: 'https://blog.netspi.com/sql-server-link-crawling-powerupsql/' }
+          { title: 'SQL Server – Link… Link… Link… and Shell', url: 'https://www.netspi.com/blog/technical-blog/network-pentesting/how-to-hack-database-links-in-sql-server/' },
+          { title: 'SQL Server Link Crawling with PowerUpSQL', url: 'https://www.netspi.com/blog/technical-blog/network-pentesting/sql-server-link-crawling-powerupsql/' }
         ]
       },
       {
@@ -463,7 +463,7 @@ const CATEGORIES = [
         description: { zh: '利用 Windows Server Update Services 進行 MITM 攻擊', en: 'Leverage Windows Server Update Services for MITM attacks', ja: 'Windows Server Update Services を利用して MITM 攻撃を行う' },
         tools: ['WSUSpendu'],
         resources: [
-          { title: 'Remote Weaponization of WSUS MITM', url: 'https://www.sixdub.net/?p=623' },
+          { title: 'Remote Weaponization of WSUS MITM', url: 'https://sixdub.medium.com/remote-weaponization-of-wsus-mitm-89c47a8c2561' },
           { title: 'Leveraging WSUS – Part One', url: 'https://ijustwannared.team/2018/10/15/leveraging-wsus-part-one/' }
         ]
       },
@@ -531,7 +531,7 @@ const CATEGORIES = [
         tools: ['Rubeus', 'PowerShell'],
         resources: [
           { title: 'HackTricks – Kerberos Double Hop Problem', url: 'https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/kerberos-double-hop-problem' },
-          { title: 'PowerShell Remoting Caveats – Kerberos Double Hop', url: 'https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ps-remoting-second-hop' },
+          { title: 'PowerShell Remoting Caveats – Kerberos Double Hop', url: 'https://learn.microsoft.com/en-us/powershell/scripting/security/remoting/ps-remoting-second-hop' },
           { title: 'Solving the Kerberos Double Hop Problem with S4U2Proxy', url: 'https://blog.harmj0y.net/powershell/kerberos-double-hop-and-powershell-remoting/' }
         ]
       }
@@ -550,7 +550,7 @@ const CATEGORIES = [
         description: { zh: '請求服務 TGS Ticket 並離線破解服務帳戶密碼', en: 'Request service TGS tickets and crack service account passwords offline', ja: 'サービス TGS チケットをリクエストし、サービスアカウントのパスワードをオフラインで解析する' },
         tools: ['Rubeus', 'Impacket', 'PowerView'],
         resources: [
-          { title: 'Kerberoasting Without Mimikatz', url: 'https://www.harmj0y.net/blog/powershell/kerberoasting-without-mimikatz/' },
+          { title: 'Kerberoasting Without Mimikatz', url: 'https://blog.harmj0y.net/powershell/kerberoasting-without-mimikatz/' },
           { title: 'Cracking Kerberos TGS Tickets Using Kerberoast', url: 'https://adsecurity.org/?p=2293' },
           { title: 'DerbyCon 2019 - Kerberoasting Revisited', url: 'https://www.slideshare.net/harmj0y/derbycon-2019-kerberoasting-revisited' }
         ]
@@ -560,7 +560,7 @@ const CATEGORIES = [
         description: { zh: '針對不需要預身份驗證的帳戶，請求 AS-REP 並離線破解', en: 'Request AS-REP responses for accounts that do not require pre-authentication and crack them offline', ja: '事前認証が不要なアカウントの AS-REP をリクエストし、オフラインで解析する' },
         tools: ['Rubeus', 'Impacket'],
         resources: [
-          { title: 'Roasting AS-REPs', url: 'http://www.harmj0y.net/blog/activedirectory/roasting-as-reps/' }
+          { title: 'Roasting AS-REPs', url: 'https://blog.harmj0y.net/activedirectory/roasting-as-reps/' }
         ]
       },
       {
@@ -664,7 +664,7 @@ const CATEGORIES = [
         resources: [
           { title: 'Abusing Azure AD Connect – dirkjanm', url: 'https://dirkjanm.io/azure-ad-privilege-escalation-application-admin/' },
           { title: 'AADInternals – Get-AADIntSyncCredentials', url: 'https://aadinternals.com/post/on-prem_admin/' },
-          { title: 'Azure AD Connect for Red Teamers – MDSec', url: 'https://www.mdsec.co.uk/2017/04/purplesharp-active-directory-attack-scenarios/' }
+          { title: 'Azure AD Connect for Red Teamers – XPN (MDSec)', url: 'https://blog.xpnsec.com/azuread-connect-for-redteam/' }
         ]
       }
     ]
@@ -782,7 +782,7 @@ const CATEGORIES = [
         description: { zh: 'SeEnableDelegationPrivilege 僅預設授予 Domain Admins；取得此特權後可設定任意帳戶的無限制委派（Unconstrained Delegation），甚至新增自訂 SPN，作為持久性後門以持續竊取 TGT', en: 'SeEnableDelegationPrivilege is only granted to Domain Admins by default. Once obtained, it allows setting unconstrained delegation on arbitrary accounts or adding custom SPNs, creating a persistent backdoor to continuously steal TGTs.', ja: 'SeEnableDelegationPrivilege はデフォルトで Domain Admins のみに付与される。取得後は任意のアカウントに無制限委任を設定したりカスタム SPN を追加したりして、TGT を継続的に盗む永続バックドアを作成できる。' },
         tools: ['PowerView', 'Rubeus', 'Impacket'],
         resources: [
-          { title: 'The Most Dangerous User Right You Probably Have Never Heard Of', url: 'https://www.harmj0y.net/blog/activedirectory/the-most-dangerous-user-right-you-probably-have-never-heard-of/' },
+          { title: 'The Most Dangerous User Right You Probably Have Never Heard Of', url: 'https://blog.harmj0y.net/activedirectory/the-most-dangerous-user-right-you-probably-have-never-heard-of/' },
           { title: 'SeEnableDelegationPrivilege – Active Directory Security', url: 'https://adsecurity.org/?p=3800' },
           { title: 'T1078.002 – Valid Accounts: Domain Accounts', url: 'https://attack.mitre.org/techniques/T1078/002/' }
         ]
@@ -849,7 +849,7 @@ const CVES = [
     year: 2020,
     description: { zh: '允許攻擊者繞過 Kerberos 委派保護，偽造可轉發 TGS 票據', en: 'Allows an attacker to bypass Kerberos delegation protections and forge forwardable TGS tickets', ja: '攻撃者が Kerberos 委任の保護をバイパスして転送可能な TGS チケットを偽造できる' },
     category: 'Privilege Escalation',
-    url: 'https://blog.netspi.com/cve-2020-17049-kerberos-bronze-bit-overview/',
+    url: 'https://www.netspi.com/blog/technical-blog/network-pentesting/cve-2020-17049-kerberos-bronze-bit-overview/',
     tools: ['Rubeus']
   },
   {
@@ -919,7 +919,7 @@ const CVES = [
     year: 2014,
     description: { zh: 'Kerberos KDC 驗證弱點，允許一般使用者取得域管理員 Kerberos 票據', en: 'Kerberos KDC validation flaw that allows a standard user to obtain Domain Admin Kerberos tickets', ja: 'Kerberos KDC の検証の脆弱性により、一般ユーザーがドメイン管理者の Kerberos チケットを取得できる' },
     category: 'Privilege Escalation',
-    url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068',
+    url: 'https://learn.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068',
     tools: []
   },
   {
@@ -1503,7 +1503,7 @@ const TOOLS = [
   { name: 'FalconHound', type: 'defensive', url: 'https://github.com/FalconForceTeam/FalconHound', description: { zh: '藍隊多功能工具，結合 BloodHound 自動化分析，整合 SIEM', en: 'Multi-purpose blue team tool that integrates BloodHound automated analysis with SIEM', ja: 'BloodHound 自動分析と SIEM を統合した、ブルーチーム向け多目的ツール' }, tags: ['BloodHound', '藍隊', 'SIEM', '自動化'] },
   { name: 'PlumHound', type: 'defensive', url: 'https://github.com/PlumHound/PlumHound', description: { zh: '藍隊/紫隊的 BloodHound 工具，自動化產生安全報告', en: 'BloodHound-powered tool for blue/purple teams that automates security report generation', ja: 'セキュリティレポート生成を自動化する、ブルー・パープルチーム向け BloodHound ツール' }, tags: ['BloodHound', '藍隊', '紫隊', '報告'] },
   { name: 'Sigma', type: 'defensive', url: 'https://github.com/Neo23x0/sigma/', description: { zh: 'SIEM 系統通用簽章格式，可轉換為 Splunk/ELK 等平台規則', en: 'Generic signature format for SIEM systems, convertible to rules for platforms like Splunk and ELK', ja: 'Splunk や ELK などのプラットフォームのルールに変換できる SIEM システム向けの汎用シグネチャ形式' }, tags: ['SIEM', '偵測規則', '標準化', '日誌'] },
-  { name: 'Sysmon', type: 'defensive', url: 'https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon', description: { zh: 'Windows 系統監控服務，記錄詳細的程序、網路、檔案系統活動', en: 'Windows system monitoring service that records detailed process, network, and file system activity', ja: 'プロセス・ネットワーク・ファイルシステムの詳細な活動を記録する Windows システム監視サービス' }, tags: ['監控', '日誌', '事件', 'Microsoft'] },
+  { name: 'Sysmon', type: 'defensive', url: 'https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon', description: { zh: 'Windows 系統監控服務，記錄詳細的程序、網路、檔案系統活動', en: 'Windows system monitoring service that records detailed process, network, and file system activity', ja: 'プロセス・ネットワーク・ファイルシステムの詳細な活動を記録する Windows システム監視サービス' }, tags: ['監控', '日誌', '事件', 'Microsoft'] },
   { name: 'WatchAD', type: 'defensive', url: 'https://github.com/0Kee-Team/WatchAD', description: { zh: 'AD 安全入侵偵測系統，即時監控 AD 攻擊行為', en: 'AD security intrusion detection system for real-time monitoring of AD attack behaviors', ja: 'AD 攻撃行動をリアルタイムに監視する AD セキュリティ侵入検知システム' }, tags: ['IDS', '即時偵測', 'AD', '安全'] },
   { name: 'LogonTracer', type: 'defensive', url: 'https://github.com/JPCERTCC/LogonTracer', description: { zh: 'JPCERT 開發，視覺化分析 Windows 登入事件日誌，調查惡意登入', en: 'Developed by JPCERT; visually analyzes Windows logon event logs to investigate malicious logins', ja: 'JPCERT が開発した、Windows ログオンイベントログを視覚的に分析して悪意のあるログインを調査するツール' }, tags: ['登入分析', '視覺化', 'DFIR', '日誌'] },
   { name: 'DCSYNCMonitor', type: 'defensive', url: 'https://github.com/shellster/DCSYNCMonitor', description: { zh: '監控 DCSync 和 DCShadow 攻擊，產生自訂 Windows 事件', en: 'Monitor for DCSync and DCShadow attacks by generating custom Windows events', ja: 'カスタム Windows イベントを生成して DCSync および DCShadow 攻撃を監視する' }, tags: ['DCSync', 'DCShadow', '監控', '事件'] },
@@ -1720,7 +1720,7 @@ const DEFENSE_CHECKLIST = [
         text: { zh: '部署並設定 Sysmon', en: 'Deploy and configure Sysmon', ja: 'Sysmon を展開して設定する' },
         detail: { zh: '使用 sysmon-modular 等成熟設定範本', en: 'Use mature configuration templates such as sysmon-modular', ja: 'sysmon-modular などの成熟した設定テンプレートを使用する' },
         steps: [
-          { type: 'info', text: { zh: '下載 Sysmon：https://docs.microsoft.com/sysinternals/downloads/sysmon；建議使用 SwiftOnSecurity sysmon-config 或 sysmon-modular 作為設定基礎', en: 'Download Sysmon: https://docs.microsoft.com/sysinternals/downloads/sysmon; recommend using SwiftOnSecurity sysmon-config or sysmon-modular as a configuration baseline', ja: 'Sysmon のダウンロード: https://docs.microsoft.com/sysinternals/downloads/sysmon; SwiftOnSecurity の sysmon-config または sysmon-modular を設定のベースとして使用することを推奨' } },
+          { type: 'info', text: { zh: '下載 Sysmon：https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon；建議使用 SwiftOnSecurity sysmon-config 或 sysmon-modular 作為設定基礎', en: 'Download Sysmon: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon; recommend using SwiftOnSecurity sysmon-config or sysmon-modular as a configuration baseline', ja: 'Sysmon のダウンロード: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon; SwiftOnSecurity の sysmon-config または sysmon-modular を設定のベースとして使用することを推奨' } },
           { type: 'cmd', text: { zh: '# 初次安裝（使用自訂設定檔）\nsysmon64.exe -accepteula -i sysmonconfig.xml', en: '# Initial installation (using a custom configuration file)\nsysmon64.exe -accepteula -i sysmonconfig.xml', ja: '# 初回インストール（カスタム設定ファイルを使用）\nsysmon64.exe -accepteula -i sysmonconfig.xml' } },
           { type: 'cmd', text: { zh: '# 更新設定檔（不中斷服務）\nsysmon64.exe -c sysmonconfig.xml', en: '# Update configuration file (without interrupting service)\nsysmon64.exe -c sysmonconfig.xml', ja: '# 設定ファイルを更新する（サービスを中断せずに）\nsysmon64.exe -c sysmonconfig.xml' } },
           { type: 'cmd', text: { zh: '# 驗證 Sysmon 運行狀態\nGet-Service Sysmon64\n# 確認日誌位置：Event Viewer → Applications and Services Logs → Microsoft → Windows → Sysmon → Operational', en: '# Verify Sysmon is running\nGet-Service Sysmon64\n# Confirm log location: Event Viewer → Applications and Services Logs → Microsoft → Windows → Sysmon → Operational', ja: '# Sysmon の動作状態を確認する\nGet-Service Sysmon64\n# ログの場所を確認: イベント ビューアー → アプリケーションとサービス ログ → Microsoft → Windows → Sysmon → 操作' } },
