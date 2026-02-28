@@ -374,7 +374,8 @@ const CATEGORIES = [
         description: { zh: '繞過 PowerShell ScriptBlock 日誌記錄', en: 'Bypass PowerShell ScriptBlock logging', ja: 'PowerShell ScriptBlock ログをバイパスする' },
         tools: [],
         resources: [
-          { title: 'PowerShell ScriptBlock Logging Bypass', url: 'https://cobbr.io/ScriptBlock-Logging-Bypass.html' }
+          { title: 'PowerShell ScriptBlock Logging Bypass', url: 'https://seamlessintelligence.com.au/powershell_script_block_logging.html' },
+          { title: 'PowerShell ScriptBlock Logging Bypass (Gist)', url: 'https://gist.github.com/cobbr/d8072d730b24fbae6ffe3aed8ca9c407' }
         ]
       },
       {
@@ -382,7 +383,7 @@ const CATEGORIES = [
         description: { zh: '在記憶體中執行惡意程式碼，避免落地', en: 'Execute malicious code entirely in memory to avoid disk artifacts', ja: 'メモリ内で悪意のあるコードを実行し、ディスクへの書き込みを避ける' },
         tools: [],
         resources: [
-          { title: 'Bring Your Own Land (BYOL) – A Novel Red Teaming Technique', url: 'https://www.fireeye.com/blog/threat-research/2018/06/bring-your-own-land-novel-red-teaming-technique.html' }
+          { title: 'Bring Your Own Land (BYOL) – A Novel Red Teaming Technique', url: 'https://cloud.google.com/blog/topics/threat-intelligence/bring-your-own-land-novel-red-teaming-technique/' }
         ]
       },
       {
