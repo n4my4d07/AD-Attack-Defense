@@ -75,6 +75,25 @@ const CATEGORIES = [
           { title: 'Getting in the Zone: Dumping Active Directory DNS using adidnsdump', url: 'https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/' },
           { title: 'Beyond LLMNR/NBNS Spoofing – Exploiting Active Directory-Integrated DNS', url: 'https://blog.netspi.com/exploiting-adidns/' }
         ]
+      },
+      {
+        name: 'Password Policy & Badpwdcount Enumeration',
+        description: { zh: '列舉網域密碼原則（最小長度、鎖定閾值、觀察期）及各帳戶的 badPwdCount 值，規劃密碼噴灑攻擊而不觸發帳戶鎖定', en: 'Enumerate domain password policies (minimum length, lockout threshold, observation window) and per-account badPwdCount values to plan password spraying without triggering lockouts', ja: 'ドメインのパスワードポリシー（最小長・ロックアウト閾値・観察ウィンドウ）および各アカウントの badPwdCount 値を列挙し、アカウントロックアウトを引き起こさずにパスワードスプレーを計画する' },
+        tools: ['PowerView', 'ldapdomaindump', 'netexec (nxc)'],
+        resources: [
+          { title: 'Password Policy Enumeration – Hacker Recipes', url: 'https://www.thehacker.recipes/ad/recon/password-policy' },
+          { title: 'Enumerating AD Fine-Grained Password Policies', url: 'https://blog.harmj0y.net/activedirectory/a-password-policy-is-not-the-only-thing-that-matters/' }
+        ]
+      },
+      {
+        name: 'Trust Enumeration',
+        description: { zh: '列舉 AD 網域與林的信任關係（雙向、單向、跨林），識別可供橫向移動或提權的信任路徑', en: 'Enumerate AD domain and forest trust relationships (bidirectional, one-way, cross-forest) to identify trust paths exploitable for lateral movement or privilege escalation', ja: 'AD ドメインとフォレストの信頼関係（双方向・一方向・クロスフォレスト）を列挙し、横移動や権限昇格に悪用できる信頼パスを特定する' },
+        tools: ['PowerView', 'BloodHound', 'netexec (nxc)'],
+        resources: [
+          { title: 'A Guide to Attacking Domain Trusts', url: 'https://blog.harmj0y.net/redteaming/a-guide-to-attacking-domain-trusts/' },
+          { title: 'Trust Direction and Transitivity', url: 'https://adsecurity.org/?p=1588' },
+          { title: 'BloodHound – Abusing Active Directory Trust Relationships', url: 'https://posts.specterops.io/not-a-security-boundary-breaking-forest-trusts-cd125829518d' }
+        ]
       }
     ]
   },
@@ -227,6 +246,28 @@ const CATEGORIES = [
         tools: ['Coercer', 'Impacket'],
         cves: ['CVE-2021-34527'],
         resources: [{ title: 'MITRE ATT&CK T1547.012', url: 'https://attack.mitre.org/techniques/T1547/012/' }, { title: 'SpoolSample – @tifkin_', url: 'https://github.com/leechristensen/SpoolSample' }]
+      },
+      {
+        name: 'Passwords in SYSVOL / Group Policy Preferences',
+        description: { zh: 'MS14-025（CVE-2014-1812）：舊版 GPP（cpassword）使用固定 AES 金鑰加密，微軟已公開此金鑰；任何網域使用者均可讀取 SYSVOL 中的 Groups.xml、Services.xml 等檔案，解密後取得明文密碼', en: 'MS14-025 (CVE-2014-1812): Legacy GPP cpassword fields use a fixed AES key published by Microsoft. Any domain user can read SYSVOL files (Groups.xml, Services.xml, etc.) and decrypt credentials in plaintext.', ja: 'MS14-025（CVE-2014-1812）: 旧来の GPP cpassword はマイクロソフトが公開済みの固定 AES キーで暗号化。任意のドメインユーザーが SYSVOL 内のファイル（Groups.xml・Services.xml など）を読んで平文パスワードを復号できる。' },
+        tools: ['PowerView', 'Impacket', 'netexec (nxc)'],
+        cves: ['CVE-2014-1812'],
+        resources: [
+          { title: 'Finding Passwords in SYSVOL & Exploiting Group Policy Preferences', url: 'https://adsecurity.org/?p=2288' },
+          { title: 'MS14-025: Vulnerability in Group Policy Preferences Could Allow Elevation of Privilege', url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-025' },
+          { title: 'Get-GPPPassword – PowerSploit', url: 'https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Get-GPPPassword.ps1' }
+        ]
+      },
+      {
+        name: 'MS14-068 (Kerberos PAC Bypass)',
+        description: { zh: 'CVE-2014-6324：Kerberos KDC 未驗證 PAC（Privilege Attribute Certificate）簽章，允許任意網域使用者偽造含域管理員 SID 的 PAC，取得域管理員 Kerberos 票據', en: 'CVE-2014-6324: The Kerberos KDC does not validate PAC (Privilege Attribute Certificate) signatures, allowing any domain user to forge a PAC containing Domain Admin SIDs and obtain Domain Admin Kerberos tickets.', ja: 'CVE-2014-6324: Kerberos KDC が PAC（特権属性証明書）署名を検証しないため、任意のドメインユーザーがドメイン管理者 SID を含む PAC を偽造して Kerberos チケットを取得できる。' },
+        tools: ['Impacket', 'PyKEK'],
+        cves: ['CVE-2014-6324'],
+        resources: [
+          { title: 'MS14-068: Vulnerability in Kerberos Could Allow Elevation of Privilege', url: 'https://docs.microsoft.com/en-us/security-updates/securitybulletins/2014/ms14-068' },
+          { title: 'Digging into MS14-068, Exploitation and Defence', url: 'https://labs.mwrinfosecurity.com/blog/digging-into-ms14-068-exploitation-and-defence/' },
+          { title: 'PyKEK – Python Kerberos Exploitation Kit', url: 'https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS14-068/pykek' }
+        ]
       }
     ]
   },
@@ -288,6 +329,26 @@ const CATEGORIES = [
         resources: [
           { title: 'Subverting Sysmon: Application of a Formalized Security Product Evasion Methodology', url: 'https://github.com/mattifestation/BHUSA2018_Sysmon' },
           { title: 'Shhmon — Silencing Sysmon via Driver Unload', url: 'https://posts.specterops.io/shhmon-silencing-sysmon-via-driver-unload-682b5be57650' }
+        ]
+      },
+      {
+        name: 'Microsoft ATA / Defender for Identity Evasion',
+        description: { zh: '規避 Microsoft Advanced Threat Analytics（ATA）與 Microsoft Defender for Identity（MDI）感應器偵測；技術包含修改 Kerberos 加密類型（避免 RC4）、分散攻擊時序、使用 AES 票據取代 RC4 以繞過 Kerberoast 偵測特徵', en: 'Evade Microsoft ATA and Defender for Identity (MDI) sensor detections by modifying Kerberos encryption types (avoid RC4), distributing attack timing, and using AES tickets instead of RC4 to bypass Kerberoast detection signatures.', ja: 'Kerberos 暗号化タイプの変更（RC4 回避）、攻撃タイミングの分散、RC4 の代わりに AES チケットを使用して Kerberoast 検知シグネチャを回避することで、Microsoft ATA および Defender for Identity（MDI）センサーの検知を回避する。' },
+        tools: ['Rubeus', 'Impacket'],
+        resources: [
+          { title: 'Evading Microsoft ATA for Active Directory Domination', url: 'https://www.blackhat.com/docs/us-17/thursday/us-17-Balmas-Evading-Microsoft-ATA-For-Active-Directory-Domination.pdf' },
+          { title: 'Bypassing Microsoft Defender for Identity Detections', url: 'https://posts.specterops.io/bypassing-microsoft-defender-for-identity-detections-7a17be8a80f8' },
+          { title: 'Microsoft Defender for Identity – Detection Coverage', url: 'https://learn.microsoft.com/en-us/defender-for-identity/coverage-filter' }
+        ]
+      },
+      {
+        name: 'Disabling Security Tools',
+        description: { zh: '在取得本機管理員或 SYSTEM 權限後，停用 Windows Defender（含 Tamper Protection）、稽核原則、事件日誌服務或第三方 AV/EDR，以降低偵測風險並為後續橫向移動鋪路', en: 'After obtaining local admin or SYSTEM privileges, disable Windows Defender (including Tamper Protection), audit policies, event log services, or third-party AV/EDR to reduce detection risk and prepare for lateral movement.', ja: 'ローカル管理者または SYSTEM 権限取得後、Windows Defender（Tamper Protection を含む）・監査ポリシー・イベントログサービス・サードパーティ AV/EDR を無効化し、検出リスクを低下させて横方向移動の準備をする。' },
+        tools: ['Invoke-Phant0m', 'PowerShell'],
+        resources: [
+          { title: 'Disabling Windows Event Logging – Invoke-Phant0m', url: 'https://artofpwn.com/phant0m-killing-windows-event-log.html' },
+          { title: 'T1562.001 – Impair Defenses: Disable or Modify Tools', url: 'https://attack.mitre.org/techniques/T1562/001/' },
+          { title: 'Disabling Windows Defender via PowerShell and Group Policy', url: 'https://www.tenforums.com/tutorials/5918-turn-off-windows-defender-antivirus-windows-10-a.html' }
         ]
       }
     ]
@@ -361,6 +422,16 @@ const CATEGORIES = [
           { title: 'Overpass the Hash / Pass the Key (PTK)', url: 'https://www.hackingarticles.in/lateral-movement-over-pass-the-hash/' },
           { title: 'Mimikatz Pass-the-Key', url: 'https://blog.gentilkiwi.com/securite/mimikatz/pass-the-ticket-kerberos' }
         ]
+      },
+      {
+        name: 'Automated Lateral Movement',
+        description: { zh: '結合 BloodHound 攻擊路徑分析與 C2 框架（Cobalt Strike、Sliver、Havoc）自動化執行最短域管理員路徑；工具可自動讀取 BloodHound 圖資料庫、選擇最佳攻擊路徑並依序發動橫向移動', en: 'Combine BloodHound attack path analysis with C2 frameworks (Cobalt Strike, Sliver, Havoc) to automatically execute the shortest path to Domain Admin. Tools can read the BloodHound graph database, select optimal attack paths, and execute lateral movement sequences automatically.', ja: 'BloodHound の攻撃経路分析と C2 フレームワーク（Cobalt Strike・Sliver・Havoc）を組み合わせて、ドメイン管理者への最短経路を自動実行する。ツールが BloodHound のグラフデータベースを読んで最適な攻撃経路を選択し、横移動を自動的に実行できる。' },
+        tools: ['BloodHound', 'aclpwn.py', 'CrackMapExec', 'netexec (nxc)'],
+        resources: [
+          { title: 'Automating the Boring Stuff: BloodHound + CrackMapExec', url: 'https://www.n00py.io/2022/03/using-bloodhound-to-automate-lateral-movement/' },
+          { title: 'BloodHound Attack Paths – Automated Exploitation', url: 'https://hausec.com/2019/09/09/bloodhound-and-domain-attacks/' },
+          { title: 'aclpwn.py – Automated ACL Abuse', url: 'https://github.com/fox-it/aclpwn.py' }
+        ]
       }
     ]
   },
@@ -432,6 +503,26 @@ const CATEGORIES = [
         resources: [
           { title: 'Domain Cached Credentials (MITRE T1003.005)', url: 'https://attack.mitre.org/techniques/T1003/005/' },
           { title: 'Dumping and Cracking mscash – Cached Domain Credentials', url: 'https://www.ired.team/offensive-security/credential-access-and-credential-dumping/dumping-and-cracking-mscash-cached-domain-credentials' }
+        ]
+      },
+      {
+        name: 'SAM Database Extraction',
+        description: { zh: '提取本機 SAM 資料庫中的本機帳戶 NTLM 雜湊值；可透過 reg save（需本機管理員）、VSS 陰影複製，或直接存取 HKLM\\SAM 登錄機碼；搭配 SYSTEM 登錄機碼解密 SAM', en: 'Extract local account NTLM hashes from the SAM database via reg save (requires local admin), VSS shadow copies, or direct access to the HKLM\\SAM registry hive. The SYSTEM hive is required to decrypt the SAM database.', ja: 'reg save（ローカル管理者必要）・VSS シャドウコピー・HKLM\\SAM レジストリハイブへの直接アクセスにより、SAM データベースからローカルアカウントの NTLM ハッシュを抽出する。復号には SYSTEM ハイブが必要。' },
+        tools: ['Mimikatz', 'Impacket', 'CrackMapExec'],
+        resources: [
+          { title: 'Dumping Hashes from SAM via Registry – ired.team', url: 'https://www.ired.team/offensive-security/credential-access-and-credential-dumping/dumping-hashes-from-sam-registry' },
+          { title: 'T1003.002 – OS Credential Dumping: Security Account Manager', url: 'https://attack.mitre.org/techniques/T1003/002/' },
+          { title: 'Extracting SAM and SYSTEM Hives Using VSS', url: 'https://pentestlab.blog/2018/07/04/dumping-domain-password-hashes/' }
+        ]
+      },
+      {
+        name: 'Windows Credential Manager / Vault',
+        description: { zh: '從 Windows 憑證管理員（Credential Manager）與 Vault（WinVault）提取儲存的 Web 憑證、RDP 連線憑證及網路共享密碼；cmdkey 可列舉已儲存的憑證，DPAPI 可解密 Vault 項目', en: 'Extract stored web credentials, RDP connection credentials, and network share passwords from Windows Credential Manager and Vault (WinVault). cmdkey enumerates stored credentials; DPAPI decrypts Vault entries.', ja: 'Windows Credential Manager と Vault（WinVault）から、保存された Web 認証情報・RDP 接続認証情報・ネットワーク共有パスワードを抽出する。cmdkey で保存済み認証情報を列挙し、DPAPI で Vault エントリを復号する。' },
+        tools: ['Mimikatz', 'SharpDPAPI', 'LaZagne'],
+        resources: [
+          { title: 'Dumping Windows Credentials – Hacker Recipes', url: 'https://www.thehacker.recipes/ad/movement/credentials/dumping/windows-credentials' },
+          { title: 'T1555.004 – Windows Credential Manager', url: 'https://attack.mitre.org/techniques/T1555/004/' },
+          { title: 'LaZagne – Credentials Recovery Tool', url: 'https://github.com/AlessandroZ/LaZagne' }
         ]
       }
     ]
@@ -533,6 +624,26 @@ const CATEGORIES = [
         description: { zh: '若取得 AD 中 GPO 的修改權限（如 WriteDacl、WriteProperty），可注入登入腳本或排程工作，使指定 OU 內的所有機器或使用者在登入時執行惡意程式', en: 'If an attacker gains GPO modification rights (WriteDacl, WriteProperty), they can inject logon scripts or scheduled tasks that execute malicious code on all machines or users in the targeted OU.', ja: '攻撃者が GPO の変更権限（WriteDacl、WriteProperty）を取得すると、ログオンスクリプトやスケジュールタスクを注入し、対象 OU 内の全マシンまたはユーザーがログオン時に悪意のあるコードを実行させられる。' },
         tools: ['PowerView', 'SharpGPOAbuse'],
         resources: [{ title: 'MITRE ATT&CK T1037.001 – Boot or Logon Initialization Scripts', url: 'https://attack.mitre.org/techniques/T1037/001/' }, { title: 'SharpGPOAbuse', url: 'https://github.com/FSecureLABS/SharpGPOAbuse' }]
+      },
+      {
+        name: 'Security Support Provider (SSP) Persistence',
+        description: { zh: '將自訂 SSP DLL 植入 LSASS 程序（透過修改 HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\Security Packages），每次系統啟動後 LSASS 會載入此 DLL，攔截所有登入認證並儲存明文密碼；無需修改現有系統檔案，偵測難度高', en: 'Plant a custom SSP DLL into LSASS (by modifying HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\Security Packages). LSASS loads this DLL on every boot, intercepting all logon authentication and storing plaintext passwords. No existing system files are modified, making detection difficult.', ja: 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\Security Packages を変更してカスタム SSP DLL を LSASS に植え付ける。システム起動ごとに LSASS がこの DLL を読み込み、全ログオン認証を傍受して平文パスワードを保存する。既存システムファイルを変更しないため検出が困難。' },
+        tools: ['Mimikatz', 'mimilib.dll'],
+        resources: [
+          { title: 'Sneaky Active Directory Persistence #12: Malicious Security Support Provider (SSP)', url: 'https://adsecurity.org/?p=1760' },
+          { title: 'T1547.005 – Boot or Logon Autostart: Security Support Provider', url: 'https://attack.mitre.org/techniques/T1547/005/' },
+          { title: 'Mimikatz misc::memssp – In-Memory SSP Injection', url: 'https://github.com/gentilkiwi/mimikatz/wiki/module-~-misc#memssp' }
+        ]
+      },
+      {
+        name: 'SeEnableDelegationPrivilege Abuse',
+        description: { zh: 'SeEnableDelegationPrivilege 僅預設授予 Domain Admins；取得此特權後可設定任意帳戶的無限制委派（Unconstrained Delegation），甚至新增自訂 SPN，作為持久性後門以持續竊取 TGT', en: 'SeEnableDelegationPrivilege is only granted to Domain Admins by default. Once obtained, it allows setting unconstrained delegation on arbitrary accounts or adding custom SPNs, creating a persistent backdoor to continuously steal TGTs.', ja: 'SeEnableDelegationPrivilege はデフォルトで Domain Admins のみに付与される。取得後は任意のアカウントに無制限委任を設定したりカスタム SPN を追加したりして、TGT を継続的に盗む永続バックドアを作成できる。' },
+        tools: ['PowerView', 'Rubeus', 'Impacket'],
+        resources: [
+          { title: 'The Most Dangerous User Right You Probably Have Never Heard Of', url: 'https://www.harmj0y.net/blog/activedirectory/the-most-dangerous-user-right-you-probably-have-never-heard-of/' },
+          { title: 'SeEnableDelegationPrivilege – Active Directory Security', url: 'https://adsecurity.org/?p=3800' },
+          { title: 'T1078.002 – Valid Accounts: Domain Accounts', url: 'https://attack.mitre.org/techniques/T1078/002/' }
+        ]
       }
     ]
   }
@@ -717,6 +828,46 @@ const CVES = [
     description: { zh: 'CLFS 驅動程式的第二個嚴重提權漏洞，2023 年被 Nokoyawa 勒索軟體組織積極利用於野外攻擊（zero-day）；在 AD 環境中可被用於提升至 SYSTEM 後再橫向移動', en: 'Second critical CLFS driver EoP, actively exploited as a zero-day by the Nokoyawa ransomware group in 2023. In AD environments, used to escalate to SYSTEM before lateral movement.', ja: 'CLFS ドライバの2つ目の重大な EoP 脆弱性。2023年に Nokoyawa ランサムウェアグループによってゼロデイとして積極的に悪用。AD 環境では SYSTEM 昇格後の横移動に使用。' },
     category: 'Privilege Escalation',
     url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-28252',
+    tools: []
+  },
+  {
+    id: 'CVE-2024-21410',
+    name: 'Exchange NTLM Relay (EoP)',
+    severity: 'critical',
+    year: 2024,
+    description: { zh: 'Exchange Server 2019 的 NTLM 認證中繼漏洞；攻擊者可強制 Exchange 伺服器向攻擊者進行 NTLM 認證並中繼，取得受害者的 Net-NTLMv2 雜湊後冒充其身份存取 Exchange；與 CVE-2023-23397 Outlook 雜湊洩漏組合使用威脅倍增', en: 'NTLM authentication relay vulnerability in Exchange Server 2019. Attackers can force the Exchange server to authenticate to them via NTLM and relay the victim\'s Net-NTLMv2 hash to impersonate them. When combined with CVE-2023-23397 Outlook hash leakage, the threat is significantly amplified.', ja: 'Exchange Server 2019 の NTLM 認証リレー脆弱性。攻撃者が Exchange サーバーに NTLM 認証を強制してリレーし、被害者の Net-NTLMv2 ハッシュを使って成りすます。CVE-2023-23397 Outlook ハッシュ漏洩と組み合わせると脅威が倍増。' },
+    category: 'Privilege Escalation',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-21410',
+    tools: ['Impacket', 'Responder']
+  },
+  {
+    id: 'CVE-2024-38124',
+    name: 'Netlogon EoP (Domain Spoofing)',
+    severity: 'high',
+    year: 2024,
+    description: { zh: 'Windows Netlogon 服務的權限提升漏洞；攻擊者可在特定條件下欺騙 Netlogon 安全通道，冒充其他電腦帳戶取得提升的 Kerberos 票據；適用於已在網域內取得立足點的攻擊者進一步提升至域管理員', en: 'Elevation of privilege in the Windows Netlogon service. Under specific conditions, attackers can spoof a Netlogon secure channel to impersonate other computer accounts and obtain elevated Kerberos tickets. Applicable to attackers who already have a foothold in the domain and seek to escalate to Domain Admin.', ja: 'Windows Netlogon サービスの権限昇格脆弱性。特定の条件下で、攻撃者が Netlogon セキュアチャネルを偽装して他のコンピューターアカウントを成りすまし、昇格された Kerberos チケットを取得できる。ドメイン内に足掛かりを得た攻撃者がドメイン管理者への昇格に使用。' },
+    category: 'Privilege Escalation',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-38124',
+    tools: []
+  },
+  {
+    id: 'CVE-2024-49113',
+    name: 'LDAPNightmare (LDAP DoS / RCE)',
+    severity: 'critical',
+    year: 2024,
+    description: { zh: 'Windows LDAP 服務的嚴重漏洞；無需認證即可觸發 DC 的 LDAP 服務崩潰（PoC 已公開）；研究人員同時揭露相關 RCE 漏洞（CVE-2024-49112）；組合利用可對所有未修補的 DC 造成重大威脅', en: 'Critical Windows LDAP vulnerability. A public PoC can crash the LDAP service on a DC without authentication. Researchers also disclosed an associated RCE variant (CVE-2024-49112). When combined, they pose a major threat to all unpatched DCs.', ja: 'Windows LDAP サービスの重大な脆弱性。公開 PoC により認証なしで DC の LDAP サービスをクラッシュさせられる。関連する RCE 変種（CVE-2024-49112）も研究者が開示済み。組み合わせると未修正の全 DC に重大な脅威をもたらす。' },
+    category: 'Initial Access',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-49113',
+    tools: []
+  },
+  {
+    id: 'CVE-2024-26234',
+    name: 'Proxy Driver Spoofing (WHCP Bypass)',
+    severity: 'medium',
+    year: 2024,
+    description: { zh: 'Windows 硬體相容性計劃（WHCP）程式碼簽章繞過漏洞；攻擊者可使用合法微軟簽章的代理驅動程式載入未簽章的惡意 Kernel 驅動程式，在 AD 環境中常被用於繞過 EDR 驅動程式保護與 Credential Guard', en: 'Windows Hardware Compatibility Program (WHCP) code-signing bypass. Attackers can use a legitimately Microsoft-signed proxy driver to load unsigned malicious kernel drivers. In AD environments, frequently used to bypass EDR driver protection and Credential Guard.', ja: 'Windows ハードウェア互換性プログラム（WHCP）コード署名バイパス脆弱性。攻撃者が Microsoft の正規署名付きプロキシドライバーを使って未署名の悪意のあるカーネルドライバーを読み込む。AD 環境では EDR ドライバー保護や Credential Guard のバイパスに頻繁に使用。' },
+    category: 'Defense Evasion',
+    url: 'https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-26234',
     tools: []
   }
 ];
@@ -934,6 +1085,57 @@ const DETECTION_EVENTS = [
       { zh: '5140: 網路共享物件已被存取（監控 ADMIN$、C$ 等管理共享）', en: '5140: A network share object was accessed (monitor ADMIN$, C$ admin shares)', ja: '5140: ネットワーク共有オブジェクトへのアクセス（ADMIN$、C$ などの管理共有を監視）' },
       { zh: '5145: 共享物件詳細稽核（含操作類型、存取遮罩）', en: '5145: Detailed network share audit (includes operation type and access mask)', ja: '5145: 詳細ネットワーク共有監査（操作タイプとアクセスマスクを含む）' },
       { zh: '5142/5143: 網路共享建立 / 修改', en: '5142/5143: Network share created / modified', ja: '5142/5143: ネットワーク共有の作成・変更' }
+    ]
+  },
+  {
+    attack: 'WMI Event Subscription Persistence',
+    category: 'persistence',
+    eventIds: ['5857', '5858', '5859', '5860', '5861'],
+    descriptions: [
+      { zh: '5857: WMI 活動：EventFilter 已啟動（偵測新增的 WMI 永久事件訂閱）', en: '5857: WMI activity: EventFilter was activated (detects newly added WMI permanent event subscriptions)', ja: '5857: WMI アクティビティ: EventFilter がアクティブ化された（新たに追加された WMI 永続的イベントサブスクリプションを検出）' },
+      { zh: '5858: WMI 活動：查詢錯誤（異常 WMI 查詢可能為惡意工具的識別特徵）', en: '5858: WMI activity: Query error (abnormal WMI queries may be signatures of malicious tools)', ja: '5858: WMI アクティビティ: クエリエラー（異常な WMI クエリは悪意のあるツールのシグネチャである可能性）' },
+      { zh: '5859/5860: WMI 活動：訂閱 / 過濾器已建立（監控 CommandLineEventConsumer 的建立）', en: '5859/5860: WMI activity: Subscription/Filter created (watch for CommandLineEventConsumer creation)', ja: '5859/5860: WMI アクティビティ: サブスクリプション・フィルター作成（CommandLineEventConsumer の作成を監視）' },
+      { zh: '5861: WMI 活動：Binding 已建立（EventFilter 綁定 EventConsumer，惡意訂閱的關鍵指標）', en: '5861: WMI activity: Binding created (EventFilter bound to EventConsumer — a key indicator of malicious subscriptions)', ja: '5861: WMI アクティビティ: バインディング作成（EventFilter と EventConsumer のバインド — 悪意のあるサブスクリプションの主要な指標）' }
+    ]
+  },
+  {
+    attack: 'GPO Modification',
+    category: 'persistence',
+    eventIds: ['5136', '5137', '5141', '4662'],
+    descriptions: [
+      { zh: '5136: 目錄服務物件已修改（監控 GroupPolicyContainer 物件的屬性修改，特別是 gPCFileSysPath）', en: '5136: A directory service object was modified (monitor attribute modifications to GroupPolicyContainer objects, especially gPCFileSysPath)', ja: '5136: ディレクトリサービスオブジェクトが変更された（GroupPolicyContainer オブジェクトの属性変更、特に gPCFileSysPath を監視）' },
+      { zh: '5137: 目錄服務物件已建立（監控新 GPO 建立）', en: '5137: A directory service object was created (monitor new GPO creation)', ja: '5137: ディレクトリサービスオブジェクトが作成された（新しい GPO の作成を監視）' },
+      { zh: '5141: 目錄服務物件已刪除（監控 GPO 刪除，可能為攻擊後清除痕跡）', en: '5141: A directory service object was deleted (monitor GPO deletion, possibly to cover attack traces)', ja: '5141: ディレクトリサービスオブジェクトが削除された（GPO 削除を監視、攻撃痕跡消去の可能性）' },
+      { zh: '4662: 已對物件執行操作（監控非管理員帳戶對 GPO 物件的寫入操作）', en: '4662: An operation was performed on an object (monitor write operations to GPO objects by non-admin accounts)', ja: '4662: オブジェクトに対して操作が実行された（非管理者アカウントによる GPO オブジェクトへの書き込み操作を監視）' }
+    ]
+  },
+  {
+    attack: 'DPAPI Credential Theft',
+    category: 'credential-dumping',
+    eventIds: ['4688', '4663', '4656'],
+    descriptions: [
+      { zh: '4688: 新程序已建立（監控 dpapi.dll 載入，或 mimikatz / SharpDPAPI 程序建立）', en: '4688: A new process was created (monitor dpapi.dll loading or mimikatz/SharpDPAPI process creation)', ja: '4688: 新しいプロセスが作成された（dpapi.dll の読み込みまたは mimikatz/SharpDPAPI プロセス作成を監視）' },
+      { zh: '4663: 嘗試存取物件（監控對 %APPDATA%\\Microsoft\\Credentials\\ 與 %APPDATA%\\Microsoft\\Protect\\ 目錄的存取）', en: '4663: An attempt was made to access an object (monitor access to %APPDATA%\\Microsoft\\Credentials\\ and %APPDATA%\\Microsoft\\Protect\\ directories)', ja: '4663: オブジェクトへのアクセスが試行された（%APPDATA%\\Microsoft\\Credentials\\ と %APPDATA%\\Microsoft\\Protect\\ ディレクトリへのアクセスを監視）' },
+      { zh: '4656: 已要求物件的控制碼（未預期的處理程序存取 Master Key 檔案為高度可疑指標）', en: '4656: A handle to an object was requested (unexpected process access to Master Key files is a high-suspicion indicator)', ja: '4656: オブジェクトへのハンドルが要求された（予期しないプロセスによるマスターキーファイルへのアクセスは高度に疑わしい指標）' }
+    ]
+  },
+  {
+    attack: 'SAM / Registry Credential Dump',
+    category: 'credential-dumping',
+    eventIds: ['4663', '4656', '4688'],
+    descriptions: [
+      { zh: '4663: 嘗試存取物件（監控對 HKLM\\SAM、HKLM\\SYSTEM 登錄機碼的存取）', en: '4663: An attempt was made to access an object (monitor access to HKLM\\SAM and HKLM\\SYSTEM registry keys)', ja: '4663: オブジェクトへのアクセスが試行された（HKLM\\SAM および HKLM\\SYSTEM レジストリキーへのアクセスを監視）' },
+      { zh: '4656: 已要求物件的控制碼（非 winlogon/lsass 程序存取 SAM 機碼為異常行為）', en: '4656: A handle to an object was requested (non-winlogon/lsass processes accessing the SAM key are abnormal)', ja: '4656: オブジェクトへのハンドルが要求された（winlogon/lsass 以外のプロセスによる SAM キーへのアクセスは異常）' },
+      { zh: '4688: 新程序已建立（監控 reg.exe save SAM、vssadmin create shadow 等指令）', en: '4688: A new process was created (monitor commands like reg.exe save SAM or vssadmin create shadow)', ja: '4688: 新しいプロセスが作成された（reg.exe save SAM や vssadmin create shadow などのコマンドを監視）' }
+    ]
+  },
+  {
+    attack: 'Passwords in SYSVOL / GPP',
+    category: 'privilege-escalation',
+    eventIds: ['5140', '4663'],
+    descriptions: [
+      { zh: '5140: 網路共享物件已被存取（監控對 SYSVOL 共享的存取，特別是針對 Groups.xml、Services.xml、Drives.xml 等 GPP 檔案）', en: '5140: A network share object was accessed (monitor access to the SYSVOL share, especially GPP files like Groups.xml, Services.xml, and Drives.xml)', ja: '5140: ネットワーク共有オブジェクトへのアクセス（SYSVOL 共有、特に Groups.xml・Services.xml・Drives.xml などの GPP ファイルへのアクセスを監視）' },
+      { zh: '4663: 嘗試存取物件（對 Groups.xml 等含 cpassword 欄位的檔案的存取為高風險指標）', en: '4663: An attempt was made to access an object (access to Groups.xml and other files containing cpassword fields is a high-risk indicator)', ja: '4663: オブジェクトへのアクセスが試行された（cpassword フィールドを含む Groups.xml などのファイルへのアクセスは高リスク指標）' }
     ]
   }
 ];
