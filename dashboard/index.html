@@ -11,46 +11,48 @@
 </head>
 <body>
 
+<a class="skip-link" href="#tab-dashboard">Skip to main content</a>
+
 <!-- ── NAVBAR ─────────────────────────────────────────────────────────── -->
-<nav class="app-navbar">
+<nav class="app-navbar" aria-label="Primary">
   <div class="navbar-brand">
-    <div class="navbar-logo">🛡</div>
+    <div class="navbar-logo" aria-hidden="true">🛡</div>
     <div class="navbar-title">AD <span>Kill Chain</span></div>
   </div>
 
-  <div class="navbar-tabs">
-    <button class="nav-tab" data-tab="dashboard">
-      <i class="bi bi-grid-1x2"></i> 總覽
+  <div class="navbar-tabs" role="tablist" aria-label="Dashboard sections">
+    <button class="nav-tab" data-tab="dashboard" role="tab" id="tabbtn-dashboard" aria-controls="tab-dashboard" aria-selected="false" tabindex="-1">
+      <i class="bi bi-grid-1x2" aria-hidden="true"></i> 總覽
     </button>
-    <button class="nav-tab" data-tab="techniques">
-      <i class="bi bi-diagram-3"></i> 攻擊技術
+    <button class="nav-tab" data-tab="techniques" role="tab" id="tabbtn-techniques" aria-controls="tab-techniques" aria-selected="false" tabindex="-1">
+      <i class="bi bi-diagram-3" aria-hidden="true"></i> 攻擊技術
     </button>
-    <button class="nav-tab" data-tab="cves">
-      <i class="bi bi-bug"></i> CVE 追蹤
+    <button class="nav-tab" data-tab="cves" role="tab" id="tabbtn-cves" aria-controls="tab-cves" aria-selected="false" tabindex="-1">
+      <i class="bi bi-bug" aria-hidden="true"></i> CVE 追蹤
     </button>
-    <button class="nav-tab" data-tab="detection">
-      <i class="bi bi-eye"></i> 偵測參考
+    <button class="nav-tab" data-tab="detection" role="tab" id="tabbtn-detection" aria-controls="tab-detection" aria-selected="false" tabindex="-1">
+      <i class="bi bi-eye" aria-hidden="true"></i> 偵測參考
     </button>
-    <button class="nav-tab" data-tab="tools">
-      <i class="bi bi-tools"></i> 工具庫
+    <button class="nav-tab" data-tab="tools" role="tab" id="tabbtn-tools" aria-controls="tab-tools" aria-selected="false" tabindex="-1">
+      <i class="bi bi-tools" aria-hidden="true"></i> 工具庫
     </button>
-    <button class="nav-tab" data-tab="defense">
-      <i class="bi bi-shield-check"></i> 防禦清單
+    <button class="nav-tab" data-tab="defense" role="tab" id="tabbtn-defense" aria-controls="tab-defense" aria-selected="false" tabindex="-1">
+      <i class="bi bi-shield-check" aria-hidden="true"></i> 防禦清單
     </button>
-    <button class="nav-tab" data-tab="references">
-      <i class="bi bi-journals"></i> 參考資料
+    <button class="nav-tab" data-tab="references" role="tab" id="tabbtn-references" aria-controls="tab-references" aria-selected="false" tabindex="-1">
+      <i class="bi bi-journals" aria-hidden="true"></i> 參考資料
     </button>
   </div>
 
-  <div class="lang-switcher">
-    <button class="lang-btn active" data-lang="zh">中</button>
-    <button class="lang-btn" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="ja">日</button>
+  <div class="lang-switcher" role="group" aria-label="Language">
+    <button class="lang-btn active" data-lang="zh" aria-pressed="true" aria-label="中文">中</button>
+    <button class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+    <button class="lang-btn" data-lang="ja" aria-pressed="false" aria-label="日本語">日</button>
   </div>
 
   <div class="navbar-search">
-    <i class="bi bi-search"></i>
-    <input id="global-search" type="text" data-i18n-placeholder="search_placeholder">
+    <i class="bi bi-search" aria-hidden="true"></i>
+    <input id="global-search" type="text" data-i18n-placeholder="search_placeholder" aria-label="Search techniques, tools, CVEs">
   </div>
 </nav>
 
@@ -58,7 +60,7 @@
 <main class="app-main">
 
   <!-- ── TAB: DASHBOARD ──────────────────────────────────────────────── -->
-  <div id="tab-dashboard" class="tab-pane">
+  <div id="tab-dashboard" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-dashboard" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title">
         <i class="bi bi-grid-1x2"></i> Active Directory 攻防總覽
@@ -157,7 +159,7 @@
   </div>
 
   <!-- ── TAB: TECHNIQUES ─────────────────────────────────────────────── -->
-  <div id="tab-techniques" class="tab-pane">
+  <div id="tab-techniques" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-techniques" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title"><i class="bi bi-diagram-3"></i> 攻擊技術庫</div>
       <div class="section-desc">依 AD Kill Chain 分類的完整攻擊技術，含工具、CVE 與參考資源</div>
@@ -203,7 +205,7 @@
   </div>
 
   <!-- ── TAB: CVEs ────────────────────────────────────────────────────── -->
-  <div id="tab-cves" class="tab-pane">
+  <div id="tab-cves" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-cves" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title"><i class="bi bi-bug"></i> CVE 漏洞追蹤</div>
       <div class="section-desc">Active Directory 相關重要 CVE，含嚴重性評估、描述與緩解連結</div>
@@ -246,7 +248,7 @@
   </div>
 
   <!-- ── TAB: DETECTION ──────────────────────────────────────────────── -->
-  <div id="tab-detection" class="tab-pane">
+  <div id="tab-detection" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-detection" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title"><i class="bi bi-eye"></i> 偵測事件 ID 參考</div>
       <div class="section-desc">
@@ -291,7 +293,7 @@
   </div>
 
   <!-- ── TAB: TOOLS ───────────────────────────────────────────────────── -->
-  <div id="tab-tools" class="tab-pane">
+  <div id="tab-tools" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-tools" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title"><i class="bi bi-tools"></i> 工具庫</div>
       <div class="section-desc">AD 攻防相關工具收錄，涵蓋攻擊、防禦、稽核與 Azure 類別</div>
@@ -318,7 +320,7 @@
   </div>
 
   <!-- ── TAB: DEFENSE ─────────────────────────────────────────────────── -->
-  <div id="tab-defense" class="tab-pane">
+  <div id="tab-defense" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-defense" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title"><i class="bi bi-shield-check"></i> 防禦安全清單</div>
       <div class="section-desc" data-i18n="defense_desc">
@@ -356,7 +358,7 @@
   </div>
 
   <!-- ── TAB: REFERENCES ─────────────────────────────────────────────────── -->
-  <div id="tab-references" class="tab-pane">
+  <div id="tab-references" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-references" tabindex="0" hidden>
     <div class="section-header">
       <div class="section-title"><i class="bi bi-journals"></i> 參考資料</div>
       <div class="section-desc">整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引</div>

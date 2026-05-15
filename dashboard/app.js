@@ -393,18 +393,34 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === state.lang);
   });
+  // Sync aria-pressed state across all filter groups (must run AFTER active class is set)
+  ['.lang-btn', '[data-cat-filter]', '[data-cve-filter]', '[data-tool-filter]', '[data-ref-filter]']
+    .forEach(syncAriaPressed);
   switchTab('dashboard');
 });
 
 // ── TAB NAVIGATION ─────────────────────────────────────────────────────────
 function switchTab(tabId) {
   state.activeTab = tabId;
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  const pane = document.getElementById(`tab-${tabId}`);
-  const tab = document.querySelector(`[data-tab="${tabId}"]`);
-  if (pane) pane.classList.add('active');
-  if (tab) tab.classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    const active = t.dataset.tab === tabId;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-selected', active ? 'true' : 'false');
+    t.setAttribute('tabindex', active ? '0' : '-1');
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => {
+    const active = p.id === `tab-${tabId}`;
+    p.classList.toggle('active', active);
+    if (active) p.removeAttribute('hidden');
+    else p.setAttribute('hidden', '');
+  });
+}
+
+// Helper: sync aria-pressed across a group based on the .active class
+function syncAriaPressed(selector) {
+  document.querySelectorAll(selector).forEach(b => {
+    b.setAttribute('aria-pressed', b.classList.contains('active') ? 'true' : 'false');
+  });
 }
 
 // ── EVENT BINDINGS ─────────────────────────────────────────────────────────
@@ -413,6 +429,25 @@ function bindEvents() {
   document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
   });
+
+  // Tab keyboard navigation (WAI-ARIA tabs pattern)
+  const tablist = document.querySelector('.navbar-tabs');
+  if (tablist) {
+    tablist.addEventListener('keydown', e => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+      const tabs = [...tablist.querySelectorAll('.nav-tab')];
+      const cur = tabs.indexOf(document.activeElement);
+      if (cur === -1) return;
+      let next = cur;
+      if (e.key === 'ArrowLeft') next = (cur - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'ArrowRight') next = (cur + 1) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      e.preventDefault();
+      tabs[next].focus();
+      switchTab(tabs[next].dataset.tab);
+    });
+  }
 
   // Global search
   const globalSearchInput = document.getElementById('global-search');
@@ -432,6 +467,7 @@ function bindEvents() {
       state.cveFilter = btn.dataset.cveFilter;
       document.querySelectorAll('[data-cve-filter]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      syncAriaPressed('[data-cve-filter]');
       filterCVEs();
     });
   });
@@ -442,6 +478,7 @@ function bindEvents() {
       state.toolsFilter = btn.dataset.toolFilter;
       document.querySelectorAll('[data-tool-filter]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      syncAriaPressed('[data-tool-filter]');
       filterTools();
     });
   });
@@ -471,6 +508,7 @@ function bindEvents() {
       state.refTagFilter = btn.dataset.refFilter;
       document.querySelectorAll('[data-ref-filter]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      syncAriaPressed('[data-ref-filter]');
       filterReferences();
     });
   });
@@ -488,6 +526,7 @@ function bindEvents() {
       state.techniquesFilter = btn.dataset.catFilter;
       document.querySelectorAll('[data-cat-filter]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      syncAriaPressed('[data-cat-filter]');
       filterTechniques();
     });
   });
@@ -498,6 +537,7 @@ function bindEvents() {
       state.lang = btn.dataset.lang;
       localStorage.setItem('ad_lang', state.lang);
       document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === state.lang));
+      syncAriaPressed('.lang-btn');
       applyI18n();
     });
   });
@@ -525,14 +565,26 @@ function bindEvents() {
 
   // Event delegation: copy Event IDs (replaces inline onclick which was XSS-prone)
   document.addEventListener('click', evt => {
-    const el = evt.target.closest('.js-copy-event');
-    if (el) copyEventId(el.dataset.eventId);
+    const copyEl = evt.target.closest('.js-copy-event');
+    if (copyEl) { copyEventId(copyEl.dataset.eventId); return; }
+
+    const toggleEl = evt.target.closest('.js-checklist-toggle');
+    if (toggleEl) {
+      const item = toggleEl.closest('.checklist-item');
+      if (item) toggleChecklist(toggleEl.dataset.checklistKey, item);
+    }
   });
   document.addEventListener('keydown', evt => {
-    if ((evt.key === 'Enter' || evt.key === ' ') &&
-        evt.target.classList && evt.target.classList.contains('js-copy-event')) {
+    if (evt.key !== 'Enter' && evt.key !== ' ') return;
+    const target = evt.target;
+    if (!target.classList) return;
+    if (target.classList.contains('js-copy-event')) {
       evt.preventDefault();
-      copyEventId(evt.target.dataset.eventId);
+      copyEventId(target.dataset.eventId);
+    } else if (target.classList.contains('js-checklist-toggle')) {
+      evt.preventDefault();
+      const item = target.closest('.checklist-item');
+      if (item) toggleChecklist(target.dataset.checklistKey, item);
     }
   });
 }
@@ -874,14 +926,15 @@ function renderDefense() {
 
       const hasSteps = (item.steps || []).length > 0;
       const safeKey = escapeHtml(key);
+      const textId = `ci-text-${safeKey}`;
       return `
         <div class="checklist-item ${checked ? 'checked' : ''}">
-          <div class="ci-checkbox" onclick="toggleChecklist('${safeKey}', this.closest('.checklist-item'))">${checked ? '<i class="bi bi-check-lg"></i>' : ''}</div>
+          <button type="button" class="ci-checkbox js-checklist-toggle" role="checkbox" aria-checked="${checked ? 'true' : 'false'}" aria-labelledby="${textId}" data-checklist-key="${safeKey}">${checked ? '<i class="bi bi-check-lg" aria-hidden="true"></i>' : ''}</button>
           <div class="ci-content">
             <div class="ci-header">
-              <div class="ci-text" onclick="toggleChecklist('${safeKey}', this.closest('.checklist-item'))">${de(item.text)}</div>
-              ${hasSteps ? `<button class="steps-toggle" onclick="toggleSteps(this)" aria-expanded="false">
-                <i class="bi bi-list-task"></i> ${escapeHtml(t('steps_btn'))} <i class="bi bi-chevron-down steps-chevron"></i>
+              <div class="ci-text js-checklist-toggle" id="${textId}" data-checklist-key="${safeKey}">${de(item.text)}</div>
+              ${hasSteps ? `<button type="button" class="steps-toggle" onclick="toggleSteps(this)" aria-expanded="false">
+                <i class="bi bi-list-task" aria-hidden="true"></i> ${escapeHtml(t('steps_btn'))} <i class="bi bi-chevron-down steps-chevron" aria-hidden="true"></i>
               </button>` : ''}
             </div>
             <div class="ci-detail">${de(item.detail)}</div>
@@ -924,10 +977,15 @@ function toggleChecklist(key, element) {
   } else {
     delete state.checkedItems[key];
   }
-  localStorage.setItem('ad_checklist', JSON.stringify(state.checkedItems));
+  try {
+    localStorage.setItem('ad_checklist', JSON.stringify(state.checkedItems));
+  } catch (_) { /* quota / disabled — ignore */ }
   element.classList.toggle('checked', checked);
   const checkbox = element.querySelector('.ci-checkbox');
-  if (checkbox) checkbox.innerHTML = checked ? '<i class="bi bi-check-lg"></i>' : '';
+  if (checkbox) {
+    checkbox.innerHTML = checked ? '<i class="bi bi-check-lg" aria-hidden="true"></i>' : '';
+    checkbox.setAttribute('aria-checked', checked ? 'true' : 'false');
+  }
 
   // Update progress for the section
   const section = element.closest('.checklist-section');
@@ -935,7 +993,7 @@ function toggleChecklist(key, element) {
     const items = section.querySelectorAll('.checklist-item');
     const checkedCount = section.querySelectorAll('.checklist-item.checked').length;
     const total = items.length;
-    const pct = Math.round((checkedCount / total) * 100);
+    const pct = total > 0 ? Math.min(100, Math.round((checkedCount / total) * 100)) : 0;
     const progressEl = section.querySelector('.checklist-progress');
     if (progressEl) progressEl.textContent = `${checkedCount} / ${total} ${t('checklist_done')}`;
     const fill = section.querySelector('.progress-bar-fill');
