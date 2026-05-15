@@ -50,6 +50,8 @@ const I18N = {
     search_references: '搜尋標題、說明…', ref_filter_all: '全部',
     no_references: '找不到符合的參考資料',
     no_techniques: '找不到符合的攻擊技術',
+    page_title: 'AD Kill Chain 攻防儀表板',
+    meta_description: 'AD Kill Chain 攻擊鏈分析與防禦資源整合儀表板，涵蓋 200+ 攻擊技術、40+ CVE、偵測規則與防禦清單',
   },
   en: {
     search_placeholder: 'Search techniques, tools, CVE…',
@@ -99,6 +101,8 @@ const I18N = {
     search_references: 'Search title, description…', ref_filter_all: 'All',
     no_references: 'No matching references found',
     no_techniques: 'No matching techniques found',
+    page_title: 'AD Kill Chain Attack & Defense Dashboard',
+    meta_description: 'AD Kill Chain attack & defense resource dashboard — 200+ techniques, 40+ CVEs, detection rules and defense checklist',
   },
   ja: {
     search_placeholder: '技術・ツール・CVEを検索…',
@@ -148,8 +152,13 @@ const I18N = {
     search_references: 'タイトル・説明を検索…', ref_filter_all: 'すべて',
     no_references: '一致する参考資料が見つかりません',
     no_techniques: '一致する攻撃技術が見つかりません',
+    page_title: 'AD Kill Chain 攻防ダッシュボード',
+    meta_description: 'AD Kill Chain 攻撃・防御リソース統合ダッシュボード — 200+ 攻撃技術、40+ CVE、検知ルール、防御チェックリスト',
   }
 };
+
+// Language code → BCP-47 language tag for <html lang>
+const LANG_TO_BCP47 = { zh: 'zh-TW', en: 'en', ja: 'ja' };
 
 function t(key, ...args) {
   const dict = I18N[state.lang] || I18N.zh;
@@ -166,6 +175,12 @@ function d(val) {
 }
 
 function applyI18n() {
+  // Document-level: lang attr, title, meta description (a11y + SEO)
+  document.documentElement.lang = LANG_TO_BCP47[state.lang] || 'en';
+  document.title = t('page_title');
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', t('meta_description'));
+
   // Nav tabs
   document.querySelector('[data-tab="dashboard"]').innerHTML = `<i class="bi bi-grid-1x2"></i> ${t('nav_dashboard')}`;
   document.querySelector('[data-tab="techniques"]').innerHTML = `<i class="bi bi-diagram-3"></i> ${t('nav_techniques')}`;
@@ -336,6 +351,21 @@ function renderDetectionTips() {
 }
 
 // ── STATE ──────────────────────────────────────────────────────────────────
+function safeLoadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw == null) return fallback;
+    const parsed = JSON.parse(raw);
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
+      ? parsed
+      : fallback;
+  } catch (err) {
+    console.warn(`[safeLoadJSON] localStorage key "${key}" corrupted, resetting:`, err);
+    try { localStorage.removeItem(key); } catch (_) { /* ignore */ }
+    return fallback;
+  }
+}
+
 const state = {
   activeTab: 'dashboard',
   globalSearch: '',
@@ -345,11 +375,12 @@ const state = {
   refSearch: '',
   refTagFilter: 'all',
   lang: localStorage.getItem('ad_lang') || 'zh',
-  checkedItems: JSON.parse(localStorage.getItem('ad_checklist') || '{}'),
+  checkedItems: safeLoadJSON('ad_checklist', {}),
 };
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  pruneStaleCheckedItems();
   renderDashboard();
   renderTechniques();
   renderCVEs();
@@ -491,6 +522,19 @@ function bindEvents() {
       if (active && active.tagName === 'INPUT') active.blur();
     }
   });
+
+  // Event delegation: copy Event IDs (replaces inline onclick which was XSS-prone)
+  document.addEventListener('click', evt => {
+    const el = evt.target.closest('.js-copy-event');
+    if (el) copyEventId(el.dataset.eventId);
+  });
+  document.addEventListener('keydown', evt => {
+    if ((evt.key === 'Enter' || evt.key === ' ') &&
+        evt.target.classList && evt.target.classList.contains('js-copy-event')) {
+      evt.preventDefault();
+      copyEventId(evt.target.dataset.eventId);
+    }
+  });
 }
 
 // ── RENDER: DASHBOARD ──────────────────────────────────────────────────────
@@ -521,9 +565,9 @@ function renderDashboard() {
     node.className = 'kc-node';
     node.style.color = cat.color;
     node.innerHTML = `
-      <i class="bi ${cat.icon} kc-icon" style="color:${cat.color}"></i>
-      <div class="kc-name">${cat.name}</div>
-      <div class="kc-count">${t('techniques_count', cat.techniques.length)}</div>
+      <i class="bi ${escapeHtml(cat.icon)} kc-icon" style="color:${escapeHtml(cat.color)}"></i>
+      <div class="kc-name">${escapeHtml(cat.name)}</div>
+      <div class="kc-count">${escapeHtml(t('techniques_count', cat.techniques.length))}</div>
     `;
     node.addEventListener('click', () => {
       switchTab('techniques');
@@ -540,10 +584,10 @@ function renderDashboard() {
   if (cveTableBody) {
     cveTableBody.innerHTML = topCVEs.map(cve => `
       <tr>
-        <td><span class="cve-id">${cve.id}</span></td>
-        <td>${cve.name}</td>
-        <td><span class="badge badge-${cve.severity}">${cve.severity.toUpperCase()}</span></td>
-        <td class="text-secondary text-small">${cve.year}</td>
+        <td><span class="cve-id">${escapeHtml(cve.id)}</span></td>
+        <td>${escapeHtml(cve.name)}</td>
+        <td><span class="badge badge-${escapeHtml(cve.severity)}">${escapeHtml(String(cve.severity).toUpperCase())}</span></td>
+        <td class="text-secondary text-small">${escapeHtml(cve.year)}</td>
       </tr>
     `).join('');
   }
@@ -564,26 +608,26 @@ function renderTechniques() {
     section.dataset.categoryId = cat.id;
     section.innerHTML = `
       <div class="category-header" onclick="toggleCategory(this.parentElement)">
-        <div class="cat-icon-wrap" style="background:${cat.color}20; color:${cat.color}">
-          <i class="bi ${cat.icon}"></i>
+        <div class="cat-icon-wrap" style="background:${escapeHtml(cat.color)}20; color:${escapeHtml(cat.color)}">
+          <i class="bi ${escapeHtml(cat.icon)}"></i>
         </div>
         <div class="cat-info">
-          <div class="cat-name">${cat.name}</div>
+          <div class="cat-name">${escapeHtml(cat.name)}</div>
           <div class="cat-meta">
-            <a href="https://attack.mitre.org/tactics/${cat.mitre}/" target="_blank" rel="noopener"
-               class="mitre-badge" style="text-decoration:none" title="MITRE ATT&CK ${cat.mitre}">
-              ${cat.mitre} <i class="bi bi-box-arrow-up-right" style="font-size:9px"></i>
+            <a href="https://attack.mitre.org/tactics/${encodeURIComponent(cat.mitre)}/" target="_blank" rel="noopener"
+               class="mitre-badge" style="text-decoration:none" title="MITRE ATT&CK ${escapeHtml(cat.mitre)}">
+              ${escapeHtml(cat.mitre)} <i class="bi bi-box-arrow-up-right" style="font-size:9px"></i>
             </a>
-            &nbsp;${d(cat.description)}
+            &nbsp;${de(cat.description)}
           </div>
         </div>
-        <span class="tool-tag" style="color:${cat.color}; border-color:${cat.color}40; background:${cat.color}15">
-          ${t('techniques_count', cat.techniques.length)}
+        <span class="tool-tag" style="color:${escapeHtml(cat.color)}; border-color:${escapeHtml(cat.color)}40; background:${escapeHtml(cat.color)}15">
+          ${escapeHtml(t('techniques_count', cat.techniques.length))}
         </span>
         <i class="bi bi-chevron-down cat-toggle" style="margin-left:8px"></i>
       </div>
-      <div class="category-techniques technique-grid" id="cat-${cat.id}">
-        ${cat.techniques.map(t => renderTechniqueCard(t, cat)).join('')}
+      <div class="category-techniques technique-grid" id="cat-${escapeHtml(cat.id)}">
+        ${cat.techniques.map(tech => renderTechniqueCard(tech, cat)).join('')}
       </div>
     `;
     container.appendChild(section);
@@ -591,27 +635,27 @@ function renderTechniques() {
 }
 
 function renderTechniqueCard(technique, category) {
-  const toolTags = (technique.tools || []).slice(0, 4).map(t =>
-    `<span class="tool-tag">${t}</span>`
+  const toolTags = (technique.tools || []).slice(0, 4).map(tool =>
+    `<span class="tool-tag">${escapeHtml(tool)}</span>`
   ).join('');
 
   const cveBadges = (technique.cves || []).map(cve =>
-    `<span class="badge badge-high">${cve}</span>`
+    `<span class="badge badge-high">${escapeHtml(cve)}</span>`
   ).join('');
 
   const resources = (technique.resources || []).map(r =>
-    `<li><a href="${r.url}" target="_blank" rel="noopener">
-      <i class="bi bi-box-arrow-up-right"></i>${r.title}
+    `<li><a href="${escapeHtml(safeUrl(r.url))}" target="_blank" rel="noopener">
+      <i class="bi bi-box-arrow-up-right"></i>${escapeHtml(r.title)}
     </a></li>`
   ).join('');
 
   return `
-    <div class="technique-card" data-technique="${technique.name.toLowerCase()}">
+    <div class="technique-card" data-technique="${escapeHtml(String(technique.name).toLowerCase())}">
       <div class="technique-card-header" onclick="toggleTechnique(this.parentElement)">
-        <div class="tc-indicator" style="background:${category.color}"></div>
+        <div class="tc-indicator" style="background:${escapeHtml(category.color)}"></div>
         <div class="tc-content">
-          <div class="tc-name">${technique.name}</div>
-          <div class="tc-desc">${d(technique.description)}</div>
+          <div class="tc-name">${escapeHtml(technique.name)}</div>
+          <div class="tc-desc">${de(technique.description)}</div>
         </div>
         <i class="bi bi-chevron-down tc-expand"></i>
       </div>
@@ -648,18 +692,18 @@ function renderCVERows(data, tbody) {
   const sorted = [...data].sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
 
   tbody.innerHTML = sorted.map(cve => {
-    const toolTags = (cve.tools || []).map(tool => `<span class="tool-tag">${tool}</span>`).join(' ');
+    const toolTags = (cve.tools || []).map(tool => `<span class="tool-tag">${escapeHtml(tool)}</span>`).join(' ');
     return `
       <tr>
-        <td><span class="cve-id">${cve.id}</span></td>
-        <td class="fw-600">${cve.name}</td>
-        <td><span class="badge badge-${cve.severity}">${cve.severity.toUpperCase()}</span></td>
-        <td class="text-secondary text-small">${cve.year}</td>
-        <td class="text-secondary text-small" style="max-width:280px">${d(cve.description)}</td>
+        <td><span class="cve-id">${escapeHtml(cve.id)}</span></td>
+        <td class="fw-600">${escapeHtml(cve.name)}</td>
+        <td><span class="badge badge-${escapeHtml(cve.severity)}">${escapeHtml(String(cve.severity).toUpperCase())}</span></td>
+        <td class="text-secondary text-small">${escapeHtml(cve.year)}</td>
+        <td class="text-secondary text-small" style="max-width:280px">${de(cve.description)}</td>
         <td>
           ${toolTags ? `<div class="d-flex gap-8" style="flex-wrap:wrap">${toolTags}</div>` : '<span class="text-muted">—</span>'}
-          <a href="${cve.url}" target="_blank" rel="noopener" class="text-small" style="color:var(--accent-blue); display:inline-flex; align-items:center; gap:4px; margin-top:4px; text-decoration:none;">
-            <i class="bi bi-box-arrow-up-right"></i>${t('advisory')}
+          <a href="${escapeHtml(safeUrl(cve.url))}" target="_blank" rel="noopener" class="text-small" style="color:var(--accent-blue); display:inline-flex; align-items:center; gap:4px; margin-top:4px; text-decoration:none;">
+            <i class="bi bi-box-arrow-up-right"></i>${escapeHtml(t('advisory'))}
           </a>
         </td>
       </tr>
@@ -696,16 +740,16 @@ function renderDetectionRows(data, tbody) {
   }
   tbody.innerHTML = data.map(event => {
     const eventIds = event.eventIds.map(id =>
-      `<span class="event-id" onclick="copyEventId('${id}')" title="${t('click_to_copy')}">${id}</span>`
+      `<span class="event-id js-copy-event" data-event-id="${escapeHtml(id)}" title="${escapeHtml(t('click_to_copy'))}" role="button" tabindex="0">${escapeHtml(id)}</span>`
     ).join('');
-    const descriptions = event.descriptions.map(desc => `<div class="text-small text-secondary">${d(desc)}</div>`).join('');
+    const descriptions = event.descriptions.map(desc => `<div class="text-small text-secondary">${de(desc)}</div>`).join('');
     const catColor = (CATEGORIES.find(c => c.id === event.category) || {}).color || '#8b949e';
     return `
       <tr>
         <td>
           <div class="d-flex align-center gap-8">
-            <span style="width:8px; height:8px; border-radius:50%; background:${catColor}; display:inline-block; flex-shrink:0"></span>
-            <span class="fw-600">${event.attack}</span>
+            <span style="width:8px; height:8px; border-radius:50%; background:${escapeHtml(catColor)}; display:inline-block; flex-shrink:0"></span>
+            <span class="fw-600">${escapeHtml(event.attack)}</span>
           </div>
         </td>
         <td><div style="display:flex; flex-wrap:wrap">${eventIds}</div></td>
@@ -728,7 +772,29 @@ function filterDetection() {
 }
 
 function copyEventId(id) {
-  navigator.clipboard.writeText(id).then(() => showToast(t('copied_toast', id)));
+  const text = String(id);
+  const notify = () => showToast(t('copied_toast', text));
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(notify).catch(() => legacyCopy(text, notify));
+  } else {
+    legacyCopy(text, notify);
+  }
+}
+
+// Fallback for non-secure contexts (file://, plain http://) where clipboard API is unavailable
+function legacyCopy(text, onSuccess) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:absolute;left:-9999px;top:-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    onSuccess && onSuccess();
+  } catch (_) { /* silent */ }
+  document.body.removeChild(ta);
 }
 
 // ── RENDER: TOOLS ──────────────────────────────────────────────────────────
@@ -745,21 +811,21 @@ function renderToolCards(data, container) {
   }
   container.innerHTML = `<div class="tools-grid">
     ${data.map(tool => {
-      const tags = (tool.tags || []).map(tag => `<span class="tool-tag">${tag}</span>`).join('');
+      const tags = (tool.tags || []).map(tag => `<span class="tool-tag">${escapeHtml(tag)}</span>`).join('');
       const typeLabelMap = { offensive: t('filter_offensive'), defensive: t('filter_defensive'), azure: t('filter_azure') };
       const typeClass = { offensive: 'tool-tag-offensive', defensive: 'tool-tag-defensive', azure: 'tool-tag-azure' };
       return `
-        <div class="tool-card" data-tool-name="${tool.name.toLowerCase()}" data-tool-type="${tool.type}">
+        <div class="tool-card" data-tool-name="${escapeHtml(String(tool.name).toLowerCase())}" data-tool-type="${escapeHtml(tool.type)}">
           <div class="tool-card-header">
-            <span class="tool-name">${tool.name}</span>
+            <span class="tool-name">${escapeHtml(tool.name)}</span>
             <div class="d-flex align-center gap-8">
-              <span class="tool-tag ${typeClass[tool.type] || ''}">${typeLabelMap[tool.type] || tool.type}</span>
-              <a href="${tool.url}" target="_blank" rel="noopener" class="tool-link" title="GitHub">
+              <span class="tool-tag ${typeClass[tool.type] || ''}">${escapeHtml(typeLabelMap[tool.type] || tool.type)}</span>
+              <a href="${escapeHtml(safeUrl(tool.url))}" target="_blank" rel="noopener" class="tool-link" title="GitHub">
                 <i class="bi bi-github"></i>
               </a>
             </div>
           </div>
-          <div class="tool-desc">${d(tool.description)}</div>
+          <div class="tool-desc">${de(tool.description)}</div>
           <div class="tool-tags">${tags}</div>
         </div>
       `;
@@ -807,17 +873,18 @@ function renderDefense() {
       }).join('');
 
       const hasSteps = (item.steps || []).length > 0;
+      const safeKey = escapeHtml(key);
       return `
         <div class="checklist-item ${checked ? 'checked' : ''}">
-          <div class="ci-checkbox" onclick="toggleChecklist('${key}', this.closest('.checklist-item'))">${checked ? '<i class="bi bi-check-lg"></i>' : ''}</div>
+          <div class="ci-checkbox" onclick="toggleChecklist('${safeKey}', this.closest('.checklist-item'))">${checked ? '<i class="bi bi-check-lg"></i>' : ''}</div>
           <div class="ci-content">
             <div class="ci-header">
-              <div class="ci-text" onclick="toggleChecklist('${key}', this.closest('.checklist-item'))">${d(item.text)}</div>
+              <div class="ci-text" onclick="toggleChecklist('${safeKey}', this.closest('.checklist-item'))">${de(item.text)}</div>
               ${hasSteps ? `<button class="steps-toggle" onclick="toggleSteps(this)" aria-expanded="false">
-                <i class="bi bi-list-task"></i> ${t('steps_btn')} <i class="bi bi-chevron-down steps-chevron"></i>
+                <i class="bi bi-list-task"></i> ${escapeHtml(t('steps_btn'))} <i class="bi bi-chevron-down steps-chevron"></i>
               </button>` : ''}
             </div>
-            <div class="ci-detail">${d(item.detail)}</div>
+            <div class="ci-detail">${de(item.detail)}</div>
             ${hasSteps ? `<div class="steps-container" style="display:none">${stepsHtml}</div>` : ''}
           </div>
         </div>
@@ -825,7 +892,9 @@ function renderDefense() {
     }).join('');
 
     const checkedCount = section.items.filter((_, iIdx) => state.checkedItems[`${sIdx}-${iIdx}`]).length;
-    const pct = Math.round((checkedCount / section.items.length) * 100);
+    const pct = section.items.length > 0
+      ? Math.min(100, Math.round((checkedCount / section.items.length) * 100))
+      : 0;
     const priorityColors = { critical: 'var(--severity-critical)', high: 'var(--severity-high)', medium: 'var(--severity-medium)' };
 
     return `
@@ -833,9 +902,9 @@ function renderDefense() {
         <div class="checklist-category-header">
           <div class="checklist-category-title">
             <span style="width:10px; height:10px; border-radius:50%; background:${priorityColors[section.priority] || 'var(--text-muted)'}; display:inline-block"></span>
-            ${d(section.category)}
+            ${de(section.category)}
           </div>
-          <span class="checklist-progress">${checkedCount} / ${section.items.length} ${t('checklist_done')}</span>
+          <span class="checklist-progress">${checkedCount} / ${section.items.length} ${escapeHtml(t('checklist_done'))}</span>
         </div>
         <div class="progress-bar-wrap">
           <div class="progress-bar-fill" style="width:${pct}%"></div>
@@ -886,7 +955,27 @@ function toggleSteps(btn) {
 }
 
 function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Combined helper: multilingual resolve + HTML escape (used heavily in render fns)
+function de(val) {
+  return escapeHtml(d(val));
+}
+
+// URL sanitizer — strips javascript:/data: schemes that bypass HTML escape
+function safeUrl(url) {
+  if (!url) return '#';
+  const s = String(url).trim();
+  // eslint-disable-next-line no-script-url
+  if (/^(javascript|data|vbscript):/i.test(s)) return '#';
+  return s;
 }
 
 function exportChecklist() {
@@ -959,13 +1048,13 @@ function filterReferences() {
       const tags = (ref.tags || []).map(tag => {
         const color = REF_TAG_COLOR[tag] || 'var(--text-muted)';
         const label = t(REF_TAG_KEY[tag] || tag);
-        return `<span class="ref-tag" style="background:${color}20;color:${color};border:1px solid ${color}40">${label}</span>`;
+        return `<span class="ref-tag" style="background:${color}20;color:${color};border:1px solid ${color}40">${escapeHtml(label)}</span>`;
       }).join('');
       return `
-        <a class="ref-item" href="${ref.url}" target="_blank" rel="noopener noreferrer">
+        <a class="ref-item" href="${escapeHtml(safeUrl(ref.url))}" target="_blank" rel="noopener noreferrer">
           <div class="ref-item-inner">
-            <div class="ref-title">${escapeHtml(d(ref.title))}</div>
-            ${ref.desc ? `<div class="ref-desc">${escapeHtml(d(ref.desc))}</div>` : ''}
+            <div class="ref-title">${de(ref.title)}</div>
+            ${ref.desc ? `<div class="ref-desc">${de(ref.desc)}</div>` : ''}
           </div>
           <div class="ref-right">
             <div class="ref-tags">${tags}</div>
@@ -977,8 +1066,8 @@ function filterReferences() {
     return `
       <div class="ref-section">
         <div class="ref-section-header">
-          <i class="bi ${section.icon || 'bi-bookmark'}" style="color:${section.color || 'var(--accent-blue)'}"></i>
-          <span>${d(section.category)}</span>
+          <i class="bi ${escapeHtml(section.icon || 'bi-bookmark')}" style="color:${escapeHtml(section.color || 'var(--accent-blue)')}"></i>
+          <span>${de(section.category)}</span>
           <span class="ref-count">${filtered.length}</span>
         </div>
         <div class="ref-list">${items}</div>
@@ -990,10 +1079,36 @@ function filterReferences() {
     : `<div class="no-results"><i class="bi bi-journals"></i><br>${t('no_references')}</div>`;
 }
 
+// Build set of currently-valid checklist keys from the schema
+function getValidChecklistKeys() {
+  const valid = new Set();
+  DEFENSE_CHECKLIST.forEach((section, sIdx) => {
+    section.items.forEach((_, iIdx) => valid.add(`${sIdx}-${iIdx}`));
+  });
+  return valid;
+}
+
+// Remove stale localStorage keys when DEFENSE_CHECKLIST schema changes
+function pruneStaleCheckedItems() {
+  const valid = getValidChecklistKeys();
+  let changed = false;
+  Object.keys(state.checkedItems).forEach(k => {
+    if (!valid.has(k)) { delete state.checkedItems[k]; changed = true; }
+  });
+  if (changed) {
+    try {
+      localStorage.setItem('ad_checklist', JSON.stringify(state.checkedItems));
+    } catch (_) { /* quota / disabled storage — ignore */ }
+  }
+}
+
 function updateTotalProgress() {
   const totalItems = DEFENSE_CHECKLIST.reduce((s, c) => s + c.items.length, 0);
-  const checkedCount = Object.keys(state.checkedItems).length;
-  const pct = Math.round((checkedCount / totalItems) * 100);
+  const valid = getValidChecklistKeys();
+  const checkedCount = Object.keys(state.checkedItems).filter(k => valid.has(k)).length;
+  const pct = totalItems > 0
+    ? Math.min(100, Math.max(0, Math.round((checkedCount / totalItems) * 100)))
+    : 0;
 
   const progressText = t('progress_text', checkedCount, totalItems, pct);
   const dashProgress = document.getElementById('dash-checklist-progress');
@@ -1099,7 +1214,9 @@ function showToast(message) {
 
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.innerHTML = `<i class="bi bi-clipboard-check" style="color:var(--color-defense)"></i> ${message}`;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.innerHTML = `<i class="bi bi-clipboard-check" style="color:var(--color-defense)" aria-hidden="true"></i> ${escapeHtml(message)}`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2500);
 }
