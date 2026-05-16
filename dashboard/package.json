@@ -1,5 +1,25 @@
 {
+  "name": "ad-attack-defense-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AD Kill Chain Attack & Defense Dashboard — single-page reference for red team / blue team education.",
+  "scripts": {
+    "start": "npx --yes serve@latest -p 3000 .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
   "dependencies": {
     "bootstrap-icons": "^1.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "jsdom": "^24.0.0",
+    "prettier": "^3.2.0",
+    "vitest": "^1.6.0"
   }
 }

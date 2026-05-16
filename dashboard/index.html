@@ -1,400 +1,594 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AD Kill Chain Attack &amp; Defense Dashboard">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>AD Kill Chain Attack &amp; Defense Dashboard</title>
-  <link rel="stylesheet" href="bootstrap-icons.min.css">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AD Kill Chain Attack &amp; Defense Dashboard" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>AD Kill Chain Attack &amp; Defense Dashboard</title>
+    <link rel="stylesheet" href="bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#tab-dashboard">Skip to main content</a>
 
-<a class="skip-link" href="#tab-dashboard">Skip to main content</a>
-
-<!-- ── NAVBAR ─────────────────────────────────────────────────────────── -->
-<nav class="app-navbar" aria-label="Primary">
-  <div class="navbar-brand">
-    <div class="navbar-logo" aria-hidden="true">🛡</div>
-    <div class="navbar-title">AD <span>Kill Chain</span></div>
-  </div>
-
-  <div class="navbar-tabs" role="tablist" aria-label="Dashboard sections">
-    <button class="nav-tab" data-tab="dashboard" role="tab" id="tabbtn-dashboard" aria-controls="tab-dashboard" aria-selected="false" tabindex="-1">
-      <i class="bi bi-grid-1x2" aria-hidden="true"></i> 總覽
-    </button>
-    <button class="nav-tab" data-tab="techniques" role="tab" id="tabbtn-techniques" aria-controls="tab-techniques" aria-selected="false" tabindex="-1">
-      <i class="bi bi-diagram-3" aria-hidden="true"></i> 攻擊技術
-    </button>
-    <button class="nav-tab" data-tab="cves" role="tab" id="tabbtn-cves" aria-controls="tab-cves" aria-selected="false" tabindex="-1">
-      <i class="bi bi-bug" aria-hidden="true"></i> CVE 追蹤
-    </button>
-    <button class="nav-tab" data-tab="detection" role="tab" id="tabbtn-detection" aria-controls="tab-detection" aria-selected="false" tabindex="-1">
-      <i class="bi bi-eye" aria-hidden="true"></i> 偵測參考
-    </button>
-    <button class="nav-tab" data-tab="tools" role="tab" id="tabbtn-tools" aria-controls="tab-tools" aria-selected="false" tabindex="-1">
-      <i class="bi bi-tools" aria-hidden="true"></i> 工具庫
-    </button>
-    <button class="nav-tab" data-tab="defense" role="tab" id="tabbtn-defense" aria-controls="tab-defense" aria-selected="false" tabindex="-1">
-      <i class="bi bi-shield-check" aria-hidden="true"></i> 防禦清單
-    </button>
-    <button class="nav-tab" data-tab="references" role="tab" id="tabbtn-references" aria-controls="tab-references" aria-selected="false" tabindex="-1">
-      <i class="bi bi-journals" aria-hidden="true"></i> 參考資料
-    </button>
-  </div>
-
-  <div class="lang-switcher" role="group" aria-label="Language">
-    <button class="lang-btn active" data-lang="zh" aria-pressed="true" aria-label="中文">中</button>
-    <button class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
-    <button class="lang-btn" data-lang="ja" aria-pressed="false" aria-label="日本語">日</button>
-  </div>
-
-  <div class="navbar-search">
-    <i class="bi bi-search" aria-hidden="true"></i>
-    <input id="global-search" type="text" data-i18n-placeholder="search_placeholder" aria-label="Search techniques, tools, CVEs">
-  </div>
-</nav>
-
-<!-- ── MAIN CONTENT ───────────────────────────────────────────────────── -->
-<main class="app-main">
-
-  <!-- ── TAB: DASHBOARD ──────────────────────────────────────────────── -->
-  <div id="tab-dashboard" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-dashboard" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title">
-        <i class="bi bi-grid-1x2"></i> Active Directory 攻防總覽
+    <!-- ── NAVBAR ─────────────────────────────────────────────────────────── -->
+    <nav class="app-navbar" aria-label="Primary">
+      <div class="navbar-brand">
+        <div class="navbar-logo" aria-hidden="true">🛡</div>
+        <div class="navbar-title">AD <span>Kill Chain</span></div>
       </div>
-      <div class="section-desc">AD Kill Chain 攻擊鏈分析與防禦資源整合儀表板 — 紅隊 / 教育訓練用途</div>
-    </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number" id="stat-categories" style="color:var(--color-discovery)">—</div>
-        <div class="stat-label">攻擊類別</div>
+      <div class="navbar-tabs" role="tablist" aria-label="Dashboard sections">
+        <button
+          class="nav-tab"
+          data-tab="dashboard"
+          role="tab"
+          id="tabbtn-dashboard"
+          aria-controls="tab-dashboard"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-grid-1x2" aria-hidden="true"></i> 總覽
+        </button>
+        <button
+          class="nav-tab"
+          data-tab="techniques"
+          role="tab"
+          id="tabbtn-techniques"
+          aria-controls="tab-techniques"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-diagram-3" aria-hidden="true"></i> 攻擊技術
+        </button>
+        <button
+          class="nav-tab"
+          data-tab="cves"
+          role="tab"
+          id="tabbtn-cves"
+          aria-controls="tab-cves"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-bug" aria-hidden="true"></i> CVE 追蹤
+        </button>
+        <button
+          class="nav-tab"
+          data-tab="detection"
+          role="tab"
+          id="tabbtn-detection"
+          aria-controls="tab-detection"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-eye" aria-hidden="true"></i> 偵測參考
+        </button>
+        <button
+          class="nav-tab"
+          data-tab="tools"
+          role="tab"
+          id="tabbtn-tools"
+          aria-controls="tab-tools"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-tools" aria-hidden="true"></i> 工具庫
+        </button>
+        <button
+          class="nav-tab"
+          data-tab="defense"
+          role="tab"
+          id="tabbtn-defense"
+          aria-controls="tab-defense"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-shield-check" aria-hidden="true"></i> 防禦清單
+        </button>
+        <button
+          class="nav-tab"
+          data-tab="references"
+          role="tab"
+          id="tabbtn-references"
+          aria-controls="tab-references"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          <i class="bi bi-journals" aria-hidden="true"></i> 參考資料
+        </button>
       </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-techniques" style="color:var(--color-privesc)">—</div>
-        <div class="stat-label">攻擊技術</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-cves" style="color:var(--severity-high)">—</div>
-        <div class="stat-label">追蹤 CVE</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-critical-cves" style="color:var(--severity-critical)">—</div>
-        <div class="stat-label">嚴重漏洞</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-tools" style="color:var(--color-lateral)">—</div>
-        <div class="stat-label">工具收錄</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-detection" style="color:var(--color-defense)">—</div>
-        <div class="stat-label">偵測規則</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-checklist" style="color:var(--color-defense); font-size:24px">0%</div>
-        <div class="stat-label">防禦完成度</div>
-      </div>
-    </div>
 
-    <!-- Kill Chain Flow -->
-    <div class="killchain-section">
-      <div class="killchain-title"><i class="bi bi-arrow-right-circle"></i> AD 攻擊殺傷鏈 (Kill Chain)</div>
-      <div class="killchain-flow" id="killchain-nodes"></div>
-    </div>
+      <div class="lang-switcher" role="group" aria-label="Language">
+        <button class="lang-btn active" data-lang="zh" aria-pressed="true" aria-label="中文">
+          中
+        </button>
+        <button class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English">
+          EN
+        </button>
+        <button class="lang-btn" data-lang="ja" aria-pressed="false" aria-label="日本語">日</button>
+      </div>
 
-    <!-- Grid: CVE + Progress -->
-    <div class="grid-2">
-      <!-- Quick CVE -->
-      <div>
-        <div class="d-flex justify-between align-center mb-16">
-          <div class="fw-600 text-primary" style="font-size:14px" id="dash-quick-cve-label">
-            <i class="bi bi-bug" style="color:var(--severity-high)"></i> 高危 CVE（按嚴重性排序）
+      <div class="navbar-search">
+        <i class="bi bi-search" aria-hidden="true"></i>
+        <input
+          id="global-search"
+          type="text"
+          data-i18n-placeholder="search_placeholder"
+          aria-label="Search techniques, tools, CVEs"
+        />
+      </div>
+    </nav>
+
+    <!-- ── MAIN CONTENT ───────────────────────────────────────────────────── -->
+    <main class="app-main">
+      <!-- ── TAB: DASHBOARD ──────────────────────────────────────────────── -->
+      <div
+        id="tab-dashboard"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-dashboard"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-grid-1x2"></i> Active Directory 攻防總覽</div>
+          <div class="section-desc">
+            AD Kill Chain 攻擊鏈分析與防禦資源整合儀表板 — 紅隊 / 教育訓練用途
           </div>
-          <button class="filter-btn" id="dash-view-all-btn" onclick="switchTab('cves')">
-            查看全部 <i class="bi bi-arrow-right"></i>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="stat-categories" style="color: var(--color-discovery)">
+              —
+            </div>
+            <div class="stat-label">攻擊類別</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-techniques" style="color: var(--color-privesc)">
+              —
+            </div>
+            <div class="stat-label">攻擊技術</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-cves" style="color: var(--severity-high)">—</div>
+            <div class="stat-label">追蹤 CVE</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-number"
+              id="stat-critical-cves"
+              style="color: var(--severity-critical)"
+            >
+              —
+            </div>
+            <div class="stat-label">嚴重漏洞</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-tools" style="color: var(--color-lateral)">—</div>
+            <div class="stat-label">工具收錄</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-detection" style="color: var(--color-defense)">—</div>
+            <div class="stat-label">偵測規則</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-number"
+              id="stat-checklist"
+              style="color: var(--color-defense); font-size: 24px"
+            >
+              0%
+            </div>
+            <div class="stat-label">防禦完成度</div>
+          </div>
+        </div>
+
+        <!-- Kill Chain Flow -->
+        <div class="killchain-section">
+          <div class="killchain-title">
+            <i class="bi bi-arrow-right-circle"></i> AD 攻擊殺傷鏈 (Kill Chain)
+          </div>
+          <div class="killchain-flow" id="killchain-nodes"></div>
+        </div>
+
+        <!-- Grid: CVE + Progress -->
+        <div class="grid-2">
+          <!-- Quick CVE -->
+          <div>
+            <div class="d-flex justify-between align-center mb-16">
+              <div class="fw-600 text-primary" style="font-size: 14px" id="dash-quick-cve-label">
+                <i class="bi bi-bug" style="color: var(--severity-high)"></i> 高危
+                CVE（按嚴重性排序）
+              </div>
+              <button class="filter-btn" id="dash-view-all-btn" onclick="switchTab('cves')">
+                查看全部 <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+            <div class="table-container">
+              <div class="table-overflow">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>CVE ID</th>
+                      <th id="dash-th-cve-name">漏洞名稱</th>
+                      <th id="dash-th-cve-severity">嚴重性</th>
+                      <th id="dash-th-cve-year">年份</th>
+                    </tr>
+                  </thead>
+                  <tbody id="quick-cve-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Defense Progress -->
+          <div>
+            <div class="d-flex justify-between align-center mb-16">
+              <div
+                class="fw-600 text-primary"
+                style="font-size: 14px"
+                id="dash-defense-progress-label"
+              >
+                <i class="bi bi-shield-check" style="color: var(--color-defense)"></i> 防禦清單進度
+              </div>
+              <button class="filter-btn" id="dash-start-audit-btn" onclick="switchTab('defense')">
+                開始稽核 <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div id="dash-checklist-progress" class="text-secondary text-small mb-16">
+                  0 / 0 項目完成 (0%)
+                </div>
+                <div class="progress-bar-wrap" style="height: 8px; margin-bottom: 20px">
+                  <div id="dash-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+                <div
+                  id="dash-defense-cats"
+                  class="text-secondary text-small"
+                  style="line-height: 1.8"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: TECHNIQUES ─────────────────────────────────────────────── -->
+      <div
+        id="tab-techniques"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-techniques"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-diagram-3"></i> 攻擊技術庫</div>
+          <div class="section-desc">
+            依 AD Kill Chain 分類的完整攻擊技術，含工具、CVE 與參考資源
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="table-search">
+            <i class="bi bi-search" style="color: var(--text-muted)"></i>
+            <input
+              id="technique-search"
+              type="text"
+              placeholder="搜尋技術名稱、工具、CVE… (按 / 快速開啟)"
+            />
+          </div>
+          <button class="filter-btn active" data-cat-filter="all">全部</button>
+          <button
+            class="filter-btn"
+            data-cat-filter="discovery"
+            style="--active-color: var(--color-discovery)"
+          >
+            <i class="bi bi-search"></i> Discovery
+          </button>
+          <button class="filter-btn" data-cat-filter="privilege-escalation">
+            <i class="bi bi-arrow-up-circle" style="color: var(--color-privesc)"></i> Priv Esc
+          </button>
+          <button class="filter-btn" data-cat-filter="defense-evasion">
+            <i class="bi bi-shield-x" style="color: var(--color-defevasion)"></i> Defense Evasion
+          </button>
+          <button class="filter-btn" data-cat-filter="lateral-movement">
+            <i class="bi bi-arrows-expand" style="color: var(--color-lateral)"></i> Lateral
+          </button>
+          <button class="filter-btn" data-cat-filter="credential-dumping">
+            <i class="bi bi-key" style="color: var(--color-cred)"></i> Cred Dump
+          </button>
+          <button class="filter-btn" data-cat-filter="persistence">
+            <i class="bi bi-lock" style="color: var(--color-persistence)"></i> Persistence
+          </button>
+          <div style="margin-left: auto; display: flex; gap: 6px; align-items: center">
+            <span id="technique-count" class="text-secondary text-small"></span>
+            <button class="filter-btn" onclick="expandAllCategories()">
+              <i class="bi bi-arrows-angle-expand"></i> 展開全部
+            </button>
+            <button class="filter-btn" onclick="collapseAllCategories()">
+              <i class="bi bi-arrows-angle-contract"></i> 收合全部
+            </button>
+          </div>
+        </div>
+
+        <div id="techniques-container"></div>
+      </div>
+
+      <!-- ── TAB: CVEs ────────────────────────────────────────────────────── -->
+      <div
+        id="tab-cves"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-cves"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-bug"></i> CVE 漏洞追蹤</div>
+          <div class="section-desc">
+            Active Directory 相關重要 CVE，含嚴重性評估、描述與緩解連結
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="table-search">
+            <i class="bi bi-search" style="color: var(--text-muted)"></i>
+            <input id="cve-search" type="text" placeholder="搜尋 CVE ID、漏洞名稱…" />
+          </div>
+          <button class="filter-btn active" data-cve-filter="all">全部</button>
+          <button class="filter-btn" data-cve-filter="critical">
+            <span style="color: var(--severity-critical)">●</span> 嚴重 (Critical)
+          </button>
+          <button class="filter-btn" data-cve-filter="high">
+            <span style="color: var(--severity-high)">●</span> 高危 (High)
+          </button>
+          <button class="filter-btn" data-cve-filter="medium">
+            <span style="color: var(--severity-medium)">●</span> 中危 (Medium)
           </button>
         </div>
+
         <div class="table-container">
           <div class="table-overflow">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>CVE ID</th>
-                  <th id="dash-th-cve-name">漏洞名稱</th>
-                  <th id="dash-th-cve-severity">嚴重性</th>
-                  <th id="dash-th-cve-year">年份</th>
+                  <th id="cve-th-name">漏洞名稱</th>
+                  <th id="cve-th-severity">嚴重性</th>
+                  <th id="cve-th-year">年份</th>
+                  <th id="cve-th-desc">描述</th>
+                  <th id="cve-th-tools">工具 / 連結</th>
                 </tr>
               </thead>
-              <tbody id="quick-cve-body"></tbody>
+              <tbody id="cve-table-body"></tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- Defense Progress -->
-      <div>
-        <div class="d-flex justify-between align-center mb-16">
-          <div class="fw-600 text-primary" style="font-size:14px" id="dash-defense-progress-label">
-            <i class="bi bi-shield-check" style="color:var(--color-defense)"></i> 防禦清單進度
+      <!-- ── TAB: DETECTION ──────────────────────────────────────────────── -->
+      <div
+        id="tab-detection"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-detection"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-eye"></i> 偵測事件 ID 參考</div>
+          <div class="section-desc">
+            各攻擊手法對應的 Windows Event ID，點擊 Event ID 可複製 &nbsp;|&nbsp;
+            <span class="text-secondary">搭配 Sysmon / SIEM (Sigma) 使用效果最佳</span>
           </div>
-          <button class="filter-btn" id="dash-start-audit-btn" onclick="switchTab('defense')">
-            開始稽核 <i class="bi bi-arrow-right"></i>
-          </button>
         </div>
-        <div class="card">
-          <div class="card-body">
-            <div id="dash-checklist-progress" class="text-secondary text-small mb-16">0 / 0 項目完成 (0%)</div>
-            <div class="progress-bar-wrap" style="height:8px; margin-bottom:20px">
-              <div id="dash-progress-fill" class="progress-bar-fill" style="width:0%"></div>
+
+        <div class="filter-bar">
+          <div class="table-search">
+            <i class="bi bi-search" style="color: var(--text-muted)"></i>
+            <input id="detection-search" type="text" placeholder="搜尋攻擊手法或 Event ID…" />
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-overflow">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th id="det-th-attack">攻擊手法</th>
+                  <th id="det-th-eventids">Windows Event ID（點擊複製）</th>
+                  <th id="det-th-notes">說明</th>
+                </tr>
+              </thead>
+              <tbody id="detection-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Reference note -->
+        <div class="card mt-16">
+          <div
+            class="card-body text-secondary text-small"
+            style="line-height: 2"
+            id="detection-tips-body"
+          >
+            <div class="fw-600 text-primary mb-16"><i class="bi bi-info-circle"></i> 偵測建議</div>
+            <div>
+              • 啟用 <strong>Enhanced Audit Policy</strong>（gpedit.msc → Advanced Audit Policy
+              Configuration）
             </div>
-            <div id="dash-defense-cats" class="text-secondary text-small" style="line-height:1.8"></div>
+            <div>
+              • 部署 <strong>Sysmon</strong> 並使用 sysmon-modular
+              設定，以擷取更詳細的程序、網路、登錄事件
+            </div>
+            <div>
+              • 使用 <strong>Sigma</strong> 規則將偵測邏輯轉換為 Splunk、Elastic、Azure Sentinel 等
+              SIEM 查詢語法
+            </div>
+            <div>
+              • 留意 4769（Kerberoasting：RC4 加密）、4768（AS-REP
+              Roasting）、4662（DCSync：Replication rights）
+            </div>
+            <div>
+              • 建議監控 <strong>KRBTGT 密碼重設</strong>、<strong>DC 帳戶變更</strong>及<strong
+                >不尋常的 Kerberos TGT 請求</strong
+              >
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- ── TAB: TECHNIQUES ─────────────────────────────────────────────── -->
-  <div id="tab-techniques" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-techniques" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title"><i class="bi bi-diagram-3"></i> 攻擊技術庫</div>
-      <div class="section-desc">依 AD Kill Chain 分類的完整攻擊技術，含工具、CVE 與參考資源</div>
-    </div>
+      <!-- ── TAB: TOOLS ───────────────────────────────────────────────────── -->
+      <div
+        id="tab-tools"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-tools"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-tools"></i> 工具庫</div>
+          <div class="section-desc">AD 攻防相關工具收錄，涵蓋攻擊、防禦、稽核與 Azure 類別</div>
+        </div>
 
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <div class="table-search">
-        <i class="bi bi-search" style="color:var(--text-muted)"></i>
-        <input id="technique-search" type="text" placeholder="搜尋技術名稱、工具、CVE… (按 / 快速開啟)">
-      </div>
-      <button class="filter-btn active" data-cat-filter="all">全部</button>
-      <button class="filter-btn" data-cat-filter="discovery" style="--active-color:var(--color-discovery)">
-        <i class="bi bi-search"></i> Discovery
-      </button>
-      <button class="filter-btn" data-cat-filter="privilege-escalation">
-        <i class="bi bi-arrow-up-circle" style="color:var(--color-privesc)"></i> Priv Esc
-      </button>
-      <button class="filter-btn" data-cat-filter="defense-evasion">
-        <i class="bi bi-shield-x" style="color:var(--color-defevasion)"></i> Defense Evasion
-      </button>
-      <button class="filter-btn" data-cat-filter="lateral-movement">
-        <i class="bi bi-arrows-expand" style="color:var(--color-lateral)"></i> Lateral
-      </button>
-      <button class="filter-btn" data-cat-filter="credential-dumping">
-        <i class="bi bi-key" style="color:var(--color-cred)"></i> Cred Dump
-      </button>
-      <button class="filter-btn" data-cat-filter="persistence">
-        <i class="bi bi-lock" style="color:var(--color-persistence)"></i> Persistence
-      </button>
-      <div style="margin-left:auto; display:flex; gap:6px; align-items:center">
-        <span id="technique-count" class="text-secondary text-small"></span>
-        <button class="filter-btn" onclick="expandAllCategories()">
-          <i class="bi bi-arrows-angle-expand"></i> 展開全部
-        </button>
-        <button class="filter-btn" onclick="collapseAllCategories()">
-          <i class="bi bi-arrows-angle-contract"></i> 收合全部
-        </button>
-      </div>
-    </div>
-
-    <div id="techniques-container"></div>
-  </div>
-
-  <!-- ── TAB: CVEs ────────────────────────────────────────────────────── -->
-  <div id="tab-cves" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-cves" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title"><i class="bi bi-bug"></i> CVE 漏洞追蹤</div>
-      <div class="section-desc">Active Directory 相關重要 CVE，含嚴重性評估、描述與緩解連結</div>
-    </div>
-
-    <div class="filter-bar">
-      <div class="table-search">
-        <i class="bi bi-search" style="color:var(--text-muted)"></i>
-        <input id="cve-search" type="text" placeholder="搜尋 CVE ID、漏洞名稱…">
-      </div>
-      <button class="filter-btn active" data-cve-filter="all">全部</button>
-      <button class="filter-btn" data-cve-filter="critical">
-        <span style="color:var(--severity-critical)">●</span> 嚴重 (Critical)
-      </button>
-      <button class="filter-btn" data-cve-filter="high">
-        <span style="color:var(--severity-high)">●</span> 高危 (High)
-      </button>
-      <button class="filter-btn" data-cve-filter="medium">
-        <span style="color:var(--severity-medium)">●</span> 中危 (Medium)
-      </button>
-    </div>
-
-    <div class="table-container">
-      <div class="table-overflow">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>CVE ID</th>
-              <th id="cve-th-name">漏洞名稱</th>
-              <th id="cve-th-severity">嚴重性</th>
-              <th id="cve-th-year">年份</th>
-              <th id="cve-th-desc">描述</th>
-              <th id="cve-th-tools">工具 / 連結</th>
-            </tr>
-          </thead>
-          <tbody id="cve-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TAB: DETECTION ──────────────────────────────────────────────── -->
-  <div id="tab-detection" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-detection" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title"><i class="bi bi-eye"></i> 偵測事件 ID 參考</div>
-      <div class="section-desc">
-        各攻擊手法對應的 Windows Event ID，點擊 Event ID 可複製 &nbsp;|&nbsp;
-        <span class="text-secondary">搭配 Sysmon / SIEM (Sigma) 使用效果最佳</span>
-      </div>
-    </div>
-
-    <div class="filter-bar">
-      <div class="table-search">
-        <i class="bi bi-search" style="color:var(--text-muted)"></i>
-        <input id="detection-search" type="text" placeholder="搜尋攻擊手法或 Event ID…">
-      </div>
-    </div>
-
-    <div class="table-container">
-      <div class="table-overflow">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th id="det-th-attack">攻擊手法</th>
-              <th id="det-th-eventids">Windows Event ID（點擊複製）</th>
-              <th id="det-th-notes">說明</th>
-            </tr>
-          </thead>
-          <tbody id="detection-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Reference note -->
-    <div class="card mt-16">
-      <div class="card-body text-secondary text-small" style="line-height:2" id="detection-tips-body">
-        <div class="fw-600 text-primary mb-16"><i class="bi bi-info-circle"></i> 偵測建議</div>
-        <div>• 啟用 <strong>Enhanced Audit Policy</strong>（gpedit.msc → Advanced Audit Policy Configuration）</div>
-        <div>• 部署 <strong>Sysmon</strong> 並使用 sysmon-modular 設定，以擷取更詳細的程序、網路、登錄事件</div>
-        <div>• 使用 <strong>Sigma</strong> 規則將偵測邏輯轉換為 Splunk、Elastic、Azure Sentinel 等 SIEM 查詢語法</div>
-        <div>• 留意 4769（Kerberoasting：RC4 加密）、4768（AS-REP Roasting）、4662（DCSync：Replication rights）</div>
-        <div>• 建議監控 <strong>KRBTGT 密碼重設</strong>、<strong>DC 帳戶變更</strong>及<strong>不尋常的 Kerberos TGT 請求</strong></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── TAB: TOOLS ───────────────────────────────────────────────────── -->
-  <div id="tab-tools" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-tools" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title"><i class="bi bi-tools"></i> 工具庫</div>
-      <div class="section-desc">AD 攻防相關工具收錄，涵蓋攻擊、防禦、稽核與 Azure 類別</div>
-    </div>
-
-    <div class="filter-bar">
-      <div class="table-search">
-        <i class="bi bi-search" style="color:var(--text-muted)"></i>
-        <input id="tools-search" type="text" placeholder="搜尋工具名稱、功能標籤…">
-      </div>
-      <button class="filter-btn active" data-tool-filter="all">全部</button>
-      <button class="filter-btn tool-tag-offensive" data-tool-filter="offensive">
-        <i class="bi bi-lightning"></i> 攻擊工具
-      </button>
-      <button class="filter-btn tool-tag-defensive" data-tool-filter="defensive">
-        <i class="bi bi-shield"></i> 防禦工具
-      </button>
-      <button class="filter-btn tool-tag-azure" data-tool-filter="azure">
-        <i class="bi bi-cloud"></i> Azure 工具
-      </button>
-    </div>
-
-    <div id="tools-container"></div>
-  </div>
-
-  <!-- ── TAB: DEFENSE ─────────────────────────────────────────────────── -->
-  <div id="tab-defense" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-defense" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title"><i class="bi bi-shield-check"></i> 防禦安全清單</div>
-      <div class="section-desc" data-i18n="defense_desc">
-        整合業界最佳實踐與威脅情報，涵蓋帳戶保護、Kerberos 強化、網路隔離、日誌稽核等 AD 關鍵防禦領域，可逐項勾選追蹤修補進度
-      </div>
-    </div>
-
-    <div class="card mb-20">
-      <div class="card-body">
-        <div class="d-flex justify-between align-center">
-          <div>
-            <div class="fw-600 text-primary" id="defense-overall-label">整體完成進度</div>
-            <div id="dash-checklist-progress-defense" class="text-secondary text-small mt-4">載入中…</div>
+        <div class="filter-bar">
+          <div class="table-search">
+            <i class="bi bi-search" style="color: var(--text-muted)"></i>
+            <input id="tools-search" type="text" placeholder="搜尋工具名稱、功能標籤…" />
           </div>
-          <div class="d-flex gap-8">
-          <button class="filter-btn" onclick="exportChecklist()" id="export-checklist-btn">
-            <i class="bi bi-download"></i> <span id="export-btn-label">匯出清單</span>
+          <button class="filter-btn active" data-tool-filter="all">全部</button>
+          <button class="filter-btn tool-tag-offensive" data-tool-filter="offensive">
+            <i class="bi bi-lightning"></i> 攻擊工具
           </button>
-          <button class="filter-btn" onclick="
-            state.checkedItems = {};
-            localStorage.removeItem('ad_checklist');
-            renderDefense();
-          " style="color:var(--severity-critical); border-color:var(--severity-critical)40" id="reset-progress-btn">
-            <i class="bi bi-arrow-counterclockwise"></i> 重設進度
+          <button class="filter-btn tool-tag-defensive" data-tool-filter="defensive">
+            <i class="bi bi-shield"></i> 防禦工具
+          </button>
+          <button class="filter-btn tool-tag-azure" data-tool-filter="azure">
+            <i class="bi bi-cloud"></i> Azure 工具
           </button>
         </div>
+
+        <div id="tools-container"></div>
+      </div>
+
+      <!-- ── TAB: DEFENSE ─────────────────────────────────────────────────── -->
+      <div
+        id="tab-defense"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-defense"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-shield-check"></i> 防禦安全清單</div>
+          <div class="section-desc" data-i18n="defense_desc">
+            整合業界最佳實踐與威脅情報，涵蓋帳戶保護、Kerberos 強化、網路隔離、日誌稽核等 AD
+            關鍵防禦領域，可逐項勾選追蹤修補進度
+          </div>
         </div>
-        <div class="progress-bar-wrap" style="height:8px; margin-top:12px; margin-bottom:0">
-          <div id="defense-progress-fill" class="progress-bar-fill" style="width:0%"></div>
+
+        <div class="card mb-20">
+          <div class="card-body">
+            <div class="d-flex justify-between align-center">
+              <div>
+                <div class="fw-600 text-primary" id="defense-overall-label">整體完成進度</div>
+                <div id="dash-checklist-progress-defense" class="text-secondary text-small mt-4">
+                  載入中…
+                </div>
+              </div>
+              <div class="d-flex gap-8">
+                <button class="filter-btn" onclick="exportChecklist()" id="export-checklist-btn">
+                  <i class="bi bi-download"></i> <span id="export-btn-label">匯出清單</span>
+                </button>
+                <button
+                  class="filter-btn"
+                  onclick="
+                    state.checkedItems = {};
+                    localStorage.removeItem('ad_checklist');
+                    renderDefense();
+                  "
+                  style="color: var(--severity-critical); border-color: var(--severity-critical) 40"
+                  id="reset-progress-btn"
+                >
+                  <i class="bi bi-arrow-counterclockwise"></i> 重設進度
+                </button>
+              </div>
+            </div>
+            <div class="progress-bar-wrap" style="height: 8px; margin-top: 12px; margin-bottom: 0">
+              <div id="defense-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
+            </div>
+          </div>
         </div>
+
+        <div id="defense-container"></div>
       </div>
-    </div>
 
-    <div id="defense-container"></div>
-  </div>
+      <!-- ── TAB: REFERENCES ─────────────────────────────────────────────────── -->
+      <div
+        id="tab-references"
+        class="tab-pane"
+        role="tabpanel"
+        aria-labelledby="tabbtn-references"
+        tabindex="0"
+        hidden
+      >
+        <div class="section-header">
+          <div class="section-title"><i class="bi bi-journals"></i> 參考資料</div>
+          <div class="section-desc">
+            整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引
+          </div>
+        </div>
 
-  <!-- ── TAB: REFERENCES ─────────────────────────────────────────────────── -->
-  <div id="tab-references" class="tab-pane" role="tabpanel" aria-labelledby="tabbtn-references" tabindex="0" hidden>
-    <div class="section-header">
-      <div class="section-title"><i class="bi bi-journals"></i> 參考資料</div>
-      <div class="section-desc">整合官方文件、學術研究、攻防工具說明及 CVE 公告等來源，提供 AD 安全研究的完整資料索引</div>
-    </div>
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <i class="bi bi-search"></i>
+            <input id="ref-search" type="text" placeholder="搜尋標題、說明…" />
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn active" id="ref-filter-all" data-ref-filter="all">
+              全部
+            </button>
+            <button class="filter-btn" id="ref-filter-official" data-ref-filter="official">
+              官方
+            </button>
+            <button class="filter-btn" id="ref-filter-research" data-ref-filter="research">
+              研究
+            </button>
+            <button class="filter-btn" id="ref-filter-tool" data-ref-filter="tool">工具</button>
+            <button class="filter-btn" id="ref-filter-cve" data-ref-filter="cve">CVE</button>
+            <button class="filter-btn" id="ref-filter-framework" data-ref-filter="framework">
+              框架
+            </button>
+          </div>
+        </div>
 
-    <div class="filter-bar">
-      <div class="search-wrap">
-        <i class="bi bi-search"></i>
-        <input id="ref-search" type="text" placeholder="搜尋標題、說明…">
+        <div id="references-container"></div>
       </div>
-      <div class="filter-group">
-        <button class="filter-btn active" id="ref-filter-all" data-ref-filter="all">全部</button>
-        <button class="filter-btn" id="ref-filter-official" data-ref-filter="official">官方</button>
-        <button class="filter-btn" id="ref-filter-research" data-ref-filter="research">研究</button>
-        <button class="filter-btn" id="ref-filter-tool" data-ref-filter="tool">工具</button>
-        <button class="filter-btn" id="ref-filter-cve" data-ref-filter="cve">CVE</button>
-        <button class="filter-btn" id="ref-filter-framework" data-ref-filter="framework">框架</button>
-      </div>
-    </div>
+    </main>
 
-    <div id="references-container"></div>
-  </div>
+    <!-- ── BACK TO TOP ────────────────────────────────────────────────────── -->
+    <button
+      id="back-to-top"
+      class="back-to-top"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      title="Back to top"
+    >
+      <i class="bi bi-arrow-up"></i>
+    </button>
 
-</main>
+    <!-- ── FOOTER ────────────────────────────────────────────────────────── -->
+    <footer class="app-footer">AD Kill Chain Attack &amp; Defense Dashboard &copy; 2026</footer>
 
-<!-- ── BACK TO TOP ────────────────────────────────────────────────────── -->
-<button id="back-to-top" class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
-  <i class="bi bi-arrow-up"></i>
-</button>
-
-<!-- ── FOOTER ────────────────────────────────────────────────────────── -->
-<footer class="app-footer">
-  AD Kill Chain Attack &amp; Defense Dashboard &copy; 2026
-</footer>
-
-<script src="data.js"></script>
-<script src="app.js"></script>
-</body>
+    <script src="utils.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
