@@ -557,6 +557,8 @@ const state = {
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  restoreStateFromUrl();
+  applyTheme();
   pruneStaleCheckedItemsAndPersist();
   renderDashboard();
   renderTechniques();
@@ -570,6 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.lang-btn').forEach((b) => {
     b.classList.toggle('active', b.dataset.lang === state.lang);
   });
+  syncFilterButtons();
   // Sync aria-pressed state across all filter groups (must run AFTER active class is set)
   [
     '.lang-btn',
@@ -578,8 +581,80 @@ document.addEventListener('DOMContentLoaded', () => {
     '[data-tool-filter]',
     '[data-ref-filter]',
   ].forEach(syncAriaPressed);
-  switchTab('dashboard');
+  switchTab(state.activeTab);
 });
+
+// ── URL STATE SYNC ─────────────────────────────────────────────────────────
+function pushUrlState() {
+  const p = new URLSearchParams();
+  p.set('tab', state.activeTab);
+  const techQ = document.getElementById('technique-search')?.value || '';
+  if (techQ) p.set('tech-q', techQ);
+  if (state.techniquesFilter !== 'all') p.set('tech-cat', state.techniquesFilter);
+  const cveQ = document.getElementById('cve-search')?.value || '';
+  if (cveQ) p.set('cve-q', cveQ);
+  if (state.cveFilter !== 'all') p.set('cve-f', state.cveFilter);
+  const detQ = document.getElementById('detection-search')?.value || '';
+  if (detQ) p.set('det-q', detQ);
+  const toolQ = document.getElementById('tools-search')?.value || '';
+  if (toolQ) p.set('tool-q', toolQ);
+  if (state.toolsFilter !== 'all') p.set('tool-f', state.toolsFilter);
+  if (state.refSearch) p.set('ref-q', state.refSearch);
+  if (state.refTagFilter !== 'all') p.set('ref-f', state.refTagFilter);
+  const qs = p.toString();
+  history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+}
+
+const VALID_TABS = new Set([
+  'dashboard',
+  'techniques',
+  'cves',
+  'detection',
+  'tools',
+  'defense',
+  'references',
+]);
+
+function restoreStateFromUrl() {
+  const p = new URLSearchParams(window.location.search);
+  const tab = p.get('tab');
+  if (tab && VALID_TABS.has(tab)) state.activeTab = tab;
+  const techQ = p.get('tech-q');
+  if (techQ) {
+    state.globalSearch = techQ.toLowerCase().trim();
+    const el = document.getElementById('technique-search');
+    if (el) el.value = techQ;
+  }
+  const techCat = p.get('tech-cat');
+  if (techCat) state.techniquesFilter = techCat;
+  const cveQ = p.get('cve-q');
+  if (cveQ) {
+    const el = document.getElementById('cve-search');
+    if (el) el.value = cveQ;
+  }
+  const cveF = p.get('cve-f');
+  if (cveF) state.cveFilter = cveF;
+  const detQ = p.get('det-q');
+  if (detQ) {
+    const el = document.getElementById('detection-search');
+    if (el) el.value = detQ;
+  }
+  const toolQ = p.get('tool-q');
+  if (toolQ) {
+    const el = document.getElementById('tools-search');
+    if (el) el.value = toolQ;
+  }
+  const toolF = p.get('tool-f');
+  if (toolF) state.toolsFilter = toolF;
+  const refQ = p.get('ref-q');
+  if (refQ) {
+    state.refSearch = refQ.toLowerCase().trim();
+    const el = document.getElementById('ref-search');
+    if (el) el.value = refQ;
+  }
+  const refF = p.get('ref-f');
+  if (refF) state.refTagFilter = refF;
+}
 
 // ── TAB NAVIGATION ─────────────────────────────────────────────────────────
 function switchTab(tabId) {
@@ -596,6 +671,7 @@ function switchTab(tabId) {
     if (active) p.removeAttribute('hidden');
     else p.setAttribute('hidden', '');
   });
+  pushUrlState();
 }
 
 // Helper: sync aria-pressed across a group based on the .active class
@@ -605,7 +681,47 @@ function syncAriaPressed(selector) {
   });
 }
 
+function syncFilterButtons() {
+  // tech category filter
+  document.querySelectorAll('[data-cat-filter]').forEach((b) => {
+    b.classList.toggle('active', b.dataset.catFilter === state.techniquesFilter);
+  });
+  // cve filter
+  document.querySelectorAll('[data-cve-filter]').forEach((b) => {
+    b.classList.toggle('active', b.dataset.cveFilter === state.cveFilter);
+  });
+  // tools filter
+  document.querySelectorAll('[data-tool-filter]').forEach((b) => {
+    b.classList.toggle('active', b.dataset.toolFilter === state.toolsFilter);
+  });
+}
+
+// ── THEME ──────────────────────────────────────────────────────────────────
+function applyTheme(theme) {
+  const t = theme || localStorage.getItem('ad_theme') || 'dark';
+  document.documentElement.dataset.theme = t;
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) {
+    btn.innerHTML =
+      t === 'light'
+        ? '<i class="bi bi-sun" aria-hidden="true"></i>'
+        : '<i class="bi bi-moon" aria-hidden="true"></i>';
+    btn.setAttribute(
+      'aria-label',
+      t === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+    );
+  }
+}
+
 // ── EVENT BINDINGS ─────────────────────────────────────────────────────────
+function debounce(fn, ms) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
 function bindEvents() {
   // Tab clicks
   document.querySelectorAll('.nav-tab').forEach((tab) => {
@@ -651,6 +767,7 @@ function bindEvents() {
       btn.classList.add('active');
       syncAriaPressed('[data-cve-filter]');
       filterCVEs();
+      pushUrlState();
     });
   });
 
@@ -662,28 +779,54 @@ function bindEvents() {
       btn.classList.add('active');
       syncAriaPressed('[data-tool-filter]');
       filterTools();
+      pushUrlState();
     });
   });
 
   // CVE search
   const cveSearch = document.getElementById('cve-search');
-  if (cveSearch) cveSearch.addEventListener('input', filterCVEs);
+  if (cveSearch)
+    cveSearch.addEventListener(
+      'input',
+      debounce(() => {
+        filterCVEs();
+        pushUrlState();
+      }, 200)
+    );
 
   // Detection search
   const detectionSearch = document.getElementById('detection-search');
-  if (detectionSearch) detectionSearch.addEventListener('input', filterDetection);
+  if (detectionSearch)
+    detectionSearch.addEventListener(
+      'input',
+      debounce(() => {
+        filterDetection();
+        pushUrlState();
+      }, 200)
+    );
 
   // Tools search
   const toolsSearch = document.getElementById('tools-search');
-  if (toolsSearch) toolsSearch.addEventListener('input', filterTools);
+  if (toolsSearch)
+    toolsSearch.addEventListener(
+      'input',
+      debounce(() => {
+        filterTools();
+        pushUrlState();
+      }, 200)
+    );
 
   // References search
   const refSearchInput = document.getElementById('ref-search');
   if (refSearchInput)
-    refSearchInput.addEventListener('input', () => {
-      state.refSearch = refSearchInput.value.toLowerCase().trim();
-      filterReferences();
-    });
+    refSearchInput.addEventListener(
+      'input',
+      debounce(() => {
+        state.refSearch = refSearchInput.value.toLowerCase().trim();
+        filterReferences();
+        pushUrlState();
+      }, 200)
+    );
 
   // References tag filter buttons
   document.querySelectorAll('[data-ref-filter]').forEach((btn) => {
@@ -693,16 +836,21 @@ function bindEvents() {
       btn.classList.add('active');
       syncAriaPressed('[data-ref-filter]');
       filterReferences();
+      pushUrlState();
     });
   });
 
   // Techniques search
   const techSearch = document.getElementById('technique-search');
   if (techSearch)
-    techSearch.addEventListener('input', () => {
-      state.globalSearch = techSearch.value.toLowerCase().trim();
-      filterTechniques();
-    });
+    techSearch.addEventListener(
+      'input',
+      debounce(() => {
+        state.globalSearch = techSearch.value.toLowerCase().trim();
+        filterTechniques();
+        pushUrlState();
+      }, 200)
+    );
 
   // Techniques category filter
   document.querySelectorAll('[data-cat-filter]').forEach((btn) => {
@@ -712,8 +860,19 @@ function bindEvents() {
       btn.classList.add('active');
       syncAriaPressed('[data-cat-filter]');
       filterTechniques();
+      pushUrlState();
     });
   });
+
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-toggle-btn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('ad_theme', next);
+      applyTheme(next);
+    });
+  }
 
   // Language switcher
   document.querySelectorAll('.lang-btn').forEach((btn) => {

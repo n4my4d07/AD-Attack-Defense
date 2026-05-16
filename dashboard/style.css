@@ -69,6 +69,35 @@
   --sidebar-width: 220px;
 }
 
+:root[data-theme='light'] {
+  --bg-primary: #f6f8fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #f3f4f6;
+  --border-color: #d0d7de;
+  --border-light: #8c959f;
+  --text-primary: #1f2328;
+  --text-secondary: #636c76;
+  --text-muted: #818b98;
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+.theme-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
