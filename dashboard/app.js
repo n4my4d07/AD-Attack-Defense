@@ -567,6 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTools();
   renderDefense();
   bindEvents();
+  renderGapAnalysis();
   applyI18n();
   // Set active lang button
   document.querySelectorAll('.lang-btn').forEach((b) => {
@@ -899,8 +900,15 @@ function bindEvents() {
     );
   }
 
-  // Keyboard shortcut: press "/" to focus global search
+  // Keyboard shortcut: press "/" to focus global search; Ctrl/Cmd+K for command palette
   document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      const overlay = document.getElementById('cmd-overlay');
+      if (overlay && overlay.hasAttribute('hidden')) openCmdPalette();
+      else closeCmdPalette();
+      return;
+    }
     if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
       e.preventDefault();
       const search = document.getElementById('global-search');
@@ -910,10 +918,67 @@ function bindEvents() {
       }
     }
     if (e.key === 'Escape') {
+      const overlay = document.getElementById('cmd-overlay');
+      if (overlay && !overlay.hasAttribute('hidden')) {
+        closeCmdPalette();
+        return;
+      }
+      const panel = document.getElementById('side-panel');
+      if (panel && panel.classList.contains('open')) {
+        closeSidePanel();
+        return;
+      }
       const active = document.activeElement;
       if (active && active.tagName === 'INPUT') active.blur();
     }
   });
+
+  // Side panel close button
+  document.getElementById('sp-close')?.addEventListener('click', closeSidePanel);
+  document.getElementById('sp-overlay')?.addEventListener('click', closeSidePanel);
+
+  // CVE Timeline toggle
+  const tlBtn = document.getElementById('cve-timeline-btn');
+  const tlWrap = document.getElementById('cve-timeline-wrap');
+  if (tlBtn && tlWrap) {
+    tlBtn.addEventListener('click', () => {
+      const isOpen = !tlWrap.hasAttribute('hidden');
+      if (isOpen) {
+        tlWrap.setAttribute('hidden', '');
+        tlBtn.setAttribute('aria-pressed', 'false');
+      } else {
+        tlWrap.removeAttribute('hidden');
+        tlBtn.setAttribute('aria-pressed', 'true');
+        if (!tlWrap.querySelector('svg')) renderCveTimeline();
+      }
+    });
+  }
+
+  // Technique card click → side panel (event delegation on title text only)
+  document.getElementById('techniques-container')?.addEventListener('click', (e) => {
+    const titleEl = e.target.closest('.tc-name');
+    if (!titleEl) return;
+    const card = titleEl.closest('.technique-card');
+    if (!card) return;
+    const techName = card.dataset.technique;
+    let found = null;
+    let foundCat = null;
+    CATEGORIES.forEach((cat) => {
+      cat.techniques.forEach((tech) => {
+        if (tech.name.toLowerCase() === techName) {
+          found = tech;
+          foundCat = cat;
+        }
+      });
+    });
+    if (found && foundCat) {
+      e.stopPropagation();
+      openSidePanel(found, foundCat);
+    }
+  });
+
+  // Bind command palette events
+  bindCmdPaletteEvents();
 
   // Event delegation: copy Event IDs (replaces inline onclick which was XSS-prone)
   document.addEventListener('click', (evt) => {
@@ -1423,6 +1488,7 @@ function toggleChecklist(key, element) {
   }
 
   updateTotalProgress();
+  renderGapAnalysis();
 }
 
 function toggleSteps(btn) {
@@ -1676,6 +1742,557 @@ function expandAllCategories() {
 
 function collapseAllCategories() {
   document.querySelectorAll('.category-section').forEach((s) => s.classList.remove('expanded'));
+}
+
+// ── COMMAND PALETTE ────────────────────────────────────────────────────────
+function buildCmdIndex() {
+  const items = [];
+  CATEGORIES.forEach((cat) => {
+    cat.techniques.forEach((tech) => {
+      items.push({
+        type: 'technique',
+        label: tech.name,
+        sub: d(cat.name),
+        color: cat.color,
+        icon: 'bi-lightning',
+        action: () => {
+          switchTab('techniques');
+          state.globalSearch = tech.name.toLowerCase();
+          const el = document.getElementById('technique-search');
+          if (el) el.value = tech.name;
+          filterTechniques();
+        },
+      });
+    });
+  });
+  CVES.forEach((cve) => {
+    items.push({
+      type: 'cve',
+      label: cve.id,
+      sub: cve.name,
+      color:
+        cve.severity === 'critical'
+          ? 'var(--severity-critical)'
+          : cve.severity === 'high'
+            ? 'var(--severity-high)'
+            : 'var(--severity-medium)',
+      icon: 'bi-bug',
+      action: () => {
+        switchTab('cves');
+        state.cveFilter = 'all';
+        document
+          .querySelectorAll('[data-cve-filter]')
+          .forEach((b) => b.classList.toggle('active', b.dataset.cveFilter === 'all'));
+        const el = document.getElementById('cve-search');
+        if (el) el.value = cve.id;
+        filterCVEs();
+      },
+    });
+  });
+  TOOLS.forEach((tool) => {
+    items.push({
+      type: 'tool',
+      label: tool.name,
+      sub: tool.type,
+      color: 'var(--color-lateral)',
+      icon: 'bi-tools',
+      action: () => {
+        switchTab('tools');
+        const el = document.getElementById('tools-search');
+        if (el) el.value = tool.name;
+        filterTools();
+      },
+    });
+  });
+  return items;
+}
+
+let _cmdIndex = null;
+let _cmdActive = -1;
+
+function openCmdPalette() {
+  if (!_cmdIndex) _cmdIndex = buildCmdIndex();
+  const overlay = document.getElementById('cmd-overlay');
+  const input = document.getElementById('cmd-input');
+  if (!overlay || !input) return;
+  overlay.removeAttribute('hidden');
+  input.value = '';
+  _cmdActive = -1;
+  renderCmdResults('');
+  setTimeout(() => input.focus(), 30);
+}
+
+function closeCmdPalette() {
+  const overlay = document.getElementById('cmd-overlay');
+  if (overlay) overlay.setAttribute('hidden', '');
+  _cmdActive = -1;
+}
+
+function renderCmdResults(query) {
+  const container = document.getElementById('cmd-results');
+  if (!container || !_cmdIndex) return;
+  const q = query.toLowerCase().trim();
+  const filtered = q
+    ? _cmdIndex
+        .filter((it) => it.label.toLowerCase().includes(q) || it.sub.toLowerCase().includes(q))
+        .slice(0, 24)
+    : _cmdIndex.slice(0, 18);
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="cmd-empty"><i class="bi bi-search"></i> No results for "${escapeHtml(query)}"</div>`;
+    return;
+  }
+
+  const groups = {};
+  filtered.forEach((it) => {
+    (groups[it.type] = groups[it.type] || []).push(it);
+  });
+  const groupLabels = { technique: 'Techniques', cve: 'CVEs', tool: 'Tools' };
+
+  let html = '';
+  let itemIdx = 0;
+  Object.entries(groups).forEach(([type, items]) => {
+    html += `<div class="cmd-group-label">${escapeHtml(groupLabels[type] || type)}</div>`;
+    items.forEach((it) => {
+      const sel = itemIdx === _cmdActive ? "aria-selected='true'" : "aria-selected='false'";
+      html += `<div class="cmd-item" role="option" ${sel} data-cmd-idx="${itemIdx}" tabindex="-1">
+        <div class="cmd-item-icon" style="background:${it.color}22;color:${it.color}"><i class="bi ${escapeHtml(it.icon)}" aria-hidden="true"></i></div>
+        <span class="cmd-item-label">${escapeHtml(it.label)}</span>
+        <span class="cmd-item-sub">${escapeHtml(it.sub)}</span>
+      </div>`;
+      itemIdx++;
+    });
+  });
+  container.innerHTML = html;
+  container._filtered = filtered;
+}
+
+function bindCmdPaletteEvents() {
+  const overlay = document.getElementById('cmd-overlay');
+  const input = document.getElementById('cmd-input');
+  const results = document.getElementById('cmd-results');
+  if (!overlay || !input || !results) return;
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeCmdPalette();
+  });
+
+  input.addEventListener('input', () => {
+    _cmdActive = -1;
+    renderCmdResults(input.value);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const items = results.querySelectorAll('.cmd-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      _cmdActive = Math.min(_cmdActive + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      _cmdActive = Math.max(_cmdActive - 1, -1);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const idx = _cmdActive >= 0 ? _cmdActive : 0;
+      if (results._filtered && results._filtered[idx]) {
+        results._filtered[idx].action();
+        closeCmdPalette();
+      }
+      return;
+    } else if (e.key === 'Escape') {
+      closeCmdPalette();
+      return;
+    } else {
+      return;
+    }
+    items.forEach((el, i) => el.setAttribute('aria-selected', i === _cmdActive ? 'true' : 'false'));
+    if (_cmdActive >= 0) items[_cmdActive]?.scrollIntoView({ block: 'nearest' });
+  });
+
+  results.addEventListener('click', (e) => {
+    const item = e.target.closest('.cmd-item');
+    if (!item) return;
+    const idx = parseInt(item.dataset.cmdIdx, 10);
+    if (results._filtered && results._filtered[idx]) {
+      results._filtered[idx].action();
+      closeCmdPalette();
+    }
+  });
+}
+
+// ── CVE TIMELINE ────────────────────────────────────────────────────────────
+function renderCveTimeline() {
+  const wrap = document.getElementById('cve-timeline-wrap');
+  if (!wrap) return;
+
+  const severityColor = {
+    critical: 'var(--severity-critical)',
+    high: 'var(--severity-high)',
+    medium: 'var(--severity-medium)',
+  };
+  const byYear = {};
+  CVES.forEach((c) => {
+    (byYear[c.year] = byYear[c.year] || []).push(c);
+  });
+  const years = Object.keys(byYear)
+    .map(Number)
+    .sort((a, b) => a - b);
+  const maxCount = Math.max(...years.map((y) => byYear[y].length));
+
+  const colW = 80;
+  const padX = 40;
+  const padY = 20;
+  const dotR = 7;
+  const rowH = 28;
+  const svgW = Math.max(years.length * colW + padX * 2, 500);
+  const svgH = maxCount * rowH + padY * 2 + 36;
+
+  let svgContent = '';
+  years.forEach((year, xi) => {
+    const x = padX + xi * colW + colW / 2;
+    svgContent += `<text class="tl-year-label" x="${x}" y="${svgH - 8}" text-anchor="middle">${year}</text>`;
+    svgContent += `<line x1="${x}" y1="${padY}" x2="${x}" y2="${svgH - 24}" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="3,3"/>`;
+    byYear[year].forEach((cve, ri) => {
+      const cy = padY + ri * rowH + dotR + 2;
+      const col = severityColor[cve.severity] || severityColor.medium;
+      svgContent += `<circle class="tl-dot" cx="${x}" cy="${cy}" r="${dotR}" fill="${col}" opacity="0.85"
+        data-id="${escapeHtml(cve.id)}" data-name="${escapeHtml(cve.name)}" data-sev="${escapeHtml(cve.severity)}" data-year="${year}"/>`;
+    });
+  });
+
+  wrap.innerHTML = `<div class="timeline-wrap"><svg class="timeline-svg" width="${svgW}" height="${svgH}" aria-label="CVE Timeline">${svgContent}</svg></div>`;
+
+  const tooltip = document.getElementById('tl-tooltip');
+  wrap.querySelectorAll('.tl-dot').forEach((dot) => {
+    dot.addEventListener('mouseenter', (e) => {
+      if (!tooltip) return;
+      tooltip.innerHTML = `<div class="tl-cve-id">${escapeHtml(dot.dataset.id)}</div><div class="tl-cve-name">${escapeHtml(dot.dataset.name)}</div><div style="color:${severityColor[dot.dataset.sev] || '#aaa'};font-size:11px;margin-top:3px">${escapeHtml(dot.dataset.sev.toUpperCase())} · ${escapeHtml(dot.dataset.year)}</div>`;
+      tooltip.removeAttribute('hidden');
+      moveTlTooltip(e);
+    });
+    dot.addEventListener('mousemove', moveTlTooltip);
+    dot.addEventListener('mouseleave', () => tooltip && tooltip.setAttribute('hidden', ''));
+    dot.addEventListener('click', () => {
+      const el = document.getElementById('cve-search');
+      if (el) el.value = dot.dataset.id;
+      filterCVEs();
+    });
+  });
+}
+
+function moveTlTooltip(e) {
+  const tooltip = document.getElementById('tl-tooltip');
+  if (!tooltip) return;
+  tooltip.style.left = `${e.clientX + 14}px`;
+  tooltip.style.top = `${e.clientY - 10}px`;
+}
+
+// ── DEFENSIVE GAP ANALYSIS ──────────────────────────────────────────────────
+function renderGapAnalysis() {
+  const section = document.getElementById('gap-analysis-section');
+  if (!section) return;
+
+  // Build a map: attack category id → defense section completion
+  // Each DEFENSE_CHECKLIST section has a category name; we map it to CATEGORIES by keyword matching
+  const catKeywords = {
+    discovery: ['偵察', 'discovery', 'recon', '列舉', 'enum'],
+    privesc: ['提權', 'privilege', 'escalat', 'kerberoast', 'kerberos', 'delegat', 'admin'],
+    defevasion: ['規避', 'evasion', 'bypass', '日誌', 'log', 'audit'],
+    lateral: ['橫向', 'lateral', 'pass-the', 'pth', 'smb', 'winrm'],
+    cred: ['憑證', 'credential', 'password', 'ntlm', 'hash', 'lsass', 'laps'],
+    persistence: [
+      '持久',
+      'persistence',
+      'backdoor',
+      'golden',
+      'silver',
+      'dcsync',
+      'acl',
+      'gpo',
+      'cs',
+    ],
+  };
+
+  const sectionScores = {};
+  DEFENSE_CHECKLIST.forEach((sec, sIdx) => {
+    const catName = (d(sec.category) || '').toLowerCase();
+    let matchedCat = null;
+    for (const [catId, kws] of Object.entries(catKeywords)) {
+      if (kws.some((kw) => catName.includes(kw))) {
+        matchedCat = catId;
+        break;
+      }
+    }
+    if (!matchedCat) return;
+    if (!sectionScores[matchedCat]) sectionScores[matchedCat] = { done: 0, total: 0, sections: [] };
+    sec.items.forEach((_, iIdx) => {
+      sectionScores[matchedCat].total++;
+      if (state.checkedItems[`${sIdx}-${iIdx}`]) sectionScores[matchedCat].done++;
+    });
+    sectionScores[matchedCat].sections.push(d(sec.category));
+  });
+
+  const cards = CATEGORIES.map((cat) => {
+    const score = sectionScores[cat.id];
+    if (!score || score.total === 0) return null;
+    const pct = Math.round((score.done / score.total) * 100);
+    const risk = pct < 30 ? 'high' : pct < 70 ? 'medium' : 'low';
+    const riskLabel = pct < 30 ? '高曝險' : pct < 70 ? '部分覆蓋' : '良好覆蓋';
+    return { cat, pct, risk, riskLabel, score };
+  }).filter(Boolean);
+
+  if (!cards.length) {
+    section.innerHTML = '';
+    return;
+  }
+
+  const html = `
+    <div style="margin-bottom:8px">
+      <span class="fw-600 text-primary" style="font-size:14px">
+        <i class="bi bi-shield-exclamation" style="color:var(--severity-high)"></i>
+        防禦缺口分析
+      </span>
+      <span class="text-muted text-small" style="margin-left:8px">根據清單完成度估算攻擊類別曝險程度</span>
+    </div>
+    <div class="gap-grid">
+      ${cards
+        .map(
+          ({ cat, pct, risk, riskLabel, score }) => `
+        <div class="gap-card risk-${escapeHtml(risk)}">
+          <div class="gap-card-name">
+            <i class="bi ${escapeHtml(cat.icon)}" style="color:${escapeHtml(cat.color)}"></i>
+            ${escapeHtml(d(cat.name) || cat.name)}
+          </div>
+          <div class="gap-bar-wrap">
+            <div class="gap-bar-fill" style="width:${pct}%;background:${pct < 30 ? 'var(--severity-critical)' : pct < 70 ? 'var(--severity-high)' : 'var(--color-defense)'}"></div>
+          </div>
+          <div class="gap-stats">
+            <span>${score.done}/${score.total} 項完成</span>
+            <span style="color:${pct < 30 ? 'var(--severity-critical)' : pct < 70 ? 'var(--severity-high)' : 'var(--color-defense)'}">${riskLabel} (${pct}%)</span>
+          </div>
+        </div>`
+        )
+        .join('')}
+    </div>
+  `;
+  section.innerHTML = html;
+}
+
+// ── TECHNIQUE DEEP-DIVE SIDE PANEL ──────────────────────────────────────────
+function openSidePanel(technique, category) {
+  const panel = document.getElementById('side-panel');
+  const overlay = document.getElementById('sp-overlay');
+  if (!panel || !overlay) return;
+
+  document.getElementById('sp-title').textContent = technique.name;
+  document.getElementById('sp-category').innerHTML =
+    `<i class="bi ${escapeHtml(category.icon)}" style="color:${escapeHtml(category.color)}"></i> ${escapeHtml(d(category.name) || category.name)}`;
+
+  const relCves = CVES.filter(
+    (c) =>
+      (c.tools || []).some((t) => (technique.tools || []).includes(t)) ||
+      c.category === category.name
+  );
+  const relEvents = DETECTION_EVENTS.filter(
+    (e) =>
+      e.category === category.id ||
+      (e.attack || '')
+        .toLowerCase()
+        .split(' ')
+        .some((w) => technique.name.toLowerCase().includes(w) && w.length > 3)
+  );
+  const toolNames = new Set(technique.tools || []);
+  const relDefense = [];
+  DEFENSE_CHECKLIST.forEach((sec, sIdx) => {
+    sec.items.forEach((item, iIdx) => {
+      const txt = (d(item.text) + ' ' + d(item.detail || '')).toLowerCase();
+      if (
+        [...toolNames].some((t) => txt.includes(t.toLowerCase())) ||
+        txt.includes(category.id) ||
+        txt.includes((d(category.name) || '').toLowerCase())
+      ) {
+        relDefense.push({ item, key: `${sIdx}-${iIdx}`, section: d(sec.category) });
+      }
+    });
+  });
+
+  const cvesHtml = relCves.length
+    ? relCves
+        .slice(0, 5)
+        .map(
+          (c) => `
+      <div class="sp-cve-row">
+        <span class="cve-id">${escapeHtml(c.id)}</span>
+        <span class="badge badge-${escapeHtml(c.severity)}" style="font-size:10px">${escapeHtml(c.severity.toUpperCase())}</span>
+        <span class="text-secondary text-small" style="flex:1">${escapeHtml(c.name)}</span>
+      </div>`
+        )
+        .join('')
+    : `<div class="sp-empty">無直接相關 CVE</div>`;
+
+  const eventsHtml = relEvents.length
+    ? relEvents
+        .slice(0, 4)
+        .map(
+          (e) => `
+      <div style="margin-bottom:6px">
+        <div class="text-small fw-600 text-secondary" style="margin-bottom:4px">${escapeHtml(e.attack)}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${e.eventIds.map((id) => `<span class="sp-event-chip js-copy-event" data-event-id="${escapeHtml(id)}" role="button" tabindex="0" title="Click to copy">${escapeHtml(id)}</span>`).join('')}</div>
+      </div>`
+        )
+        .join('')
+    : `<div class="sp-empty">無直接對應 Event ID</div>`;
+
+  const defenseHtml = relDefense.length
+    ? relDefense
+        .slice(0, 6)
+        .map(({ item, key }) => {
+          const done = !!state.checkedItems[key];
+          return `<div class="sp-defense-item">
+          <i class="bi ${done ? 'bi-check-circle-fill sp-defense-check' : 'bi-circle sp-defense-uncheck'}" aria-hidden="true"></i>
+          <span>${escapeHtml(d(item.text))}</span>
+        </div>`;
+        })
+        .join('')
+    : `<div class="sp-empty">無直接關聯防禦項目</div>`;
+
+  const toolsHtml = (technique.tools || []).length
+    ? technique.tools.map((tool) => `<span class="tool-tag">${escapeHtml(tool)}</span>`).join('')
+    : `<span class="text-muted text-small">—</span>`;
+
+  const descHtml = `<p class="text-secondary" style="font-size:13px;line-height:1.6">${escapeHtml(d(technique.description))}</p>`;
+
+  document.getElementById('sp-body').innerHTML = `
+    <div class="sp-section">${descHtml}</div>
+    <div class="sp-section">
+      <div class="sp-section-title"><i class="bi bi-tools" aria-hidden="true"></i> 常用工具</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${toolsHtml}</div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title"><i class="bi bi-bug" aria-hidden="true"></i> 相關 CVE</div>
+      ${cvesHtml}
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title"><i class="bi bi-eye" aria-hidden="true"></i> 偵測 Event ID（點擊複製）</div>
+      ${eventsHtml}
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-title"><i class="bi bi-shield-check" aria-hidden="true"></i> 相關防禦清單</div>
+      ${defenseHtml}
+    </div>
+  `;
+
+  panel.setAttribute('aria-hidden', 'false');
+  overlay.classList.add('open');
+  panel.classList.add('open');
+  document.getElementById('sp-close')?.focus();
+}
+
+function closeSidePanel() {
+  const panel = document.getElementById('side-panel');
+  const overlay = document.getElementById('sp-overlay');
+  panel?.classList.remove('open');
+  panel?.setAttribute('aria-hidden', 'true');
+  overlay?.classList.remove('open');
+}
+
+// ── RED TEAM REPORT ─────────────────────────────────────────────────────────
+function exportRedTeamReport() {
+  const { checkedCount, totalItems, pct } = computeProgress(state.checkedItems, DEFENSE_CHECKLIST);
+  const criticalCves = CVES.filter((c) => c.severity === 'critical');
+  const highCves = CVES.filter((c) => c.severity === 'high');
+
+  const gapRows = CATEGORIES.map((cat) => {
+    const catName = d(cat.name) || cat.name;
+    const techCount = cat.techniques.length;
+    const cveCount = CVES.filter((c) => c.category === catName).length;
+    return `<tr><td style="padding:8px 12px;border-bottom:1px solid #333"><b>${escapeHtml(catName)}</b></td><td style="padding:8px 12px;border-bottom:1px solid #333;text-align:center">${techCount}</td><td style="padding:8px 12px;border-bottom:1px solid #333;text-align:center">${cveCount}</td></tr>`;
+  }).join('');
+
+  const uncheckedItems = [];
+  DEFENSE_CHECKLIST.forEach((sec, sIdx) => {
+    sec.items.forEach((item, iIdx) => {
+      if (!state.checkedItems[`${sIdx}-${iIdx}`]) {
+        uncheckedItems.push(
+          `<li style="margin:4px 0;color:#e6edf3">[${escapeHtml(d(sec.category))}] ${escapeHtml(d(item.text))}</li>`
+        );
+      }
+    });
+  });
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AD Kill Chain — Red Team Report</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;padding:40px;max-width:900px;margin:0 auto;line-height:1.6}
+  h1{color:#58a6ff;margin-bottom:4px}
+  h2{color:#79c0ff;border-bottom:1px solid #30363d;padding-bottom:8px;margin-top:32px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .critical{background:#da3633;color:#fff}
+  .high{background:#e3b341;color:#000}
+  .medium{background:#58a6ff;color:#000}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th{background:#161b22;padding:8px 12px;text-align:left;color:#8b949e;font-size:12px;text-transform:uppercase}
+  .stat-row{display:flex;gap:24px;flex-wrap:wrap;margin:16px 0}
+  .stat-box{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 24px;min-width:120px}
+  .stat-num{font-size:28px;font-weight:700;color:#58a6ff}
+  .stat-label{font-size:12px;color:#8b949e;margin-top:4px}
+  .progress-bar{height:10px;background:#30363d;border-radius:5px;overflow:hidden;margin:8px 0}
+  .progress-fill{height:100%;border-radius:5px;background:${pct >= 70 ? '#3fb950' : pct >= 40 ? '#e3b341' : '#da3633'}}
+  ul{padding-left:20px;max-height:400px;overflow-y:auto}
+  footer{margin-top:48px;color:#656d76;font-size:12px;border-top:1px solid #30363d;padding-top:16px}
+</style>
+</head>
+<body>
+<h1>🛡 AD Kill Chain — Red Team Report</h1>
+<p style="color:#8b949e">Generated: ${new Date().toLocaleString()} &nbsp;·&nbsp; Dashboard snapshot</p>
+
+<h2>Executive Summary</h2>
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-num">${CATEGORIES.length}</div><div class="stat-label">Attack Categories</div></div>
+  <div class="stat-box"><div class="stat-num">${CVES.length}</div><div class="stat-label">CVEs Tracked</div></div>
+  <div class="stat-box"><div class="stat-num" style="color:#da3633">${criticalCves.length}</div><div class="stat-label">Critical CVEs</div></div>
+  <div class="stat-box"><div class="stat-num" style="color:#3fb950">${pct}%</div><div class="stat-label">Defense Coverage</div></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+<p style="font-size:13px;color:#8b949e">${checkedCount} of ${totalItems} defense checklist items completed</p>
+
+<h2>Critical CVEs</h2>
+<table>
+  <thead><tr><th>CVE ID</th><th>Name</th><th>Severity</th><th>Year</th></tr></thead>
+  <tbody>
+    ${[...criticalCves, ...highCves]
+      .slice(0, 15)
+      .map(
+        (c) =>
+          `<tr><td style="padding:8px 12px;border-bottom:1px solid #21262d;font-family:monospace">${escapeHtml(c.id)}</td><td style="padding:8px 12px;border-bottom:1px solid #21262d">${escapeHtml(c.name)}</td><td style="padding:8px 12px;border-bottom:1px solid #21262d"><span class="badge ${escapeHtml(c.severity)}">${escapeHtml(c.severity.toUpperCase())}</span></td><td style="padding:8px 12px;border-bottom:1px solid #21262d;color:#8b949e">${escapeHtml(String(c.year))}</td></tr>`
+      )
+      .join('')}
+  </tbody>
+</table>
+
+<h2>Attack Surface by Category</h2>
+<table>
+  <thead><tr><th>Category</th><th style="text-align:center">Techniques</th><th style="text-align:center">CVEs</th></tr></thead>
+  <tbody>${gapRows}</tbody>
+</table>
+
+<h2>Unmitigated Defense Items (${totalItems - checkedCount} remaining)</h2>
+<ul>${uncheckedItems.slice(0, 50).join('')}${uncheckedItems.length > 50 ? `<li style="color:#8b949e">… and ${uncheckedItems.length - 50} more</li>` : ''}</ul>
+
+<footer>AD Kill Chain Attack &amp; Defense Dashboard · Red Team / Education Use Only</footer>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ad-redteam-report-${new Date().toISOString().slice(0, 10)}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Red Team 報告已匯出');
 }
 
 // ── UTILITY ────────────────────────────────────────────────────────────────

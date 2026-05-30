@@ -61,7 +61,7 @@ module.exports = [
           // Functions referenced from inline onclick handlers in index.html
           // / dynamic templates appear "unused" to ESLint.
           varsIgnorePattern:
-            '^(_|toggleCategory|toggleTechnique|toggleSteps|exportChecklist|expandAllCategories|collapseAllCategories|copyEventId)$',
+            '^(_|toggleCategory|toggleTechnique|toggleSteps|exportChecklist|expandAllCategories|collapseAllCategories|copyEventId|exportRedTeamReport)$',
           caughtErrors: 'none',
         },
       ],

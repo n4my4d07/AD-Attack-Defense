@@ -376,7 +376,16 @@
           <button class="filter-btn" data-cve-filter="medium">
             <span style="color: var(--severity-medium)">●</span> 中危 (Medium)
           </button>
+          <button
+            class="filter-btn"
+            id="cve-timeline-btn"
+            style="margin-left: auto"
+            aria-pressed="false"
+          >
+            <i class="bi bi-bar-chart-line" aria-hidden="true"></i> Timeline
+          </button>
         </div>
+        <div id="cve-timeline-wrap" hidden style="padding: 8px 0 4px"></div>
 
         <div class="table-container">
           <div class="table-overflow">
@@ -530,6 +539,9 @@
                 </div>
               </div>
               <div class="d-flex gap-8">
+                <button class="filter-btn" id="report-btn" onclick="exportRedTeamReport()">
+                  <i class="bi bi-file-earmark-code" aria-hidden="true"></i> Red Team 報告
+                </button>
                 <button class="filter-btn" onclick="exportChecklist()" id="export-checklist-btn">
                   <i class="bi bi-download"></i> <span id="export-btn-label">匯出清單</span>
                 </button>
@@ -552,6 +564,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Defensive Gap Analysis — rendered by renderGapAnalysis() -->
+        <div id="gap-analysis-section" style="margin-bottom: 24px"></div>
 
         <div id="defense-container"></div>
       </div>
@@ -608,6 +623,51 @@
     >
       <i class="bi bi-arrow-up"></i>
     </button>
+
+    <!-- ── COMMAND PALETTE ──────────────────────────────────────────────── -->
+    <div
+      class="cmd-overlay"
+      id="cmd-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      hidden
+    >
+      <div class="cmd-palette" id="cmd-palette">
+        <div class="cmd-input-wrap">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input
+            class="cmd-input"
+            id="cmd-input"
+            type="text"
+            placeholder="Search techniques, CVEs, tools…"
+            autocomplete="off"
+            aria-autocomplete="list"
+            aria-controls="cmd-results"
+          />
+          <span class="cmd-hint">ESC to close</span>
+        </div>
+        <div class="cmd-results" id="cmd-results" role="listbox"></div>
+      </div>
+    </div>
+
+    <!-- ── TECHNIQUE DEEP-DIVE SIDE PANEL ───────────────────────────────── -->
+    <div class="side-panel-overlay" id="sp-overlay" aria-hidden="true"></div>
+    <aside class="side-panel" id="side-panel" aria-label="Technique details" aria-hidden="true">
+      <div class="side-panel-header">
+        <div>
+          <div class="fw-600 text-primary" id="sp-title" style="font-size: 15px"></div>
+          <div class="text-secondary text-small" id="sp-category" style="margin-top: 3px"></div>
+        </div>
+        <button class="side-panel-close" id="sp-close" aria-label="Close panel">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="side-panel-body" id="sp-body"></div>
+    </aside>
+
+    <!-- ── CVE TIMELINE TOOLTIP ──────────────────────────────────────────── -->
+    <div class="tl-tooltip" id="tl-tooltip" hidden role="tooltip"></div>
 
     <!-- ── FOOTER ────────────────────────────────────────────────────────── -->
     <footer class="app-footer">AD Kill Chain Attack &amp; Defense Dashboard &copy; 2026</footer>
